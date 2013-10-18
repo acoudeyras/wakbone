@@ -2,12 +2,23 @@
 // http://karma-runner.github.io/0.10/config/configuration-file.html
 
 module.exports = function(config) {
+
   config.set({
     // base path, that will be used to resolve files and exclude
     basePath: '',
 
+   plugins: [
+      'karma-coffee-preprocessor',
+      'karma-chrome-launcher',
+      'karma-osx-reporter',
+      'karma-requirejs',
+      'karma-coverage',
+      'karma-mocha',
+      'karma-chai-plugins'
+   ],
+
     // testing framework to use (jasmine/mocha/qunit/...)
-    frameworks: ['requirejs', 'mocha'],
+    frameworks: ['requirejs', 'mocha', 'chai', 'chai-as-promised'],   
 
     // list of files / patterns to load in the browser
     files: [
@@ -17,11 +28,11 @@ module.exports = function(config) {
       'test/test-main.js'
     ],
 
-    reporters: ['progress', 'coverage'],    
+    reporters: ['progress', 'coverage', 'osx'],
 
     preprocessors: {
       '**/*.coffee': ['coffee'],
-      'scripts/*.js': ['coverage']
+      'app/scripts/*.js': ['coverage']
     },
 
     coverageReporter: {
