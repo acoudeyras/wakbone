@@ -1,6 +1,6 @@
 define ['rest-query'], (RestQuery) ->
 
-	
+
 
 	describe 'RestQuery', ->
 
@@ -9,4 +9,5 @@ define ['rest-query'], (RestQuery) ->
 			it 'should do stuff', ->
 				q = new RestQuery()
 				q.select 'coucou'
-				q.url().should.equal 'genial'
+				console.log q.url()
+				q.url().should.equal 'genial2'

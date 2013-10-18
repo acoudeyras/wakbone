@@ -6,5 +6,5 @@ define ['./helpers'], (helpers)->
 		orderBy: (clause) ->
 		distinct: ->
 		compute: (compute) ->
-		url: -> 'genial'
+		url: -> 'genial2'
 		fetch: ->
