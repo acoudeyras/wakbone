@@ -1,7 +1,8 @@
 {
   "name": "wakbone",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-copy": "~0.4.1",
@@ -17,6 +18,7 @@
     "grunt-contrib-requirejs": "~0.4.1",
     "grunt-contrib-imagemin": "~0.2.0",
     "grunt-contrib-watch": "~0.5.2",
+    "grunt-coffeelint": "0.0.7",
     "grunt-rev": "~0.1.0",
     "grunt-autoprefixer": "~0.2.0",
     "grunt-usemin": "~0.1.10",

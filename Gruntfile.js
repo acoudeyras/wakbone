@@ -13,6 +13,7 @@ module.exports = function (grunt) {
     // load all grunt tasks
     require('load-grunt-tasks')(grunt);
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-coffeelint');
 
     grunt.initConfig({
         // configurable paths
@@ -23,6 +24,14 @@ module.exports = function (grunt) {
         karma: {
             unit: {
                 configFile: 'karma.conf.js'
+            }
+        },
+        coffeelint: {
+            app: ['app/scripts/*.coffee'],
+            options: {
+                'no_trailing_whitespace': {
+                    'level': 'error'
+                }
             }
         },
         watch: {

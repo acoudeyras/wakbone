@@ -124,9 +124,17 @@ define ['rest-query', 'chai'], (RestQuery, {expect}) ->
 				expect(url).to.equal 'http://localhost:8080/Person/name?$compute=count'
 		
 			it 'when and invalid keyword is specified, should throw an exception', ->
-				expect( ->
-					newQuery().compute('name', 'diff')
-				).to.throw 'oups'
-				#newQuery().compute('name', 'diff').to.throw 'oups'
+				expect( -> newQuery().compute('name', 'diff')).to.throw Error
 
+		describe 'key', ->
 
+			it 'should add the entity key in url', ->
+				url = newQuery().key('123').url
+				expect(url).to.equal 'http://localhost:8080/Person(123)'
+
+		describe 'everything combined', ->
+
+			it 'should work', ->
+
+				newQuery()
+					

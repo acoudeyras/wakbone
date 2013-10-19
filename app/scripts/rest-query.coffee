@@ -25,11 +25,15 @@ define ['./helpers', './check'], (helpers, check)->
 		build: -> 
 			@root + @buildPathParams() + @buildQueryParams()
 
+
 	_computedKeywords = ['$all', 'count', 'average', 'min', 'max', 'sum']
 	class RestQuery
 		constructor: (@root, @entityName) ->
 			check(@root, @entityName).notNull().isString().notEmpty()
 			@urlBuilder = new UrlBuilder(@root + '/' + @entityName)
+		key: (key) ->
+			@urlBuilder = new UrlBuilder(@root + '/' + @entityName + '(' + key + ')')
+			@
 		select: (properties...) ->
 			@urlBuilder.path properties.join(',')
 			@
@@ -66,7 +70,7 @@ define ['./helpers', './check'], (helpers, check)->
 			@urlBuilder.query '$distinct', 'true'
 			@
 		compute: (property, keyword = '$all') ->
-			check(keyword).in _computedKeywords
+			check(keyword).in _computedKeywords #remove orderby ?
 			@urlBuilder.clearPath()
 			@select property
 			@urlBuilder.query '$compute', keyword

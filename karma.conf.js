@@ -22,7 +22,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      {pattern: 'app/scripts/*.coffee', included:false},
+      {pattern: 'app/scripts/*.coffee', included: false},
+      {pattern: 'app/bower_components/**/*.js', included: false},
       {pattern:'test/spec/**/*.coffee', included: false},
       'test/mock/**/*.js',
       'test/test-main.js'
@@ -44,7 +45,7 @@ module.exports = function(config) {
     exclude: [],
 
     // web server port
-    port: 8080,
+    port: 8081,
 
     // level of logging
     // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
@@ -54,6 +55,11 @@ module.exports = function(config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
+    captureTimeout: 10000,
+
+    proxies: {
+      '/rest': 'http://localhost:8088/rest'
+    },
 
     // Start these browsers, currently available:
     // - Chrome

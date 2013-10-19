@@ -1,6 +1,13 @@
 require.config({
     paths: {
-        jquery: '../bower_components/jquery/jquery'
+        jquery: '../bower_components/jquery/jquery',
+        underscore: '../bower_components/underscore/underscore',
+        backbone: '../bower_components/backbone'
+    },
+    shim: {
+        backbone: {
+            deps: ['underscore', 'jquery']
+        }
     }
 });
 

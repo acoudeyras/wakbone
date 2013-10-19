@@ -17,7 +17,7 @@ define [], ->
 
 	_checkAll = (objects, message, predicate, args) ->
 		objects.forEach (obj) ->
-			throw message if not predicate obj, args
+			throw new Error(message) if not predicate obj, args
 
 	_check = (objects...) ->
 
