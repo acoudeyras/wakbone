@@ -25,6 +25,7 @@ module.exports = function(config) {
       {pattern: 'app/scripts/*.coffee', included: false},
       {pattern: 'app/bower_components/**/*.js', included: false},
       {pattern:'test/spec/**/*.coffee', included: false},
+      {pattern:'test/spec/*helpers.coffee', included:false},
       'test/mock/**/*.js',
       'test/test-main.js'
     ],

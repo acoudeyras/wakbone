@@ -1,12 +1,11 @@
 define ['backbone'], ->
 
+  _createDef = (dataClass, catalog) ->
 
-	_createDef = (dataClass, catalog) ->
-
-	create: (dataClass, catalog) ->
-		definition = _createDef dataClass, catalog
-		Model = Backbone.Model.extend(definition)
-		Model.className = dataClass.className
-		Model.definition= dataClass
-		Model.catalog = catalog
-		Model
+  create: (dataClass, catalog) ->
+    definition = _createDef dataClass, catalog
+    Model = Backbone.Model.extend(definition)
+    Model.className = dataClass.className
+    Model.definition= dataClass
+    Model.catalog = catalog
+    Model

@@ -31,6 +31,9 @@ module.exports = function (grunt) {
             options: {
                 'no_trailing_whitespace': {
                     'level': 'error'
+                },
+                'max_line_length': {
+                    'level': 'ignore'
                 }
             }
         },
@@ -330,6 +333,7 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
+            'coffeelint',
             'clean:server',
             'concurrent:server',
             'autoprefixer',
@@ -339,6 +343,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('test', [
+        'coffeelint',
         'clean:server',
         'concurrent:test',
         'autoprefixer',
@@ -347,6 +352,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build', [
+        'coffeelint',
         'clean:dist',
         'useminPrepare',
         'concurrent:dist',

@@ -1,6 +1,7 @@
 var tests = [];
 for (var file in window.__karma__.files) {
   if (window.__karma__.files.hasOwnProperty(file)) {
+    //console.log('Found file: ' + file);
     if (/Spec\.js$/.test(file)) {
     	console.log('Loading test file: ' + file);
 		tests.push(file);
@@ -15,7 +16,8 @@ requirejs.config({
     paths: {
         'jquery': '../bower_components/jquery/jquery',
         'underscore': '../bower_components/underscore/underscore',
-        'backbone': '../bower_components/backbone/backbone'
+        'backbone': '../bower_components/backbone/backbone',
+        'test-helpers': '../../test/spec/test-helpers'
     },
 
     shim: {

@@ -1,24 +1,20 @@
-define ['catalog', 'chai'], (catalogLoader, {expect})->
+define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers)->
 
-	catalog = null
-	before (done) ->
-		catalogLoader.load().done (loadedCatalog) -> 
-			catalog = loadedCatalog
-			done()
+	before (done) -> helpers.init done
 
 	describe 'load', ->
 
 		it 'should load catalog', (done) ->
-			catalogLoader.load().done (catalog) ->
+			Catalog.load().done (catalog) ->
 				expect(catalog).not.to.be.null
 				done()
 
 	describe 'models', ->
 
 		it 'should contains all models', ->
-			modelNames = Object.keys catalog.models
+			modelNames = Object.keys helpers.catalog.models
 			expect(modelNames.length).to.equal 4
 
 		it 'should have models indexed by className', ->
-			expect(catalog.models.Employee).not.to.be.undefined
-			expect(catalog.models.Company).not.to.be.undefined
+			expect(helpers.catalog.models.Employee).not.to.be.undefined
+			expect(helpers.catalog.models.Company).not.to.be.undefined

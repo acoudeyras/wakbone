@@ -1,20 +1,16 @@
-define ['catalog', 'chai'], (catalogLoader, {expect}) ->
+define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
 
-	catalog = null
-	before (done) ->
-		catalogLoader.load().done (loadedCatalog) -> 
-			catalog = loadedCatalog
-			done()
+	before (done) -> helpers.init done
 
 	describe 'static properties', ->
 
 		it 'should have a valid className', ->
-			expect(catalog.models.Employee.className).to.equal 'Employee'
-			expect(catalog.models.Company.className).to.equal 'Company'
+			expect(helpers.catalog.models.Employee.className).to.equal 'Employee'
+			expect(helpers.catalog.models.Company.className).to.equal 'Company'
 
 		it 'should have a reference to the catalog', ->
-			expect(catalog.models.Employee.catalog).to.equal catalog
-			expect(catalog.models.Company.catalog).to.equal catalog
+			expect(helpers.catalog.models.Employee.catalog).to.equal helpers.catalog
+			expect(helpers.catalog.models.Company.catalog).to.equal helpers.catalog
 
 		xit 'should have a reference to its metadata', ->
 			#TODO definition voir si utile et besoin d'abstraction
