@@ -1,3 +1,4 @@
+'use strict'
 define ['catalog'], (Catalog) ->
   
     init: (done)->
