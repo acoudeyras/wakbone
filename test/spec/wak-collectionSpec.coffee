@@ -16,15 +16,20 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
 
   describe 'fetch', ->
 
-    it 'should load data', (done) ->
-      employees = @catalog.employee.entities
-      employees.fetch().done () ->
-        expect(employees).not.to.be.empty
+    before (done) ->
+      @employees = @catalog.employee.entities
+      @employees.fetch(reset:true).done ->
         done()
 
-    it 'should load data as a Backbone Model', (done) ->
-      employees = @catalog.employee.entities
-      employees.fetch().done () ->
-        emp = employees.at(0)
-        expect(emp).to.be.an.instanceof Backbone.Model
-        done()
+    it 'should load data', ->
+      expect(@employees).not.to.be.empty
+
+    it 'should load data as a Backbone Model', ->
+      emp = @employees.at 0
+      expect(emp).to.be.an.instanceof Backbone.Model
+
+    it 'should be able to retrieve models by id', ->
+      emp = @employees.get 3
+      expect(emp).to.exist
+
+

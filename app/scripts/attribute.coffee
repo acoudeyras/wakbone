@@ -1,5 +1,5 @@
 'use strict'
-define ['./types', './helpers'], (types, helpers) ->
+define ['./types', './wak-collection', './helpers'], (types, wakCollectionFactory, helpers) ->
 
   class Attribute
     constructor: ({@identifying, @indexed, @kind, @name, @scope, @type, @path}, @dataClass) ->
@@ -30,7 +30,7 @@ define ['./types', './helpers'], (types, helpers) ->
     _convertToRelatedCollection: (value) ->
       return null if value is null
       url = value.__deferred.uri #TODO handle already loaded
-      newCollection = @RelatedCollection.extend(url: url)
+      newCollection = wakCollectionFactory.createRelated @RelatedCollection, url
       new newCollection()
     fromRaw: (value) ->
       return @typeExtra.fromRaw value if @typeExtra?

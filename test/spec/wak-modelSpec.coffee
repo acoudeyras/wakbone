@@ -27,19 +27,49 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
     it 'should have a $stamp property', ->
       expect(@emp.get('$stamp')).to.exist
 
-    it 'should return related entity properties as model', ->
-      company = @emp.get 'company'
-      expect(company).to.be.an.instanceof Backbone.Model
-
     it 'should return related entities properties as collections', ->
       managedCompanies = @emp.get 'managedCompanies'
       expect(managedCompanies).to.be.an.instanceof Backbone.Collection
 
-    xit 'should have casted dates properties', ->
+    it 'should have casted dates properties', ->
+      date = @emp.get 'birthDate'
+      expect(date.year()).to.equal 1967
 
+    describe 'relatedEntity', ->
 
+      it 'should return related entity property as a Model', ->
+        company = @emp.get 'company'
+        expect(company).to.be.an.instanceof Backbone.Model
 
+      it 'should be able to fetch that model', (done)->
+        company = @emp.get 'company'
+        company.fetch().done ->
+          expect(company.get 'name').to.equal 'Pico Myaki Badge'
+          done()
 
+    describe 'relatedEntities', ->
+
+      it 'should return related entities property as a Collection', ->
+        managedCompanies = @emp.get 'managedCompanies'
+        expect(managedCompanies).to.be.an.instanceof Backbone.Collection
+
+      it 'should be able to fetch that collection', (done)->
+        managedCompanies = @emp.get 'managedCompanies'
+        managedCompanies.fetch().done ->
+          expect(managedCompanies).to.have.length 1
+          managedCompany = managedCompanies.at 0
+          expect(managedCompany.get('name')).to.equal 'Pico Myaki Badge'
+          done()
+
+    describe 'save', ->
+
+      it 'should be able to update an employee', (done) ->
+        gender = @emp.get('gender')
+        invertedGender = if gender is 'M' then 'F' else 'M'
+        @emp.set('gender', invertedGender)
+        @emp.save().always ->
+          console.log arguments
+          done()
 
   describe 'loading by itself', ->
 
@@ -56,8 +86,8 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
 
     before (done) ->
       employees = @catalog.employee.entities
-      employees.fetch().done =>
-        @emp = employees.at 0
+      employees.fetch(reset: true).done =>
+        @emp = employees.get 1
         done()
 
     shouldBeAValidModel()

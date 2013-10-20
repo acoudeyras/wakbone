@@ -113,10 +113,10 @@ define ['chai', 'test-helpers'], ({expect}, helpers)->
           collection = attr.fromRaw _rawManagedCompanies
           expect(collection).to.be.an.instanceof @catalog.company.Collection
 
-        it 'should return a related collection with a correct url', ->
+        it 'should return a related collection with a correct url by adding the subentity method', ->
           attr = @empClass.attr 'managedCompanies'
           collection = attr.fromRaw _rawManagedCompanies
-          expect(collection.url).to.equal _rawManagedCompanies.__deferred.uri
+          expect(collection.url).to.equal _rawManagedCompanies.__deferred.uri + '&$method=subentityset'
 
         it 'should return null if the rawValue has a null value', ->
           attr = @empClass.attr 'managedCompanies'

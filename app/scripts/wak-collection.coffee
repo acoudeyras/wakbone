@@ -11,6 +11,9 @@ define ['backbone'], ->
       @$total = response.__COUNT
       response.__ENTITIES
 
+  createRelated: (Collection, url) ->
+    Collection.extend
+      url:url + '&$method=subentityset'
   create: (dataClass, model, catalog) ->
     definition = _createDef dataClass, model, catalog
     Collection = Backbone.Collection.extend(definition)
