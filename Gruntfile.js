@@ -27,7 +27,7 @@ module.exports = function (grunt) {
             }
         },
         coffeelint: {
-            app: ['app/scripts/*.coffee'],
+            app: ['app/scripts/*.coffee', 'test/spec/*.coffee'],
             options: {
                 'no_trailing_whitespace': {
                     'level': 'error'

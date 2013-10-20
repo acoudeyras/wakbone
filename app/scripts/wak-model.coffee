@@ -1,11 +1,24 @@
 'use strict'
 define ['backbone'], ->
 
+  _fieldsToRemove = ['__entityModel', '__KEY', '__STAMP']
+
   _createDef = (dataClass, catalog) ->
-    constructor: (options) ->
-      @id = options.ID
+
+    constructor: (options, collection) ->
       Backbone.Model::constructor.apply @, arguments
-    #attr: (name) -> _.find @$def.attributes, (attr) -> attr.name is name
+    parse: (response) ->
+      data =
+        id: response.ID
+      for key, value of response
+        continue if key in _fieldsToRemove
+        attr = dataClass.attributesByName[key]
+        data[key] = attr.fromRaw value
+      
+      data.$stamp = response.__STAMP
+      data
+
+    urlRoot: dataClass.dataURI
     url: -> @urlRoot + '(' + @id + ')'
 
   create: (dataClass, catalog) ->

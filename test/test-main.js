@@ -17,7 +17,8 @@ requirejs.config({
         'jquery': '../bower_components/jquery/jquery',
         'underscore': '../bower_components/underscore/underscore',
         'backbone': '../bower_components/backbone/backbone',
-        'test-helpers': '../../test/spec/test-helpers'
+        'test-helpers': '../../test/spec/test-helpers',
+        'underscore.string': '../bower_components/underscore.string/dist/underscore.string.min'        
     },
 
     shim: {
@@ -26,7 +27,10 @@ requirejs.config({
         },
         backbone: {
             deps: ['underscore', 'jquery']
-        }
+        },
+        'underscore.string': {
+            deps: ['underscore']
+        }        
     },
 
     // ask Require.js to load these files (all our tests)

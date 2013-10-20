@@ -1,9 +1,11 @@
 'use strict'
 define ['catalog'], (Catalog) ->
   
-    init: (done)->
-      return done() if @catalog?
-      Catalog.load().done (catalog) =>
-        console.log 'Loading catalog'
-        @catalog = catalog
-        done()
+  init: (context, done)->
+    if @catalog?
+      context.catalog = @catalog
+      return done()
+    Catalog.load().done (catalog) =>
+      console.log 'Loading catalog'
+      context.catalog = @catalog = catalog
+      done()

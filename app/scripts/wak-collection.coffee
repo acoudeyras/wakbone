@@ -14,4 +14,4 @@ define ['backbone'], ->
   create: (dataClass, model, catalog) ->
     definition = _createDef dataClass, model, catalog
     Collection = Backbone.Collection.extend(definition)
-    new Collection()
+    Collection

@@ -58,7 +58,7 @@ define ['rest-query', 'chai'], (RestQuery, {expect}) ->
         for method in methods
           result[method] = newQuery()[method](value).url
         result.allEquals = (expectedUrl) ->
-          expect(url).to.equal expectedUrl for method, url of @ when method in methods        
+          expect(url).to.equal expectedUrl for method, url of @ when method in methods
         result
           
 
