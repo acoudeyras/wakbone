@@ -73,6 +73,13 @@ define ['chai', 'test-helpers'], ({expect}, helpers)->
         _expectFromRaw @, 'age', 20
         _expectFromRaw @, 'ID', 20
 
+      it 'should return a valid Date object when the type is date', ->
+        attr = @empClass.attr 'birthDate'
+        converted = attr.fromRaw '24!8!1954'
+        expect(converted.year()).to.equal 1954
+        expect(converted.month()).to.equal 7
+        expect(converted.date()).to.equal 24
+
       describe 'with related model', ->
 
         _rawCompany =

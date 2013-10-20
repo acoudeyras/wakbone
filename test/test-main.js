@@ -18,7 +18,8 @@ requirejs.config({
         'underscore': '../bower_components/underscore/underscore',
         'backbone': '../bower_components/backbone/backbone',
         'test-helpers': '../../test/spec/test-helpers',
-        'underscore.string': '../bower_components/underscore.string/dist/underscore.string.min'        
+        'underscore.string': '../bower_components/underscore.string/dist/underscore.string.min',
+        moment: '../bower_components/moment/min/moment-with-langs'
     },
 
     shim: {

@@ -1,5 +1,7 @@
 'use strict'
-define ['./underscore-ext'], (_ext) ->
+define ['./underscore-ext', 'moment'], (_ext, moment) ->
+
+  moment.wakFormat = 'DD!MM!YYYY'
 
   Function::property = (prop, desc) ->
     Object.defineProperty @prototype, prop, desc
@@ -22,3 +24,4 @@ define ['./underscore-ext'], (_ext) ->
   throwIf: (predicate, message) ->
     if predicate
       @throw message
+  moment: moment

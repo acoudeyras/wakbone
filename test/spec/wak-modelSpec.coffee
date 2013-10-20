@@ -27,15 +27,18 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
     it 'should have a $stamp property', ->
       expect(@emp.get('$stamp')).to.exist
 
-    xit 'should have casted dates properties', ->
-
-
-    xit 'should return related entities properties as collections', ->
-
-
     it 'should return related entity properties as model', ->
       company = @emp.get 'company'
       expect(company).to.be.an.instanceof Backbone.Model
+
+    it 'should return related entities properties as collections', ->
+      managedCompanies = @emp.get 'managedCompanies'
+      expect(managedCompanies).to.be.an.instanceof Backbone.Collection
+
+    xit 'should have casted dates properties', ->
+
+
+
 
 
   describe 'loading by itself', ->

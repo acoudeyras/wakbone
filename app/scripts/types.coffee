@@ -1,5 +1,5 @@
 'use strict'
-define [], ->
+define ['./helpers'], (helpers) ->
   _asItCome = (value) -> value
   _types =
     string:
@@ -12,7 +12,7 @@ define [], ->
       fromRaw: _asItCome
       toRaw: _asItCome
     date:
-      fromRaw: _asItCome #TODO
+      fromRaw: (value) -> moment value, moment.wakFormat
       toRaw: _asItCome #TODO
     image:
       fromRaw: _asItCome #TODO

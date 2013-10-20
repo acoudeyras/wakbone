@@ -135,7 +135,7 @@ define ['rest-query', 'chai'], (RestQuery, {expect}) ->
 
     describe 'everything combined', ->
 
-      it 'should work', ->
+      it 'should work', -> #TODO
 
         newQuery()
           
