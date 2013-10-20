@@ -51,7 +51,17 @@ define ['helpers', 'backbone'], (helpers)->
       return helpers.resolvedPromise() if not data
       data.__KEY = model.id
       data.__STAMP = model.get '$stamp'
+
+      def = $.Deferred() #TODO refactor
       _send(model, data, _send.PUT, options)
+        .done (data, status, xhr) ->
+          def.resolve data, status, xhr
+        .fail (data) ->
+          error = data.responseJSON.__ERROR
+          console.log 'should trigger'
+          model.trigger 'error'
+          def.reject error
+      def.promise()
 
   create: (dataClass, catalog) ->
     definition = _createDef dataClass, catalog

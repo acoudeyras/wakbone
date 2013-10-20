@@ -81,7 +81,7 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
           newDate = date.clone().set('month', 3)
         else
           newDate = date.clone().set('month', 2)
-        @emp.set('birthDate', newDate)
+        @emp.set 'birthDate', newDate
         @emp.save()
           .done =>
             expectedDate = @emp.get 'birthDate'
@@ -90,6 +90,28 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
           .fail ->
             expect(true).to.be.false #TODO ?
             done()
+
+      describe 'handling errors', ->
+
+        it 'should return an array of errors in the fail callback when an error happends on server', (done) ->
+          @emp.set 'age', 'robert'
+          @emp.save()
+            .done =>
+              expect(true).to.be.false #TODO ?
+              done()
+            .fail (errors)=>
+              expect(errors).to.have.length 1
+              error = errors[0]
+              expect(error.message).to.have.string '"age"'
+              done()
+
+        it 'should trigger the model error event', (done) ->
+          @emp.set 'age', 'robert'
+          @emp.on 'error', ->
+            console.log 'error'
+            done()
+          @emp.save()
+
 
   describe 'loading by itself', ->
 
