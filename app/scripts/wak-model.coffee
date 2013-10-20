@@ -12,7 +12,7 @@ define ['backbone'], ->
         id: response.ID
       for key, value of response
         continue if key in _fieldsToRemove
-        attr = dataClass.attributesByName[key]
+        attr = dataClass.attr key
         data[key] = attr.fromRaw value
       
       data.$stamp = response.__STAMP

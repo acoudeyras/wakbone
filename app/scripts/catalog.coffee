@@ -1,49 +1,13 @@
 'use strict'
-define ['./wak-model', './wak-collection', './types', './helpers', './check','backbone'], (wakModelFactory, wakCollectionFactory, types, helpers, check) ->
+define ['./wak-model', './wak-collection', './attribute', './helpers', './check','backbone'], (wakModelFactory, wakCollectionFactory, Attribute, helpers, check) ->
       
-  class Attribute
-    constructor: ({@identifying, @indexed, @kind, @name, @scope, @type, @path}, @dataClass) ->
-      @identifying ?= false
-      @isRaw = @kind in Attribute.rawKinds
-      @catalog = @dataClass.catalog
-      if @isRaw
-        @extendedType = types[@type]
-        if not @extendedType?
-          throw new Error ('type ' + @type + ' not supported')
-      ###
-      need to be lazy, because when we load the attributes, the catalog may not have yet loaded
-      the relatedModel. We could have added a "build" method that would have done that and be called
-      by the catalog after all model are loaded, but i thought it was overdesign yet
-      ###
-    @lazyval 'RelatedModel', ->
-      name = Catalog.classNameInCatalog @type
-      @catalog[name].Model if @kind is 'relatedEntity'
-    @lazyval 'RelatedCollection', ->
-      return null if @kind isnt 'relatedEntities'
-      dataClass = @catalog.$entryFromCollectionName @type
-      dataClass.Collection
-    _convertToRelatedModel: (value) ->
-      return null if value is null
-      id = value.__deferred.__KEY #TODO handle already loaded
-      new @RelatedModel(id: id)
-    _convertToRelatedCollection: (value) ->
-      return null if value is null
-      id = value.__deferred.__KEY #TODO handle already loaded
-      new @RelatedCollection()
-    fromRaw: (value) ->
-      return @extendedType.fromRaw value if @isRaw
-      return @_convertToRelatedModel value if @kind is 'relatedEntity'
-      return @_convertToRelatedCollection value if @kind is 'relatedEntities'
-      console.log 'oups'
-    toRaw: (value) ->
-    @rawKinds: ['storage', 'alias', 'calculated']
-
-
   class DataClass
     constructor: ({@className, @collectionName, @dataURI, attributes}, @catalog) ->
-      @attributes = attributes.map (attr) => new Attribute(attr, @)
-      @attributesByName = _.indexBy @attributes, 'name'
-
+      @_attributes = attributes.map (attr) => new Attribute(attr, @)
+      @_attributesByName = _.indexBy @_attributes, 'name'
+    attr: (name) ->
+      return @_attributes if not name?
+      @_attributesByName[name]
 
   class Catalog
     constructor: (data) ->

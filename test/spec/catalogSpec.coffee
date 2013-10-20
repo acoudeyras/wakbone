@@ -73,47 +73,14 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers)->
     it 'should have a dataURI', ->
       expect(@empClass.dataURI).to.equal '/rest/Employee'
 
-    it 'should have attributes', ->
-      expect(@empClass.attributes).to.have.length 15
+    describe 'attr', ->
 
-    it 'should have attributes indexed by name in attributesByName', ->
-      attrNames = Object.keys @empClass.attributesByName
-      expect(attrNames).to.have.length @empClass.attributes.length
-      for attr in @empClass.attributes
-        expect(@empClass.attributesByName).to.have.a.property attr.name
+      it 'should return all attributes when call without parameter', ->
+        expect(@empClass.attr()).to.have.length 15
 
-    describe 'Attribute', ->
-
-      before ->
-        @firstNameAttr = @empClass.attributesByName['firstName']
-
-      it 'should have a name', ->
-        expect(@firstNameAttr.name).to.equal 'firstName'
-
-      it 'should have a type', ->
-        expect(@firstNameAttr.type).to.equal 'string'
-
-      it 'should have an indexed property', ->
-        expect(@firstNameAttr.indexed).to.equal true
-
-      it 'should have an identifying property', ->
-        expect(@firstNameAttr.identifying).to.equal false
-        id = @empClass.attributesByName['ID']
-        expect(id.identifying).to.equal true
-
-      it 'should have a kind', ->
-        expect(@firstNameAttr.kind).to.equal 'storage'
-
-      it 'should have a dataClass', ->
-        expect(@firstNameAttr.dataClass).to.equal @empClass
-
-      it 'should have a catalog', ->
-        expect(@firstNameAttr.catalog).to.equal @catalog
-
-      describe 'isRaw', ->
-
-        it 'should be true for storage type', ->
-
+      it 'should return the corresponding attribute when a parameter is specified', ->
+        for attr in @empClass.attr()
+          expect(@empClass.attr(attr.name)).to.exist
 
 
 
