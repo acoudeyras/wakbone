@@ -48,8 +48,9 @@ define ['helpers', 'backbone'], (helpers)->
       helpers.throwIf method isnt 'update', "method #{method} not supported yet"
       #TODO delete
       data = model.changedAttributes()
+      return helpers.resolvedPromise() if not data
       data.__KEY = model.id
-      data.__STAMP = model.get('$stamp')
+      data.__STAMP = model.get '$stamp'
       _send(model, data, _send.PUT, options)
 
   create: (dataClass, catalog) ->

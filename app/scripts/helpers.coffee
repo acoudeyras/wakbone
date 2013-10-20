@@ -17,6 +17,10 @@ define ['./underscore-ext', 'moment'], (_ext, moment) ->
         return @[privateProp] if @[privateProp]?
         @[privateProp] = getter.apply(@)
 
+  resolvedPromise: (value) ->
+    def = $.Deferred()
+    def.resolve value
+    def.promise()
   log: (message) ->
     console.log message
   throw: (message, Type=Error) ->
