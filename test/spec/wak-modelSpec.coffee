@@ -67,9 +67,13 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
         gender = @emp.get('gender')
         invertedGender = if gender is 'M' then 'F' else 'M'
         @emp.set('gender', invertedGender)
-        @emp.save().always ->
-          console.log arguments
-          done()
+        @emp.save()
+          .done =>
+            expect(@emp.get 'gender').to.equal invertedGender
+            done()
+          .fail =>
+            expect(true).to.be.false #TODO ?
+            done()
 
   describe 'loading by itself', ->
 
