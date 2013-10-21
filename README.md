@@ -16,10 +16,15 @@ Getting started (Dev)
 * npm install
 * bower install
 
-To run tests
+To build
 =========
 * Open and start solution (TODO)
-* grunt
+* grunt karma:continuous build
+
+To Dev
+========
+* Open and start solution (TODO)
+* grunt karma:unit watch
 
 
 RestQuery
