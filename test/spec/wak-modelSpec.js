@@ -201,7 +201,7 @@
         });
       });
     });
-    return describe('get', function() {
+    describe('get', function() {
       before(function(done) {
         var Employee, emp,
           _this = this;
@@ -227,11 +227,27 @@
           return _this.emp.get('firstName.length');
         }).to["throw"](Error);
       });
-      return it('should support direct access to a related collection', function() {
+      it('should support direct access to a related collection', function() {
         var expectedCompanyName, found;
         expectedCompanyName = this.emp.get('staff').at(0).get('company').get('name');
         found = this.emp.get('staff[0].company.name');
         return expect(found).to.equal(expectedCompanyName);
+      });
+      return it('should throw an exception when the related model/collection is not fetched', function() {
+        var _this = this;
+        return expect(function() {
+          return _this.emp.get('staff[0].company.manager[0]');
+        }).to["throw"](Error);
+      });
+    });
+    return describe('set', function() {
+      it('should support direct set to a related model', function() {
+        this.emp.set('company.name', '4D');
+        return expect(this.emp.get('company.name')).to.equal('4D');
+      });
+      return it('should support direct set to a related model via a collection', function() {
+        this.emp.set('staff[0].company.name', '4D');
+        return expect(this.emp.get('staff[0].company.name')).to.equal('4D');
       });
     });
   });

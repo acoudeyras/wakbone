@@ -30,14 +30,14 @@ define [], ->
     {val, remaining} = _read expression, '.'
     subProp = model.get val
     if not _isModel subProp or not _isCollection subProp #only models ?
-      throw new Error('Property ' + val + ' is not a model or a collection')
+      throw new Error('Property ' + val + ' is not a model or a collection or is not fetched')
     return subProp.walk remaining
 
   _walkToBracket = (model, expression) ->
     {val, remaining} = _read expression, '['
     subProp = model.get val
     if not _isCollection subProp
-      throw new Error('Property ' + val ' is not  a collection')
+      throw new Error('Property ' + val + ' is not a collection or is not fetched')
 
     {val, remaining} = _read remaining, ']'
     if _.isBlank remaining

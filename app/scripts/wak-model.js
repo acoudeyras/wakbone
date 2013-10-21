@@ -63,6 +63,14 @@
           _ref = this.walk(expression), model = _ref.model, property = _ref.property;
           return Backbone.Model.prototype.get.call(model, property);
         },
+        set: function(expression, value) {
+          var model, property, _ref;
+          if (typeof expression === 'object') {
+            return Backbone.Model.prototype.set.apply(this, arguments);
+          }
+          _ref = this.walk(expression), model = _ref.model, property = _ref.property;
+          return Backbone.Model.prototype.set.call(model, property, value);
+        },
         parse: function(response) {
           var attr, data, key, value;
           data = {};

@@ -40,6 +40,11 @@ define ['rest-query', 'backbone-walker', 'helpers', 'backbone'], (RestQuery, Bac
     get: (expression) ->
       {model, property} = @walk expression
       Backbone.Model::get.call model, property
+    set: (expression, value) ->
+      if typeof expression is 'object'
+        return Backbone.Model::set.apply @, arguments
+      {model, property} = @walk expression
+      Backbone.Model::set.call model, property, value
     parse: (response) ->
       data = {}
       for key, value of response

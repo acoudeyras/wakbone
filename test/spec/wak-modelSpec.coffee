@@ -190,3 +190,19 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
       expectedCompanyName = @emp.get('staff').at(0).get('company').get('name')
       found = @emp.get 'staff[0].company.name'
       expect(found).to.equal expectedCompanyName
+
+    it 'should throw an exception when the related model/collection is not fetched', ->
+      expect(=> @emp.get 'staff[0].company.manager[0]').to.throw Error
+
+  describe 'set', ->
+
+    it 'should support direct set to a related model', ->
+      @emp.set 'company.name', '4D'
+      expect(@emp.get 'company.name').to.equal '4D'
+
+    it 'should support direct set to a related model via a collection', ->
+      @emp.set 'staff[0].company.name', '4D'
+      expect(@emp.get 'staff[0].company.name').to.equal '4D'
+
+
+

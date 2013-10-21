@@ -39,7 +39,7 @@
       _ref = _read(expression, '.'), val = _ref.val, remaining = _ref.remaining;
       subProp = model.get(val);
       if (!_isModel(subProp || !_isCollection(subProp))) {
-        throw new Error('Property ' + val + ' is not a model or a collection');
+        throw new Error('Property ' + val + ' is not a model or a collection or is not fetched');
       }
       return subProp.walk(remaining);
     };
@@ -48,7 +48,7 @@
       _ref = _read(expression, '['), val = _ref.val, remaining = _ref.remaining;
       subProp = model.get(val);
       if (!_isCollection(subProp)) {
-        throw new Error('Property ' + val(' is not  a collection'));
+        throw new Error('Property ' + val + ' is not a collection or is not fetched');
       }
       _ref1 = _read(remaining, ']'), val = _ref1.val, remaining = _ref1.remaining;
       if (_.isBlank(remaining)) {
