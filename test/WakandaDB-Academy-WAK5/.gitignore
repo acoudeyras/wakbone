@@ -1,0 +1,32 @@
+# OS X
+*.DS_Store
+._*
+# Wakanda preferences
+*.waPreferences
+# Wakanda log
+*.waLog
+*/Logs
+studio_log*
+# Wakanda code symbols
+*.waSym
+*.waSymData
+# Wakanda index
+*.waIndx
+*.Match
+# Wakanda data
+*.waData
+*(compacting)*
+*.waJournal
+# Wakanda User and Group cache
+*.cacheUAG
+# Wakanda backup
+*.waBackup
+*.breakpoints
+*nogit*
+*.waDirectory
+WakandaDB-Academy Solution/breakpoints.json
+WakandaDB-Academy Solution/sessionID.json
+
+WakandaDB-Academy/DO-NOT-PUBLISH-ON-GITHUB.js
+WakandaDB-Academy/WebFolder/styles/*
+WakandaDB-Academy/WebFolder/scripts/*

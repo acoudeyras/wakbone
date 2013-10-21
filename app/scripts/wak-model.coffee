@@ -52,16 +52,18 @@ define ['helpers', 'backbone'], (helpers)->
       data.__KEY = model.id
       data.__STAMP = model.get '$stamp'
 
-      def = $.Deferred() #TODO refactor
+      def = $.Deferred()
       _send(model, data, _send.PUT, options)
-        .done (data, status, xhr) ->
-          def.resolve data, status, xhr
-        .fail (data) ->
-          error = data.responseJSON.__ERROR
-          console.log 'should trigger'
-          model.trigger 'error'
-          def.reject error
-      def.promise()
+        .done (data, status, xhr) =>
+          options.success?(data, true)
+          def.resolve()
+        .fail (response) ->
+          data = response.responseJSON
+          errors = data?.__ERROR
+          options.error?(data, errors)
+          model.set '$errors', errors
+          def.reject errors
+      def
 
   create: (dataClass, catalog) ->
     definition = _createDef dataClass, catalog

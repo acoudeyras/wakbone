@@ -32,4 +32,12 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
       emp = @employees.get 3
       expect(emp).to.exist
 
+  describe '$state', ->
 
+    describe 'limit', ->
+
+      it 'should add a $limit parameter in url if setted', (done)->
+        @employees.$state.limit(10)
+        @employees.fetch(reset:true).done ->
+          expect(col.length).to.have.length 10
+          done()

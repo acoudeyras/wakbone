@@ -93,6 +93,11 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
 
       describe 'handling errors', ->
 
+        _isErrorInAge = (errors) ->
+          expect(errors).to.have.length 1
+          error = errors[0]
+          expect(error.message).to.have.string '"age"'
+
         it 'should return an array of errors in the fail callback when an error happends on server', (done) ->
           @emp.set 'age', 'robert'
           @emp.save()
@@ -100,17 +105,20 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
               expect(true).to.be.false #TODO ?
               done()
             .fail (errors)=>
-              expect(errors).to.have.length 1
-              error = errors[0]
-              expect(error.message).to.have.string '"age"'
+              _isErrorInAge errors
               done()
 
         it 'should trigger the model error event', (done) ->
-          @emp.set 'age', 'robert'
-          @emp.on 'error', ->
-            console.log 'error'
+          @emp.set 'age', 'roberto'
+          @emp.once 'error', =>
+            _isErrorInAge @emp.get('$errors')
             done()
           @emp.save()
+
+      describe 'related model', ->
+
+        it 'should be able to save a related model', ->
+          #TODO
 
 
   describe 'loading by itself', ->
@@ -128,7 +136,7 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
 
     before (done) ->
       employees = @catalog.employee.entities
-      employees.fetch(reset: true).done =>
+      employees.fetch(reset:true).done =>
         @emp = employees.get 1
         done()
 
