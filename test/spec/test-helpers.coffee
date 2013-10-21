@@ -6,6 +6,5 @@ define ['catalog'], (Catalog) ->
       context.catalog = @catalog
       return done()
     Catalog.load().done (catalog) =>
-      console.log 'Loading catalog'
       context.catalog = @catalog = catalog
       done()

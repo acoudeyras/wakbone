@@ -1,5 +1,5 @@
 'use strict'
-define ['helpers', 'backbone'], (helpers)->
+define ['rest-query', 'backbone-walker', 'helpers', 'backbone'], (RestQuery, BackboneWalker, helpers)->
   
   _deleteProperties = (data) ->
     for key, val of data
@@ -29,7 +29,17 @@ define ['helpers', 'backbone'], (helpers)->
 
     constructor: (options, collection) ->
       options.id ?= options.ID
+      @_query = new RestQuery @urlRoot + '(' + options.id + ')'
+      @walker = new BackboneWalker @
       Backbone.Model::constructor.apply @, arguments
+    expand: (expanded...) ->
+      @_expanded = @_query.expand expanded
+      @
+    walk: (expression) -> 
+      @walker.walk expression
+    get: (expression) ->
+      {model, property} = @walk expression
+      Backbone.Model::get.call model, property
     parse: (response) ->
       data = {}
       for key, value of response
@@ -42,7 +52,7 @@ define ['helpers', 'backbone'], (helpers)->
       data
 
     urlRoot: dataClass.dataURI
-    url: -> @urlRoot + '(' + @id + ')'
+    url: -> @_query.url
     sync: (method, model, options) ->
       return Backbone.Model::sync.apply @, arguments if method is 'read'
       helpers.throwIf method isnt 'update', "method #{method} not supported yet"

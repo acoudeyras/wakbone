@@ -1,8 +1,9 @@
 (function() {
   'use strict';
-  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
+    __slice = [].slice;
 
-  define(['helpers', 'backbone'], function(helpers) {
+  define(['rest-query', 'backbone-walker', 'helpers', 'backbone'], function(RestQuery, BackboneWalker, helpers) {
     var _createDef, _deleteProperties, _fieldsToRemove, _send;
     _deleteProperties = function(data) {
       var key, val, _results;
@@ -44,7 +45,23 @@
           if (options.id == null) {
             options.id = options.ID;
           }
+          this._query = new RestQuery(this.urlRoot + '(' + options.id + ')');
+          this.walker = new BackboneWalker(this);
           return Backbone.Model.prototype.constructor.apply(this, arguments);
+        },
+        expand: function() {
+          var expanded;
+          expanded = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+          this._expanded = this._query.expand(expanded);
+          return this;
+        },
+        walk: function(expression) {
+          return this.walker.walk(expression);
+        },
+        get: function(expression) {
+          var model, property, _ref;
+          _ref = this.walk(expression), model = _ref.model, property = _ref.property;
+          return Backbone.Model.prototype.get.call(model, property);
         },
         parse: function(response) {
           var attr, data, key, value;
@@ -63,7 +80,7 @@
         },
         urlRoot: dataClass.dataURI,
         url: function() {
-          return this.urlRoot + '(' + this.id + ')';
+          return this._query.url;
         },
         sync: function(method, model, options) {
           var data, def;

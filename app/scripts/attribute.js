@@ -51,6 +51,9 @@
         if (value === null) {
           return null;
         }
+        if (value.ID) {
+          return new this.RelatedModel(value);
+        }
         id = value.__deferred.__KEY;
         return new this.RelatedModel({
           id: id
@@ -58,13 +61,19 @@
       };
 
       Attribute.prototype._convertToRelatedCollection = function(value) {
-        var newCollection, url;
+        var RelatedCol, collection, url, _ref, _ref1;
         if (value === null) {
           return null;
         }
-        url = value.__deferred.uri;
-        newCollection = wakCollectionFactory.createRelated(this.RelatedCollection, url);
-        return new newCollection();
+        url = (_ref = value.__deferred) != null ? _ref.uri : void 0;
+        RelatedCol = wakCollectionFactory.createRelated(this.RelatedCollection, url);
+        collection = new RelatedCol();
+        if (((_ref1 = value.__ENTITIES) != null ? _ref1.length : void 0) > 0) {
+          collection.set(value, {
+            parse: true
+          });
+        }
+        return collection;
       };
 
       Attribute.prototype.fromRaw = function(value) {

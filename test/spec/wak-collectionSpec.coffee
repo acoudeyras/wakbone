@@ -72,13 +72,49 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
           done()
 
       it 'should accept a string with multiple orderbys', (done) ->
-          @employees.query
-            .orderBy('gender DESC, firstName DESC')
-            .limit(5)
-          @employees.fetch(reset:true).done =>
-            found = @employees.at(0).get('firstName')
-            expect(found).to.equal 'ZACKARY'
-            done()
+        @employees.query
+          .orderBy('gender DESC, firstName DESC')
+          .limit(5)
+        @employees.fetch(reset:true).done =>
+          found = @employees.at(0).get('firstName')
+          expect(found).to.equal 'ZACKARY'
+          done()
 
+    describe 'expand', ->
 
+      it 'should accept single expand on a related entity, fetch corresponding data and load it as a model', (done) ->
+        @employees.query
+          .expand('company')
+          .limit(5)
+        @employees.fetch(reset:true).done =>
+          company = @employees.at(0).get('company')
+          expect(company).to.be.an.instanceof Backbone.Model
+          expect(company.get 'name').to.equal 'Table Right Ice'
+          done()
+
+      it 'should accept multiple expand on related entities, fetch corresponding data and load it as a collection', (done) ->
+        @employees.query
+          .expand('managedCompanies', 'staff')
+          .skip(5)
+          .limit(10)
+        @employees.fetch(reset:true).done =>
+          staff = @employees.at(2).get('staff')
+          expect(staff).to.be.an.instanceof Backbone.Collection
+          expect(staff).to.have.length 1
+          emp = staff.at 0
+          expect(emp.get 'firstName').to.equal 'MARQUITA'
+          done()
+
+      it 'should accept multiple expand on related entities, fetch corresponding data and load it as a collection', (done) ->
+        @employees.query
+          .expand('managedCompanies', 'staff')
+          .skip(5)
+          .limit(10)
+        @employees.fetch(reset:true).done =>
+          staff = @employees.at(2).get('staff')
+          expect(staff).to.be.an.instanceof Backbone.Collection
+          expect(staff).to.have.length 1
+          emp = staff.at 0
+          expect(emp.get 'firstName').to.equal 'MARQUITA'
+          done()
 

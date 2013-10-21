@@ -25,13 +25,19 @@ define ['./types', './wak-collection', './helpers'], (types, wakCollectionFactor
       dataClass.Collection
     _convertToRelatedModel: (value) ->
       return null if value is null
-      id = value.__deferred.__KEY #TODO handle already loaded
+      if value.ID
+        return new @RelatedModel value #already loaded, maybe an expand
+
+      id = value.__deferred.__KEY #not loaded yet
       new @RelatedModel(id: id)
     _convertToRelatedCollection: (value) ->
       return null if value is null
-      url = value.__deferred.uri #TODO handle already loaded
-      newCollection = wakCollectionFactory.createRelated @RelatedCollection, url
-      new newCollection()
+      url = value.__deferred?.uri
+      RelatedCol = wakCollectionFactory.createRelated @RelatedCollection, url
+      collection = new RelatedCol()
+      if value.__ENTITIES?.length > 0 #already loaded, maybe an expand
+        collection.set value, parse: true
+      collection
     fromRaw: (value) ->
       return @typeExtra.fromRaw value if @typeExtra?
       return @_convertToRelatedModel value if @kind is 'relatedEntity'

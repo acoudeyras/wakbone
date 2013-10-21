@@ -78,7 +78,7 @@
           });
         });
       });
-      return describe('orderby', function() {
+      describe('orderby', function() {
         it('should accept a string with one orderby', function(done) {
           var _this = this;
           this.employees.query.orderBy('firstName').limit(5);
@@ -100,6 +100,51 @@
             var found;
             found = _this.employees.at(0).get('firstName');
             expect(found).to.equal('ZACKARY');
+            return done();
+          });
+        });
+      });
+      return describe('expand', function() {
+        it('should accept single expand on a related entity, fetch corresponding data and load it as a model', function(done) {
+          var _this = this;
+          this.employees.query.expand('company').limit(5);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var company;
+            company = _this.employees.at(0).get('company');
+            expect(company).to.be.an["instanceof"](Backbone.Model);
+            expect(company.get('name')).to.equal('Table Right Ice');
+            return done();
+          });
+        });
+        it('should accept multiple expand on related entities, fetch corresponding data and load it as a collection', function(done) {
+          var _this = this;
+          this.employees.query.expand('managedCompanies', 'staff').skip(5).limit(10);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var emp, staff;
+            staff = _this.employees.at(2).get('staff');
+            expect(staff).to.be.an["instanceof"](Backbone.Collection);
+            expect(staff).to.have.length(1);
+            emp = staff.at(0);
+            expect(emp.get('firstName')).to.equal('MARQUITA');
+            return done();
+          });
+        });
+        return it('should accept multiple expand on related entities, fetch corresponding data and load it as a collection', function(done) {
+          var _this = this;
+          this.employees.query.expand('managedCompanies', 'staff').skip(5).limit(10);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var emp, staff;
+            staff = _this.employees.at(2).get('staff');
+            expect(staff).to.be.an["instanceof"](Backbone.Collection);
+            expect(staff).to.have.length(1);
+            emp = staff.at(0);
+            expect(emp.get('firstName')).to.equal('MARQUITA');
             return done();
           });
         });

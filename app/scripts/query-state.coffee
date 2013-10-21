@@ -20,7 +20,10 @@ define ['./rest-query', './orderby-parser'], (RestQuery, _parseOrderBy) ->
       @state.limit = limit
       @_query.limit limit
       @
-    expand: (expand) ->
+    expand: (expands...) ->
+      @state.expands = expands
+      @_query.expand expands
+      @
     clear: ->
       @state = _.extend QueryState.default, @originState
       @_query = new RestQuery @rootUrl

@@ -167,7 +167,7 @@
       });
       return shouldBeAValidModel();
     });
-    return describe('loading from collection', function() {
+    describe('loading from collection', function() {
       before(function(done) {
         var employees,
           _this = this;
@@ -179,8 +179,60 @@
           return done();
         });
       });
-      shouldBeAValidModel();
-      return xit('should have a reference to its metadata', function() {});
+      return shouldBeAValidModel();
+    });
+    describe('expand', function() {
+      return it('should load expanded data and load them as a model or collection', function(done) {
+        var Employee, emp,
+          _this = this;
+        Employee = this.catalog.employee.Model;
+        emp = new Employee({
+          id: 1
+        });
+        return emp.expand('company', 'staff', 'managedCompanies').fetch().done(function() {
+          var company, staff;
+          company = emp.get('company');
+          expect(company).to.be.an["instanceof"](Backbone.Model);
+          expect(company.get('name')).to.equal('Pico Myaki Badge');
+          staff = emp.get('staff');
+          expect(staff).to.be.an["instanceof"](Backbone.Collection);
+          expect(staff).to.have.length(6);
+          return done();
+        });
+      });
+    });
+    return describe('get', function() {
+      before(function(done) {
+        var Employee, emp,
+          _this = this;
+        Employee = this.catalog.employee.Model;
+        emp = new Employee({
+          id: 1
+        });
+        return emp.expand('company', 'staff', 'managedCompanies').fetch().done(function() {
+          _this.emp = emp;
+          return _this.emp.get('staff').at(0).fetch('company').done(function() {
+            return done();
+          });
+        });
+      });
+      it('should support direct access to a related model', function() {
+        var expectedCompanyName;
+        expectedCompanyName = this.emp.get('company').get('name');
+        return expect(this.emp.get('company.name')).to.equal(expectedCompanyName);
+      });
+      it('should throw an exception is the sub property is not a model or a collection', function() {
+        var _this = this;
+        return expect(function() {
+          return _this.emp.get('firstName.length');
+        }).to["throw"](Error);
+      });
+      return it('should support direct access to a related collection', function() {
+        var expectedCompanyName, found;
+        expectedCompanyName = this.emp.get('staff').at(0).get('company').get('name');
+        found = this.emp.get('staff[0].company.name');
+        return expect(found).to.equal(expectedCompanyName);
+      });
     });
   });
 

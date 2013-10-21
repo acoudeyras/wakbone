@@ -9,7 +9,6 @@
           return done();
         }
         return Catalog.load().done(function(catalog) {
-          console.log('Loading catalog');
           context.catalog = _this.catalog = catalog;
           return done();
         });

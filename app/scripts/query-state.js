@@ -38,7 +38,13 @@
         return this;
       };
 
-      QueryState.prototype.expand = function(expand) {};
+      QueryState.prototype.expand = function() {
+        var expands;
+        expands = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        this.state.expands = expands;
+        this._query.expand(expands);
+        return this;
+      };
 
       QueryState.prototype.clear = function() {
         this.state = _.extend(QueryState["default"], this.originState);

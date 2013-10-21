@@ -131,7 +131,6 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
         it 'should be able to save a related model', ->
           #TODO
 
-
   describe 'loading by itself', ->
 
     before (done) ->
@@ -153,6 +152,41 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
 
     shouldBeAValidModel()
 
-    xit 'should have a reference to its metadata', ->
-      #TODO definition voir si utile et besoin d'abstraction
+  describe 'expand', ->
 
+    it 'should load expanded data and load them as a model or collection', (done) ->
+      
+      Employee = @catalog.employee.Model
+      emp = new Employee id: 1
+      emp.expand('company', 'staff', 'managedCompanies').fetch().done =>
+        company = emp.get 'company'
+        expect(company).to.be.an.instanceof Backbone.Model
+        expect(company.get 'name').to.equal 'Pico Myaki Badge'
+
+        staff = emp.get 'staff'
+        expect(staff).to.be.an.instanceof Backbone.Collection
+        expect(staff).to.have.length 6
+        done()
+
+
+  describe 'get', ->
+
+    before (done) ->
+      Employee = @catalog.employee.Model
+      emp = new Employee id: 1
+      emp.expand('company', 'staff', 'managedCompanies').fetch().done =>
+        @emp = emp
+        @emp.get('staff').at(0).fetch('company').done ->
+          done()
+
+    it 'should support direct access to a related model', ->
+      expectedCompanyName = @emp.get('company').get('name')
+      expect(@emp.get 'company.name').to.equal expectedCompanyName
+
+    it 'should throw an exception is the sub property is not a model or a collection', ->
+      expect(=> @emp.get 'firstName.length').to.throw Error
+
+    it 'should support direct access to a related collection', ->
+      expectedCompanyName = @emp.get('staff').at(0).get('company').get('name')
+      found = @emp.get 'staff[0].company.name'
+      expect(found).to.equal expectedCompanyName
