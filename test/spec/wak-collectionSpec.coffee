@@ -37,7 +37,7 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
     describe 'limit', ->
 
       it 'should add a $limit parameter in url if setted', (done)->
-        @employees.$state.limit(10)
+        @employees.query.limit(10)
         @employees.fetch(reset:true).done =>
           expect(@employees).to.have.length 100
           done()

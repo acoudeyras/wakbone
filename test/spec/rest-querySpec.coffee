@@ -3,7 +3,7 @@ define ['rest-query', 'chai'], (RestQuery, {expect}) ->
 
   rootUrl = 'http://localhost:8080'
 
-  newQuery = -> new RestQuery(rootUrl, 'Person')
+  newQuery = -> new RestQuery(rootUrl + '/Person')
 
   describe 'RestQuery', ->
 

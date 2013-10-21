@@ -14,6 +14,12 @@
         this._attributesByName = _.indexBy(this._attributes, 'name');
       }
 
+      DataClass.prototype.finalize = function(Collection, Model) {
+        this.Collection = Collection;
+        this.Model = Model;
+        return this.entities = new this.Collection();
+      };
+
       DataClass.prototype.attr = function(name) {
         if (name == null) {
           return this._attributes;
@@ -47,16 +53,12 @@
       };
 
       Catalog.prototype._addEntry = function(entryName, rawDataClass) {
-        var Collection, Model, def;
-        def = new DataClass(rawDataClass, this);
-        Model = wakModelFactory.create(def, this);
-        Collection = wakCollectionFactory.create(def, Model, this);
-        return this[entryName] = {
-          def: def,
-          Model: Model,
-          Collection: Collection,
-          entities: new Collection()
-        };
+        var Collection, Model, dataClass;
+        dataClass = new DataClass(rawDataClass, this);
+        Model = wakModelFactory.create(dataClass, this);
+        Collection = wakCollectionFactory.create(dataClass, Model, this);
+        dataClass.finalize(Collection, Model);
+        return this[entryName] = dataClass;
       };
 
       Catalog.classNameInCatalog = function(className) {

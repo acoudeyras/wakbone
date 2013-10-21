@@ -28,11 +28,11 @@ define ['./helpers', './check'], (helpers, check)->
 
   _computedKeywords = ['$all', 'count', 'average', 'min', 'max', 'sum']
   class RestQuery
-    constructor: (@root, @entityName) ->
-      check(@root, @entityName).notNull().isString().notEmpty()
-      @urlBuilder = new UrlBuilder(@root + '/' + @entityName)
+    constructor: (@root) ->
+      check(@root).notNull().isString().notEmpty()
+      @urlBuilder = new UrlBuilder(@root)
     key: (key) ->
-      @urlBuilder = new UrlBuilder(@root + '/' + @entityName + '(' + key + ')')
+      @urlBuilder = new UrlBuilder(@root + '(' + key + ')')
       @
     select: (properties...) ->
       @urlBuilder.path properties.join(',')

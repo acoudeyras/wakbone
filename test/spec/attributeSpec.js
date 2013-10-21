@@ -8,7 +8,7 @@
     });
     return describe('Attribute', function() {
       before(function() {
-        this.empClass = this.catalog.employee.def;
+        this.empClass = this.catalog.employee;
         return this.firstNameAttr = this.empClass.attr('firstName');
       });
       it('should have a name', function() {

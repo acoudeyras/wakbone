@@ -59,15 +59,14 @@
     })();
     _computedKeywords = ['$all', 'count', 'average', 'min', 'max', 'sum'];
     return RestQuery = (function() {
-      function RestQuery(root, entityName) {
+      function RestQuery(root) {
         this.root = root;
-        this.entityName = entityName;
-        check(this.root, this.entityName).notNull().isString().notEmpty();
-        this.urlBuilder = new UrlBuilder(this.root + '/' + this.entityName);
+        check(this.root).notNull().isString().notEmpty();
+        this.urlBuilder = new UrlBuilder(this.root);
       }
 
       RestQuery.prototype.key = function(key) {
-        this.urlBuilder = new UrlBuilder(this.root + '/' + this.entityName + '(' + key + ')');
+        this.urlBuilder = new UrlBuilder(this.root + '(' + key + ')');
         return this;
       };
 

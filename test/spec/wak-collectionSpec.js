@@ -44,7 +44,7 @@
       return describe('limit', function() {
         return it('should add a $limit parameter in url if setted', function(done) {
           var _this = this;
-          this.employees.$state.limit(10);
+          this.employees.query.limit(10);
           return this.employees.fetch({
             reset: true
           }).done(function() {

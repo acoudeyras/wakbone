@@ -1,21 +1,30 @@
 'use strict'
-define ['backbone'], ->
+define ['./rest-query', 'backbone'], (RestQuery)->
 
   class QueryState
-    constructor:(@col)->
+    constructor:(@collection, state)->
+      @state = _.extend QueryState.default, state
     filter:(fieldName, val, op) ->
     orderBy: () ->
-    top: (top) ->
-      @_top = top
+    skip: (skip) ->
+      @state.skip = skip
       @
     limit: (limit) ->
-      @_limit = limit
+      @state.limit = limit
       @
     expand: (expand) ->
+    url: -> 
+      query = new RestQuery @collection.url
+      query.skip @state.top
+      query.url
+
+    @default:
+      skip: 0
+      limit: 100
 
   _createDef = (dataClass, model, catalog) ->
     constructor: ->
-      @$state = new QueryState @
+      @query = new QueryState @
       Backbone.Collection::constructor.apply @, arguments
     url: dataClass.dataURI
     className: dataClass.className
@@ -25,6 +34,10 @@ define ['backbone'], ->
     parse: (response) ->
       @$total = response.__COUNT
       response.__ENTITIES
+    fetch: ->
+      url = @query.url()
+      console.log url
+      Backbone.Collection::fetch.apply @, arguments
 
   createRelated: (Collection, url) ->
     Collection.extend

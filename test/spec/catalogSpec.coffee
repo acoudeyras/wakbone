@@ -41,7 +41,7 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers)->
 
     it 'should contains the dataClass itself', ->
       for className in @catalog.$classNames
-        def = @catalog[className].def
+        def = @catalog[className]
         expect(def).to.exist
 
     describe 'Collection', ->
@@ -62,7 +62,7 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers)->
   describe 'DataClass', ->
 
     before ->
-      @empClass = @catalog.employee.def
+      @empClass = @catalog.employee
 
     it 'should have a className', ->
       expect(@empClass.className).to.equal 'Employee'

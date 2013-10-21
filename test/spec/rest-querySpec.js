@@ -7,7 +7,7 @@
     expect = _arg.expect;
     rootUrl = 'http://localhost:8080';
     newQuery = function() {
-      return new RestQuery(rootUrl, 'Person');
+      return new RestQuery(rootUrl + '/Person');
     };
     return describe('RestQuery', function() {
       describe('url', function() {

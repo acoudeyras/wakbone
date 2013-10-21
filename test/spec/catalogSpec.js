@@ -72,7 +72,7 @@
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           className = _ref[_i];
-          def = this.catalog[className].def;
+          def = this.catalog[className];
           _results.push(expect(def).to.exist);
         }
         return _results;
@@ -107,7 +107,7 @@
     });
     return describe('DataClass', function() {
       before(function() {
-        return this.empClass = this.catalog.employee.def;
+        return this.empClass = this.catalog.employee;
       });
       it('should have a className', function() {
         return expect(this.empClass.className).to.equal('Employee');

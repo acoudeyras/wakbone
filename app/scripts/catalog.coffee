@@ -5,6 +5,8 @@ define ['./wak-model', './wak-collection', './attribute', './helpers', './check'
     constructor: ({@className, @collectionName, @dataURI, attributes}, @catalog) ->
       @_attributes = attributes.map (attr) => new Attribute(attr, @)
       @_attributesByName = _.indexBy @_attributes, 'name'
+    finalize: (@Collection, @Model) ->
+      @entities = new @Collection()
     attr: (name) ->
       return @_attributes if not name?
       @_attributesByName[name]
@@ -24,14 +26,11 @@ define ['./wak-model', './wak-collection', './attribute', './helpers', './check'
       entryName = @_colsByEntryName[collectionName]
       @[entryName]
     _addEntry: (entryName, rawDataClass) ->
-      def = new DataClass(rawDataClass, @)
-      Model = wakModelFactory.create def, @
-      Collection = wakCollectionFactory.create def, Model, @
-      @[entryName] =
-        def: def
-        Model: Model
-        Collection: Collection
-        entities: new Collection()
+      dataClass = new DataClass(rawDataClass, @)
+      Model = wakModelFactory.create dataClass, @
+      Collection = wakCollectionFactory.create dataClass, Model, @
+      dataClass.finalize Collection, Model
+      @[entryName] = dataClass
     @classNameInCatalog: (className) -> _.lowerCamelize className
     @load: (success) ->
       $.ajax('/rest/$catalog/$all')

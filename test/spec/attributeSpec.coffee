@@ -6,7 +6,7 @@ define ['chai', 'test-helpers'], ({expect}, helpers)->
   describe 'Attribute', ->
 
     before ->
-      @empClass = @catalog.employee.def
+      @empClass = @catalog.employee
       @firstNameAttr = @empClass.attr('firstName')
 
     it 'should have a name', ->
