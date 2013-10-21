@@ -24,14 +24,35 @@ module.exports = function (grunt) {
         },
         karma: {
             unit: {
-                configFile: 'karma.conf.js'
+                configFile: 'karma.conf.js',
+                background: true
+            },
+            continuous: {
+                configFile: 'karma.conf.js',
+                singleRun: true
             }
         },
         coffee: {
             compile: {
-                files: {
-                    'app/scripts/*.js': 'app/scripts/*.coffee'
-                }
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        cwd: './',
+                        src: ['app/scripts/*.coffee'],
+                        dest: 'app/scripts/',
+                        ext: '.js'
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        cwd: './',
+                        src: ['test/spec/*.coffee'],
+                        dest: 'test/spec/',
+                        ext: '.js'                        
+                    }
+                ]
+
             }
         },
         coffeelint: {
@@ -60,7 +81,21 @@ module.exports = function (grunt) {
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
-            }
+            },
+            coffee: {
+                files: [
+                    'app/scripts/*.coffee',
+                    'test/spec/*.coffee',
+                ],
+                tasks: ['coffee']
+            },
+            karma: {
+                files: [
+                    'app/scripts/*.js',
+                    'test/spec/*.js',
+                ],                
+                tasks: ['karma:unit:run']
+            }            
         },
         connect: {
             options: {
@@ -309,10 +344,8 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
-            'coffeelint',
             'clean:server',
             'concurrent:server',
-            'coffee',
             'autoprefixer',
             'connect:livereload',
             'watch'
@@ -320,17 +353,14 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('test', [
-        'coffeelint',
         'clean:server',
         'concurrent:test',
-        'coffee',
         'autoprefixer',
         'connect:test',
-        'karma'
+        'karma:continuous'
     ]);
 
     grunt.registerTask('build', [
-        'coffeelint',
         'clean:dist',
         'useminPrepare',
         'concurrent:dist',
@@ -346,7 +376,9 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('default', [
-        'jshint',
+        'coffeelint',
+        'coffee',
+        //'jshint',
         'test',
         'build'
     ]);

@@ -71,9 +71,9 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
           .done =>
             expect(@emp.get 'gender').to.equal invertedGender
             done()
-          .fail ->
-            expect(true).to.be.false #TODO ?
-            done()
+        .fail ->
+          expect(true).to.be.false #TODO ?
+          done()
 
       it 'should be able to update an employee for a type that need conversion (date)', (done) ->
         date = @emp.get 'birthDate'
@@ -87,9 +87,9 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
             expectedDate = @emp.get 'birthDate'
             expect(expectedDate.month()).to.equal newDate.month()
             done()
-          .fail ->
-            expect(true).to.be.false #TODO ?
-            done()
+        .fail ->
+          expect(true).to.be.false #TODO ?
+          done()
 
       describe 'handling errors', ->
 
@@ -104,9 +104,9 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
             .done =>
               expect(true).to.be.false #TODO ?
               done()
-            .fail (errors)=>
-              _isErrorInAge errors
-              done()
+          .fail (errors)=>
+            _isErrorInAge errors
+            done()
 
         it 'should trigger the model error event', (done) ->
           @emp.set 'age', 'roberto'

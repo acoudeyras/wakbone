@@ -22,18 +22,19 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      {pattern: 'app/scripts/*.coffee', included: false},
+      {pattern: 'app/scripts/*.js', included: false},
       {pattern: 'app/bower_components/**/*.js', included: false},
-      {pattern:'test/spec/**/*.coffee', included: false},
-      {pattern:'test/spec/*helpers.coffee', included:false},
+      {pattern:'test/spec/**/*.js', included: false},
+      {pattern:'test/spec/*helpers.js', included:false},
       'test/mock/**/*.js',
       'test/test-main.js'
     ],
 
-    reporters: ['progress', 'coverage', 'osx'],
+    //reporters: ['progress', 'coverage', 'osx'],
+    reporters: ['progress', 'coverage'],
 
     preprocessors: {
-      '**/*.coffee': ['coffee'],
+      //'**/*.coffee': ['coffee'],
       'app/scripts/*.js': ['coverage']
     },
 
@@ -75,6 +76,6 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: true
+    singleRun: false
   });
 };

@@ -1,6 +1,6 @@
 'use strict'
 define ['helpers', 'backbone'], (helpers)->
-
+  
   _deleteProperties = (data) ->
     for key, val of data
       if typeof val is 'object'
@@ -54,15 +54,15 @@ define ['helpers', 'backbone'], (helpers)->
 
       def = $.Deferred()
       _send(model, data, _send.PUT, options)
-        .done (data, status, xhr) =>
+        .done (data) ->
           options.success?(data, true)
           def.resolve()
-        .fail (response) ->
-          data = response.responseJSON
-          errors = data?.__ERROR
-          options.error?(data, errors)
-          model.set '$errors', errors
-          def.reject errors
+      .fail (response) ->
+        data = response.responseJSON
+        errors = data?.__ERROR
+        options.error?(data, errors)
+        model.set '$errors', errors
+        def.reject errors
       def
 
   create: (dataClass, catalog) ->
