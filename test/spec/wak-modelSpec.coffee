@@ -15,6 +15,17 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
 
   #Shared behavior for 'loaded from collection' and 'loaded by itself'
   shouldBeAValidModel = ->
+
+    expectedEmployee =
+      birthDateYear: 1965
+      firstName: 'VIRGINIA'
+      companyName: 'Brendan Core Senior'
+
+    expectedEmployee =
+      birthDateYear: 1967
+      firstName: 'MARIO'
+      companyName: 'Pico Myaki Badge'
+
     it 'should have an id', ->
       expect(@emp.id).to.exist
 
@@ -22,7 +33,7 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
       expect(@emp.url()).to.equal '/rest/Employee(' + @emp.id + ')'
 
     it 'should have loaded it\'s properties', ->
-      expect(@emp.get 'firstName').to.equal 'VIRGINIA'
+      expect(@emp.get 'firstName').to.equal expectedEmployee.firstName
 
     it 'should have a $stamp property', ->
       expect(@emp.get '$stamp').to.exist
@@ -33,7 +44,7 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
 
     it 'should have casted dates properties', ->
       date = @emp.get 'birthDate'
-      expect(date.year()).to.equal 1965
+      expect(date.year()).to.equal expectedEmployee.birthDateYear
 
     describe 'relatedEntity', ->
 
@@ -44,7 +55,7 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
       it 'should be able to fetch that model', (done)->
         company = @emp.get 'company'
         company.fetch().done ->
-          expect(company.get 'name').to.equal 'Brendan Core Senior'
+          expect(company.get 'name').to.equal expectedEmployee.companyName
           done()
 
     describe 'relatedEntities', ->
@@ -58,7 +69,7 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
         managedCompanies.fetch().done ->
           expect(managedCompanies).to.have.length 1
           managedCompany = managedCompanies.at 0
-          expect(managedCompany.get 'name').to.equal 'Brendan Core Senior'
+          expect(managedCompany.get 'name').to.equal expectedEmployee.companyName
           done()
 
     describe 'save', ->

@@ -8,7 +8,7 @@
     });
     describe('class', function() {
       it('should have an url', function() {
-        return expect(this.catalog.employee.entities.url).to.equal('/rest/Employee');
+        return expect(this.catalog.employee.entities.url()).to.equal('/rest/Employee');
       });
       it('should have a className', function() {
         return expect(this.catalog.employee.entities.className).to.equal('Employee');
@@ -40,15 +40,66 @@
         return expect(emp).to.exist;
       });
     });
-    return describe('$state', function() {
-      return describe('limit', function() {
-        return it('should add a $limit parameter in url if setted', function(done) {
+    return describe('query', function() {
+      after(function() {
+        return this.employees.query.clear();
+      });
+      describe('limit', function() {
+        return it('should restrict the number of entities returned', function(done) {
           var _this = this;
-          this.employees.query.limit(10);
+          this.employees.query.limit(5);
           return this.employees.fetch({
             reset: true
           }).done(function() {
-            expect(_this.employees).to.have.length(100);
+            expect(_this.employees).to.have.length(5);
+            return done();
+          });
+        });
+      });
+      describe('skip', function() {
+        return it('should skip a number of entitites', function(done) {
+          var _this = this;
+          this.employees.query.limit(5);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var expectedFirstName;
+            expectedFirstName = _this.employees.at(2).get('firstName');
+            _this.employees.query.clear();
+            _this.employees.query.skip(2);
+            _this.employees.query.limit(5);
+            return _this.employees.fetch({
+              reset: true
+            }).done(function() {
+              expect(_this.employees).to.have.length(5);
+              expect(_this.employees.at(0).get('firstName')).to.equal(expectedFirstName);
+              return done();
+            });
+          });
+        });
+      });
+      return describe('orderby', function() {
+        it('should accept a string with one orderby', function(done) {
+          var _this = this;
+          this.employees.query.orderBy('firstName').limit(5);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var found;
+            found = _this.employees.at(0).get('firstName');
+            expect(found).to.be["null"];
+            return done();
+          });
+        });
+        return it('should accept a string with multiple orderbys', function(done) {
+          var _this = this;
+          this.employees.query.orderBy('gender DESC, firstName DESC').limit(5);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var found;
+            found = _this.employees.at(0).get('firstName');
+            expect(found).to.equal('ZACKARY');
             return done();
           });
         });

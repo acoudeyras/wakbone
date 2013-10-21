@@ -25,13 +25,13 @@ define ['rest-query', 'chai'], (RestQuery, {expect}) ->
 
       it 'should add $orderby query parameter in url', ->
         url = newQuery()
-          .orderBy('age' : 1)
+          .orderBy('age' : 'ASC')
           .url
         expect(url).to.equal 'http://localhost:8080/Person?$orderby=age ASC'
 
       it 'should work with multiple orderby', ->
         url = newQuery()
-          .orderBy('age' : 1, 'salary' : 0)
+          .orderBy('age' : 'ASC', 'salary' : 'DESC')
           .url
         expect(url).to.equal 'http://localhost:8080/Person?$orderby=age ASC,salary DESC'
 

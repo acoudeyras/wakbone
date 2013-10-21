@@ -25,10 +25,12 @@ module.exports = function (grunt) {
         karma: {
             unit: {
                 configFile: 'karma.conf.js',
-                background: true
+                background: true,
+                reporters: ['progress', 'osx'],
             },
             continuous: {
                 configFile: 'karma.conf.js',
+                reporters: ['progress', 'coverage', 'osx'],
                 singleRun: true
             }
         },

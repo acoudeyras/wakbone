@@ -118,11 +118,6 @@
         return this;
       };
 
-      RestQuery.prototype._buildOrderBy = function(property, direction) {
-        direction = direction ? 'ASC' : 'DESC';
-        return property + ' ' + direction;
-      };
-
       RestQuery.prototype.orderBy = function(clause) {
         var direction, field, orderBys;
         orderBys = (function() {
@@ -130,10 +125,10 @@
           _results = [];
           for (field in clause) {
             direction = clause[field];
-            _results.push(this._buildOrderBy(field, direction));
+            _results.push(field + ' ' + direction);
           }
           return _results;
-        }).call(this);
+        })();
         this.urlBuilder.query('$orderby', orderBys.join(','));
         return this;
       };
@@ -159,8 +154,6 @@
       RestQuery.getter('url', function() {
         return this.urlBuilder.build();
       });
-
-      RestQuery.prototype.fetch = function() {};
 
       return RestQuery;
 

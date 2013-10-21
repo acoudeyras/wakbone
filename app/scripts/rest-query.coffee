@@ -25,7 +25,6 @@ define ['./helpers', './check'], (helpers, check)->
     build: ->
       @root + @buildPathParams() + @buildQueryParams()
 
-
   _computedKeywords = ['$all', 'count', 'average', 'min', 'max', 'sum']
   class RestQuery
     constructor: (@root) ->
@@ -57,11 +56,8 @@ define ['./helpers', './check'], (helpers, check)->
     where: (clause) ->
       @urlBuilder.query '$filter', _protect clause
       @
-    _buildOrderBy: (property, direction) ->
-      direction = if direction then 'ASC' else 'DESC'
-      property + ' ' + direction
     orderBy: (clause) ->
-      orderBys = (@_buildOrderBy field, direction for field, direction of clause)
+      orderBys = (field + ' ' + direction for field, direction of clause)
       @urlBuilder.query '$orderby', orderBys.join(',')
       @
     distinct: (property)->
@@ -76,4 +72,3 @@ define ['./helpers', './check'], (helpers, check)->
       @urlBuilder.query '$compute', keyword
       @
     @getter 'url', -> @urlBuilder.build()
-    fetch: ->

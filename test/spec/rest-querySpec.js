@@ -28,15 +28,15 @@
         it('should add $orderby query parameter in url', function() {
           var url;
           url = newQuery().orderBy({
-            'age': 1
+            'age': 'ASC'
           }).url;
           return expect(url).to.equal('http://localhost:8080/Person?$orderby=age ASC');
         });
         return it('should work with multiple orderby', function() {
           var url;
           url = newQuery().orderBy({
-            'age': 1,
-            'salary': 0
+            'age': 'ASC',
+            'salary': 'DESC'
           }).url;
           return expect(url).to.equal('http://localhost:8080/Person?$orderby=age ASC,salary DESC');
         });

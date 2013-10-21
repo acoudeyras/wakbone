@@ -6,7 +6,7 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
   describe 'class', ->
 
     it 'should have an url', ->
-      expect(@catalog.employee.entities.url).to.equal '/rest/Employee'
+      expect(@catalog.employee.entities.url()).to.equal '/rest/Employee'
 
     it 'should have a className', ->
       expect(@catalog.employee.entities.className).to.equal 'Employee'
@@ -32,12 +32,53 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
       emp = @employees.get 3
       expect(emp).to.exist
 
-  describe '$state', ->
+  describe 'query', ->
+
+    after -> @employees.query.clear()
 
     describe 'limit', ->
 
-      it 'should add a $limit parameter in url if setted', (done)->
-        @employees.query.limit(10)
+      it 'should restrict the number of entities returned', (done)->
+        @employees.query.limit 5
         @employees.fetch(reset:true).done =>
-          expect(@employees).to.have.length 100
+          expect(@employees).to.have.length 5
           done()
+
+    describe 'skip', ->
+
+      it 'should skip a number of entitites', (done)->
+        @employees.query.limit 5
+        @employees.fetch(reset:true).done =>
+          expectedFirstName = @employees.at(2).get('firstName')
+
+          @employees.query.clear()
+          @employees.query.skip 2
+          @employees.query.limit 5
+
+          @employees.fetch(reset:true).done =>
+            expect(@employees).to.have.length 5
+            expect(@employees.at(0).get('firstName')).to.equal expectedFirstName
+            done()
+
+    describe 'orderby', ->
+
+      it 'should accept a string with one orderby', (done) ->
+        @employees.query
+          .orderBy('firstName')
+          .limit(5)
+        @employees.fetch(reset:true).done =>
+          found = @employees.at(0).get('firstName')
+          expect(found).to.be.null
+          done()
+
+      it 'should accept a string with multiple orderbys', (done) ->
+          @employees.query
+            .orderBy('gender DESC, firstName DESC')
+            .limit(5)
+          @employees.fetch(reset:true).done =>
+            found = @employees.at(0).get('firstName')
+            expect(found).to.equal 'ZACKARY'
+            done()
+
+
+

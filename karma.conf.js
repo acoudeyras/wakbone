@@ -30,8 +30,8 @@ module.exports = function(config) {
       'test/test-main.js'
     ],
 
-    //reporters: ['progress', 'coverage', 'osx'],
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress', 'coverage', 'osx'],
+    //reporters: ['progress', 'coverage'],
 
     preprocessors: {
       //'**/*.coffee': ['coffee'],
