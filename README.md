@@ -4,10 +4,10 @@ See Trello board https://trello.com/b/UUdUdR6F/wakbone for issues and progress
 
 Prerequisite
 =========
-npm
-proxy configured for npm -> npm config set proxy http://{proxyserver}:{port}
-Yeoman (bower and grunt) -> npm install -g yo
-wakanda 6
+* npm
+* proxy configured for npm -> npm config set proxy http://{proxyserver}:{port}
+* Yeoman (bower and grunt) -> npm install -g yo
+* Wakanda 6
 
 Getting started (Dev)
 =========
