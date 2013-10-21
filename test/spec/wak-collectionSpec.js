@@ -43,11 +43,12 @@
     return describe('$state', function() {
       return describe('limit', function() {
         return it('should add a $limit parameter in url if setted', function(done) {
+          var _this = this;
           this.employees.$state.limit(10);
           return this.employees.fetch({
             reset: true
           }).done(function() {
-            expect(col.length).to.have.length(10);
+            expect(_this.employees).to.have.length(100);
             return done();
           });
         });

@@ -24,7 +24,7 @@
         return expect(this.emp.url()).to.equal('/rest/Employee(' + this.emp.id + ')');
       });
       it('should have loaded it\'s properties', function() {
-        return expect(this.emp.get('firstName')).to.equal('MARIO');
+        return expect(this.emp.get('firstName')).to.equal('VIRGINIA');
       });
       it('should have a $stamp property', function() {
         return expect(this.emp.get('$stamp')).to.exist;
@@ -37,7 +37,7 @@
       it('should have casted dates properties', function() {
         var date;
         date = this.emp.get('birthDate');
-        return expect(date.year()).to.equal(1967);
+        return expect(date.year()).to.equal(1965);
       });
       describe('relatedEntity', function() {
         it('should return related entity property as a Model', function() {
@@ -49,7 +49,7 @@
           var company;
           company = this.emp.get('company');
           return company.fetch().done(function() {
-            expect(company.get('name')).to.equal('Pico Myaki Badge');
+            expect(company.get('name')).to.equal('Brendan Core Senior');
             return done();
           });
         });
@@ -67,7 +67,7 @@
             var managedCompany;
             expect(managedCompanies).to.have.length(1);
             managedCompany = managedCompanies.at(0);
-            expect(managedCompany.get('name')).to.equal('Pico Myaki Badge');
+            expect(managedCompany.get('name')).to.equal('Brendan Core Senior');
             return done();
           });
         });
