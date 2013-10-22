@@ -7,7 +7,6 @@
   "keywords" : [
     "backbone",
     "framework",
-    "client",
     "wakanda"
   ],  
   "ignore": [
@@ -18,7 +17,10 @@
     "node_modules",
     "package.json",
     "test",
-    ".gitignore"
+    ".gitignore",
+    "app/404.html",
+    "app/favicon.ico",
+    "app/robot.txt",
   ],
   "dependencies": {
     "requirejs": "~2.1.8",
