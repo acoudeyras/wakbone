@@ -35,7 +35,7 @@ module.exports = function(config) {
 
     preprocessors: {
       //'**/*.coffee': ['coffee'],
-      'app/scripts/*.js': ['coverage']
+      'app/scripts/**/*.js': ['coverage']
     },
 
     coverageReporter: {
