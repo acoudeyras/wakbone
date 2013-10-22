@@ -8,8 +8,7 @@
           this.query = new QueryState(this, dataClass.dataURI);
           return Backbone.Collection.prototype.constructor.apply(this, arguments);
         },
-        className: dataClass.className,
-        collectionName: dataClass.collectionName,
+        dataClass: dataClass,
         catalog: catalog,
         model: model,
         parse: function(response) {
@@ -31,6 +30,8 @@
         var Collection, definition;
         definition = _createDef(dataClass, model, catalog);
         Collection = Backbone.Collection.extend(definition);
+        Collection.dataClass = dataClass;
+        Collection.catalog = catalog;
         return Collection;
       }
     };

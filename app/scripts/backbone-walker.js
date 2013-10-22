@@ -80,7 +80,7 @@
           found = _walkToBracket(this.model, expression);
         }
         found.val = function() {
-          return Backbone.Model.prototype.get.call(model, this.property);
+          return Backbone.Model.prototype.get.call(found.model, found.property);
         };
         return found;
       };

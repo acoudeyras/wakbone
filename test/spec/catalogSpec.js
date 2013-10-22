@@ -19,7 +19,7 @@
         return expect(this.catalog.$classNames).to.have.length(4);
       });
     });
-    describe('dataClasses (stored as properties', function() {
+    describe('dataClasses (stored as properties)', function() {
       return it('should contains all dataclasses', function() {
         var className, _i, _len, _ref, _results;
         _ref = this.catalog.$classNames;
@@ -78,7 +78,7 @@
         return _results;
       });
       describe('Collection', function() {
-        return it('should be a class', function() {
+        return it('should be a function (constructor)', function() {
           var Collection, className, _i, _len, _ref, _results;
           _ref = this.catalog.$classNames;
           _results = [];

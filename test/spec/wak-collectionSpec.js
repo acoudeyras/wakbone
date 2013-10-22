@@ -11,10 +11,10 @@
         return expect(this.catalog.employee.entities.url()).to.equal('/rest/Employee');
       });
       it('should have a className', function() {
-        return expect(this.catalog.employee.entities.className).to.equal('Employee');
+        return expect(this.catalog.employee.entities.dataClass.className).to.equal('Employee');
       });
       return it('should have a collectionName', function() {
-        return expect(this.catalog.employee.entities.collectionName).to.equal('Employees');
+        return expect(this.catalog.employee.entities.dataClass.collectionName).to.equal('Employees');
       });
     });
     describe('fetch', function() {

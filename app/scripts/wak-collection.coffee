@@ -5,8 +5,7 @@ define ['query-state', 'backbone'], (QueryState)->
     constructor: ->
       @query = new QueryState @, dataClass.dataURI
       Backbone.Collection::constructor.apply @, arguments
-    className: dataClass.className
-    collectionName: dataClass.collectionName
+    dataClass: dataClass
     catalog: catalog
     model: model
     parse: (response) ->
@@ -21,4 +20,6 @@ define ['query-state', 'backbone'], (QueryState)->
   create: (dataClass, model, catalog) ->
     definition = _createDef dataClass, model, catalog
     Collection = Backbone.Collection.extend(definition)
+    Collection.dataClass = dataClass
+    Collection.catalog = catalog
     Collection

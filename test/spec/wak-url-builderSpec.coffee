@@ -1,22 +1,22 @@
 'use strict'
-define ['rest-query', 'chai'], (RestQuery, {expect}) ->
+define ['wak-url-builder', 'chai'], (UrlBuilder, {expect}) ->
 
   rootUrl = 'http://localhost:8080'
 
-  newQuery = -> new RestQuery(rootUrl + '/Person')
+  urlBuilder = -> new UrlBuilder(rootUrl + '/Person')
 
-  describe 'RestQuery', ->
+  describe 'UrlBuilder', ->
 
     describe 'url', ->
 
       it 'without other parameters should concatenate root and entityName', ->
-        url = newQuery().url
+        url = urlBuilder().url
         expect(url).to.equal 'http://localhost:8080/Person'
 
     describe 'where', ->
 
       it 'should add $filter query parameter in url', ->
-        url = newQuery()
+        url = urlBuilder()
           .where('age<10')
           .url
         expect(url).to.equal 'http://localhost:8080/Person?$filter="age<10"'
@@ -24,13 +24,13 @@ define ['rest-query', 'chai'], (RestQuery, {expect}) ->
     describe 'orderBy', ->
 
       it 'should add $orderby query parameter in url', ->
-        url = newQuery()
+        url = urlBuilder()
           .orderBy('age' : 'ASC')
           .url
         expect(url).to.equal 'http://localhost:8080/Person?$orderby=age ASC'
 
       it 'should work with multiple orderby', ->
-        url = newQuery()
+        url = urlBuilder()
           .orderBy('age' : 'ASC', 'salary' : 'DESC')
           .url
         expect(url).to.equal 'http://localhost:8080/Person?$orderby=age ASC,salary DESC'
@@ -39,13 +39,13 @@ define ['rest-query', 'chai'], (RestQuery, {expect}) ->
     describe 'expand', ->
 
       it 'should add $expand query parameter in url', ->
-        url = newQuery()
+        url = urlBuilder()
           .expand('company')
           .url
         expect(url).to.equal 'http://localhost:8080/Person?$expand=company'
 
       it 'should work with multiple expand', ->
-        url = newQuery()
+        url = urlBuilder()
           .expand('company', 'manager')
           .url
         expect(url).to.equal 'http://localhost:8080/Person?$expand=company,manager'
@@ -56,7 +56,7 @@ define ['rest-query', 'chai'], (RestQuery, {expect}) ->
         methods = ['limit', 'skip', 'timeout']
         result = {}
         for method in methods
-          result[method] = newQuery()[method](value).url
+          result[method] = urlBuilder()[method](value).url
         result.allEquals = (expectedUrl) ->
           expect(url).to.equal expectedUrl for method, url of @ when method in methods
         result
@@ -84,58 +84,58 @@ define ['rest-query', 'chai'], (RestQuery, {expect}) ->
     describe 'select', ->
 
       it 'should add selected property in url path', ->
-        url = newQuery().select('name').url
+        url = urlBuilder().select('name').url
         expect(url).to.equal 'http://localhost:8080/Person/name'
 
       it 'should separate multiple selected properties by , in url path', ->
-        url = newQuery().select('name', 'salary', 'age').url
+        url = urlBuilder().select('name', 'salary', 'age').url
         expect(url).to.equal 'http://localhost:8080/Person/name,salary,age'
 
       xit 'could be call multiple times', -> #TODO
-        url = newQuery().select('name').select('salary').select('age').url
+        url = urlBuilder().select('name').select('salary').select('age').url
         expect(url).to.equal 'http://localhost:8080/Person/name,salary,age'
 
     describe 'clearSelect', ->
 
       it 'should remove selected properties', ->
-        url = newQuery().select('name').clearSelect().url
+        url = urlBuilder().select('name').clearSelect().url
         expect(url).to.equal 'http://localhost:8080/Person'
-        url = newQuery().select('name', 'age').clearSelect().url
+        url = urlBuilder().select('name', 'age').clearSelect().url
         expect(url).to.equal 'http://localhost:8080/Person'
 
 
     describe 'distinct', ->
 
       it 'should add $distinct query parameter in url', ->
-        url = newQuery().distinct('name').url
+        url = urlBuilder().distinct('name').url
         expect(url).to.equal 'http://localhost:8080/Person/name?$distinct=true'
 
       it 'should remove previously added select', ->
-        url = newQuery().select('age').distinct('name').url
+        url = urlBuilder().select('age').distinct('name').url
         expect(url).to.equal 'http://localhost:8080/Person/name?$distinct=true'
 
     describe 'compute', ->
 
       it 'when just the property name is specified, should add $compute query parameter in url with $all keyword', ->
-        url = newQuery().compute('name').url
+        url = urlBuilder().compute('name').url
         expect(url).to.equal 'http://localhost:8080/Person/name?$compute=$all'
 
       it 'when the keyword is specified, should use it', ->
-        url = newQuery().compute('name', 'count').url
+        url = urlBuilder().compute('name', 'count').url
         expect(url).to.equal 'http://localhost:8080/Person/name?$compute=count'
     
       it 'when and invalid keyword is specified, should throw an exception', ->
-        expect( -> newQuery().compute('name', 'diff')).to.throw Error
+        expect( -> urlBuilder().compute('name', 'diff')).to.throw Error
 
     describe 'key', ->
 
       it 'should add the entity key in url', ->
-        url = newQuery().key('123').url
+        url = urlBuilder().key('123').url
         expect(url).to.equal 'http://localhost:8080/Person(123)'
 
     describe 'everything combined', ->
 
       it 'should work', -> #TODO
 
-        newQuery()
+        urlBuilder()
           

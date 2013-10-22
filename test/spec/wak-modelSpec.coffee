@@ -6,8 +6,8 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
   describe 'static properties', ->
 
     it 'should have a valid className', ->
-      expect(@catalog.employee.Model.className).to.equal 'Employee'
-      expect(@catalog.company.Model.className).to.equal 'Company'
+      expect(@catalog.employee.Model.dataClass.className).to.equal 'Employee'
+      expect(@catalog.company.Model.dataClass.className).to.equal 'Company'
 
     it 'should have a reference to the catalog', ->
       expect(@catalog.employee.Model.catalog).to.equal @catalog

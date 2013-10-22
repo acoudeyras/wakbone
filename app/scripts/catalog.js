@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  define(['./wak-model', './wak-collection', './attribute', './helpers', './check', 'backbone'], function(wakModelFactory, wakCollectionFactory, Attribute, helpers, check) {
+  define(['./wak-model', './wak-collection', './attribute', './http-requester', './helpers', './check', 'backbone'], function(wakModelFactory, wakCollectionFactory, Attribute, HttpRequester, helpers, check) {
     var Catalog, DataClass;
     DataClass = (function() {
       function DataClass(_arg, catalog) {
@@ -34,6 +34,7 @@
       function Catalog(data) {
         var entryName, rawDataClass, _i, _len, _ref;
         this.$classNames = [];
+        this.$dataLoader = new HttpRequester();
         this._colsByEntryName = {};
         _ref = data.dataClasses;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -55,7 +56,7 @@
       Catalog.prototype._addEntry = function(entryName, rawDataClass) {
         var Collection, Model, dataClass;
         dataClass = new DataClass(rawDataClass, this);
-        Model = wakModelFactory.create(dataClass, this);
+        Model = wakModelFactory.create(dataClass, this, this.$dataLoader);
         Collection = wakCollectionFactory.create(dataClass, Model, this);
         dataClass.finalize(Collection, Model);
         return this[entryName] = dataClass;

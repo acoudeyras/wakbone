@@ -1,33 +1,33 @@
 'use strict'
-define ['./rest-query', './orderby-parser'], (RestQuery, _parseOrderBy) ->
+define ['./wak-url-builder', './orderby-parser'], (UrlBuilder, _parseOrderBy) ->
 
   class QueryState
     constructor:(@collection, @rootUrl, @originState)->
       @state = _.extend QueryState.default, originState
-      @_query = new RestQuery @rootUrl
+      @_urlBuilder = new UrlBuilder @rootUrl
     filter:(fieldName, val, op) ->
     orderBy: (orderBys...) ->
       parsedOrderBys = _parseOrderBy orderBys
-      @_query.orderBy parsedOrderBys
+      @_urlBuilder.orderBy parsedOrderBys
       @_orderBy = parsedOrderBys
       @
     select: () ->
     skip: (skip) ->
       @state.skip = skip
-      @_query.skip skip
+      @_urlBuilder.skip skip
       @
     limit: (limit) ->
       @state.limit = limit
-      @_query.limit limit
+      @_urlBuilder.limit limit
       @
     expand: (expands...) ->
       @state.expands = expands
-      @_query.expand expands
+      @_urlBuilder.expand expands
       @
     clear: ->
       @state = _.extend QueryState.default, @originState
-      @_query = new RestQuery @rootUrl
-    url: -> @_query.url
+      @_urlBuilder = new UrlBuilder @rootUrl
+    url: -> @_urlBuilder.url
     @default:
       skip: 0
       limit: 100

@@ -3,7 +3,7 @@
   var __slice = [].slice;
 
   define(['./helpers', './check'], function(helpers, check) {
-    var RestQuery, UrlBuilder, _computedKeywords, _protect;
+    var UrlBuilder, WakUrlBuilder, _computedKeywords, _protect;
     _protect = function(str) {
       return '"' + str + '"';
     };
@@ -58,26 +58,26 @@
 
     })();
     _computedKeywords = ['$all', 'count', 'average', 'min', 'max', 'sum'];
-    return RestQuery = (function() {
-      function RestQuery(root) {
+    return WakUrlBuilder = (function() {
+      function WakUrlBuilder(root) {
         this.root = root;
         check(this.root).notNull().isString().notEmpty();
         this.urlBuilder = new UrlBuilder(this.root);
       }
 
-      RestQuery.prototype.key = function(key) {
+      WakUrlBuilder.prototype.key = function(key) {
         this.urlBuilder = new UrlBuilder(this.root + '(' + key + ')');
         return this;
       };
 
-      RestQuery.prototype.select = function() {
+      WakUrlBuilder.prototype.select = function() {
         var properties;
         properties = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         this.urlBuilder.path(properties.join(','));
         return this;
       };
 
-      RestQuery.prototype._numParam = function(num, queryParamName) {
+      WakUrlBuilder.prototype._numParam = function(num, queryParamName) {
         var castedNum;
         castedNum = parseInt(num, 10);
         if (castedNum !== castedNum) {
@@ -88,24 +88,24 @@
         return this;
       };
 
-      RestQuery.prototype.clearSelect = function() {
+      WakUrlBuilder.prototype.clearSelect = function() {
         this.urlBuilder.clearPath();
         return this;
       };
 
-      RestQuery.prototype.limit = function(num) {
+      WakUrlBuilder.prototype.limit = function(num) {
         return this._numParam(num, 'limit');
       };
 
-      RestQuery.prototype.skip = function(num) {
+      WakUrlBuilder.prototype.skip = function(num) {
         return this._numParam(num, 'skip');
       };
 
-      RestQuery.prototype.timeout = function(num) {
+      WakUrlBuilder.prototype.timeout = function(num) {
         return this._numParam(num, 'timeout');
       };
 
-      RestQuery.prototype.expand = function() {
+      WakUrlBuilder.prototype.expand = function() {
         var expanded;
         expanded = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         expanded = expanded.join(',');
@@ -113,12 +113,12 @@
         return this;
       };
 
-      RestQuery.prototype.where = function(clause) {
+      WakUrlBuilder.prototype.where = function(clause) {
         this.urlBuilder.query('$filter', _protect(clause));
         return this;
       };
 
-      RestQuery.prototype.orderBy = function(clause) {
+      WakUrlBuilder.prototype.orderBy = function(clause) {
         var direction, field, orderBys;
         orderBys = (function() {
           var _results;
@@ -133,14 +133,14 @@
         return this;
       };
 
-      RestQuery.prototype.distinct = function(property) {
+      WakUrlBuilder.prototype.distinct = function(property) {
         this.urlBuilder.clearPath();
         this.select(property);
         this.urlBuilder.query('$distinct', 'true');
         return this;
       };
 
-      RestQuery.prototype.compute = function(property, keyword) {
+      WakUrlBuilder.prototype.compute = function(property, keyword) {
         if (keyword == null) {
           keyword = '$all';
         }
@@ -151,11 +151,11 @@
         return this;
       };
 
-      RestQuery.getter('url', function() {
+      WakUrlBuilder.getter('url', function() {
         return this.urlBuilder.build();
       });
 
-      return RestQuery;
+      return WakUrlBuilder;
 
     })();
   });

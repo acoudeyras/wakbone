@@ -26,7 +26,7 @@ define ['./helpers', './check'], (helpers, check)->
       @root + @buildPathParams() + @buildQueryParams()
 
   _computedKeywords = ['$all', 'count', 'average', 'min', 'max', 'sum']
-  class RestQuery
+  class WakUrlBuilder
     constructor: (@root) ->
       check(@root).notNull().isString().notEmpty()
       @urlBuilder = new UrlBuilder(@root)

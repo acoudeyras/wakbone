@@ -1,5 +1,5 @@
 'use strict'
-define ['./wak-model', './wak-collection', './attribute', './helpers', './check','backbone'], (wakModelFactory, wakCollectionFactory, Attribute, helpers, check) ->
+define ['./wak-model', './wak-collection', './attribute', './http-requester', './helpers', './check', 'backbone'], (wakModelFactory, wakCollectionFactory, Attribute, HttpRequester, helpers, check) ->
       
   class DataClass
     constructor: ({@className, @collectionName, @dataURI, attributes}, @catalog) ->
@@ -13,8 +13,8 @@ define ['./wak-model', './wak-collection', './attribute', './helpers', './check'
 
   class Catalog
     constructor: (data) ->
-      #dataClasses = data.dataClasses.map (dataClass) => new DataClass(dataClass, @)
       @$classNames = []
+      @$dataLoader = new HttpRequester()
       @_colsByEntryName = {}
       for rawDataClass in data.dataClasses
         entryName = Catalog.classNameInCatalog rawDataClass.className
@@ -26,8 +26,8 @@ define ['./wak-model', './wak-collection', './attribute', './helpers', './check'
       entryName = @_colsByEntryName[collectionName]
       @[entryName]
     _addEntry: (entryName, rawDataClass) ->
-      dataClass = new DataClass(rawDataClass, @)
-      Model = wakModelFactory.create dataClass, @
+      dataClass = new DataClass rawDataClass, @
+      Model = wakModelFactory.create dataClass, @, @$dataLoader
       Collection = wakCollectionFactory.create dataClass, Model, @
       dataClass.finalize Collection, Model
       @[entryName] = dataClass

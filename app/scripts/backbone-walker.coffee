@@ -60,6 +60,6 @@ define [], ->
       else
         found = _walkToBracket @model, expression
 
-      found.val = -> Backbone.Model::get.call model, @property
+      found.val = -> Backbone.Model::get.call found.model, found.property
       found
 

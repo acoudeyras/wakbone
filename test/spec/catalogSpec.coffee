@@ -15,7 +15,7 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers)->
     it 'should contains all dataclasses', ->
       expect(@catalog.$classNames).to.have.length 4
 
-  describe 'dataClasses (stored as properties', ->
+  describe 'dataClasses (stored as properties)', ->
 
     it 'should contains all dataclasses', ->
       for className in @catalog.$classNames
@@ -46,7 +46,7 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers)->
 
     describe 'Collection', ->
 
-      it 'should be a class', ->
+      it 'should be a function (constructor)', ->
         for className in @catalog.$classNames
           Collection = @catalog[className].Collection
           expect(Collection).to.be.a.function

@@ -1,74 +1,39 @@
 'use strict'
-define ['rest-query', 'backbone-walker', 'helpers', 'backbone'], (RestQuery, BackboneWalker, helpers)->
+define ['wak-url-builder', 'backbone-walker', 'helpers', 'model-serializer', 'backbone'], (UrlBuilder, BackboneWalker, helpers, ModelSerializer)->
   
-  _deleteProperties = (data) ->
-    for key, val of data
-      if typeof val is 'object'
-        _deleteProperties val
-      else if key in _send.propertiesToDelete
-        delete data[key]
-
-  _send = (model, data, action, options) ->
-    _deleteProperties data
-    data = JSON.stringify data
-    newOptions =
-      type: action.verb
-      url: model.urlRoot + '/?$method=' + action.wakMethod
-      data: data
-      dataType: 'json'
-      contentType: 'application/json'
-    $.ajax $.extend {}, options, newOptions
-  _send.PUT =
-    verb: 'POST'
-    wakMethod: 'update'
-  _send.propertiesToDelete = ['uri']
-
   _fieldsToRemove = ['__entityModel', '__KEY', '__STAMP', 'id', 'ID', 'uri']
 
-  _createDef = (dataClass, catalog) ->
+  _createDef = (dataClass, catalog, dataloader) ->
 
     constructor: (options, collection) ->
       options.id ?= options.ID
-      @_query = new RestQuery @urlRoot + '(' + options.id + ')'
+      @_urlBuilder = new UrlBuilder @urlRoot + '(' + options.id + ')'
       @walker = new BackboneWalker @
       Backbone.Model::constructor.apply @, arguments
+    dataClass: dataClass
+    dataloader: dataloader
+    catalog: catalog
     expand: (expanded...) ->
-      @_expanded = @_query.expand expanded
+      @_expanded = @_urlBuilder.expand expanded
       @
     walk: (expression) -> 
       @walker.walk expression
     get: (expression) ->
-      {model, property} = @walk expression
-      Backbone.Model::get.call model, property
+      @walk(expression).val()
     set: (expression, value) ->
       if typeof expression is 'object'
         return Backbone.Model::set.apply @, arguments
       {model, property} = @walk expression
       Backbone.Model::set.call model, property, value
     parse: (response) ->
-      data = {}
-      for key, value of response
-        continue if key in _fieldsToRemove
-        attr = dataClass.attr key
-        data[key] = attr.fromRaw value
-      
-      data.$stamp = response.__STAMP
-      data.id = response.ID
-      data
+      serializer = new ModelSerializer @
+      serializer.fromJSON response
 
     urlRoot: dataClass.dataURI
-    url: -> @_query.url
+    url: -> @_urlBuilder.url
     sync: (method, model, options) ->
-      return Backbone.Model::sync.apply @, arguments if method is 'read'
-      helpers.throwIf method isnt 'update', "method #{method} not supported yet"
-      #TODO delete
-      data = model.changedAttributes()
-      return helpers.resolvedPromise() if not data
-      data.__KEY = model.id
-      data.__STAMP = model.get '$stamp'
-
       def = $.Deferred()
-      _send(model, data, _send.PUT, options)
+      @dataloader[method](model, options)
         .done (data) ->
           options.success?(data, true)
           def.resolve()
@@ -78,11 +43,11 @@ define ['rest-query', 'backbone-walker', 'helpers', 'backbone'], (RestQuery, Bac
         options.error?(data, errors)
         model.set '$errors', errors
         def.reject errors
-      def
+      def.promise()
 
-  create: (dataClass, catalog) ->
-    definition = _createDef dataClass, catalog
+  create: (dataClass, catalog, dataloader) ->
+    definition = _createDef dataClass, catalog, dataloader
     Model = Backbone.Model.extend(definition)
-    Model.className = dataClass.className
     Model.catalog = catalog
+    Model.dataClass = dataClass
     Model

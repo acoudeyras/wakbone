@@ -2,7 +2,7 @@
   'use strict';
   var __slice = [].slice;
 
-  define(['./rest-query', './orderby-parser'], function(RestQuery, _parseOrderBy) {
+  define(['./wak-url-builder', './orderby-parser'], function(UrlBuilder, _parseOrderBy) {
     var QueryState;
     return QueryState = (function() {
       function QueryState(collection, rootUrl, originState) {
@@ -10,7 +10,7 @@
         this.rootUrl = rootUrl;
         this.originState = originState;
         this.state = _.extend(QueryState["default"], originState);
-        this._query = new RestQuery(this.rootUrl);
+        this._urlBuilder = new UrlBuilder(this.rootUrl);
       }
 
       QueryState.prototype.filter = function(fieldName, val, op) {};
@@ -19,7 +19,7 @@
         var orderBys, parsedOrderBys;
         orderBys = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         parsedOrderBys = _parseOrderBy(orderBys);
-        this._query.orderBy(parsedOrderBys);
+        this._urlBuilder.orderBy(parsedOrderBys);
         this._orderBy = parsedOrderBys;
         return this;
       };
@@ -28,13 +28,13 @@
 
       QueryState.prototype.skip = function(skip) {
         this.state.skip = skip;
-        this._query.skip(skip);
+        this._urlBuilder.skip(skip);
         return this;
       };
 
       QueryState.prototype.limit = function(limit) {
         this.state.limit = limit;
-        this._query.limit(limit);
+        this._urlBuilder.limit(limit);
         return this;
       };
 
@@ -42,17 +42,17 @@
         var expands;
         expands = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         this.state.expands = expands;
-        this._query.expand(expands);
+        this._urlBuilder.expand(expands);
         return this;
       };
 
       QueryState.prototype.clear = function() {
         this.state = _.extend(QueryState["default"], this.originState);
-        return this._query = new RestQuery(this.rootUrl);
+        return this._urlBuilder = new UrlBuilder(this.rootUrl);
       };
 
       QueryState.prototype.url = function() {
-        return this._query.url;
+        return this._urlBuilder.url;
       };
 
       QueryState["default"] = {

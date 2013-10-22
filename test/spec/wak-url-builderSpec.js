@@ -2,39 +2,39 @@
   'use strict';
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(['rest-query', 'chai'], function(RestQuery, _arg) {
-    var expect, newQuery, rootUrl;
+  define(['wak-url-builder', 'chai'], function(UrlBuilder, _arg) {
+    var expect, rootUrl, urlBuilder;
     expect = _arg.expect;
     rootUrl = 'http://localhost:8080';
-    newQuery = function() {
-      return new RestQuery(rootUrl + '/Person');
+    urlBuilder = function() {
+      return new UrlBuilder(rootUrl + '/Person');
     };
-    return describe('RestQuery', function() {
+    return describe('UrlBuilder', function() {
       describe('url', function() {
         return it('without other parameters should concatenate root and entityName', function() {
           var url;
-          url = newQuery().url;
+          url = urlBuilder().url;
           return expect(url).to.equal('http://localhost:8080/Person');
         });
       });
       describe('where', function() {
         return it('should add $filter query parameter in url', function() {
           var url;
-          url = newQuery().where('age<10').url;
+          url = urlBuilder().where('age<10').url;
           return expect(url).to.equal('http://localhost:8080/Person?$filter="age<10"');
         });
       });
       describe('orderBy', function() {
         it('should add $orderby query parameter in url', function() {
           var url;
-          url = newQuery().orderBy({
+          url = urlBuilder().orderBy({
             'age': 'ASC'
           }).url;
           return expect(url).to.equal('http://localhost:8080/Person?$orderby=age ASC');
         });
         return it('should work with multiple orderby', function() {
           var url;
-          url = newQuery().orderBy({
+          url = urlBuilder().orderBy({
             'age': 'ASC',
             'salary': 'DESC'
           }).url;
@@ -44,12 +44,12 @@
       describe('expand', function() {
         it('should add $expand query parameter in url', function() {
           var url;
-          url = newQuery().expand('company').url;
+          url = urlBuilder().expand('company').url;
           return expect(url).to.equal('http://localhost:8080/Person?$expand=company');
         });
         return it('should work with multiple expand', function() {
           var url;
-          url = newQuery().expand('company', 'manager').url;
+          url = urlBuilder().expand('company', 'manager').url;
           return expect(url).to.equal('http://localhost:8080/Person?$expand=company,manager');
         });
       });
@@ -61,7 +61,7 @@
           result = {};
           for (_i = 0, _len = methods.length; _i < _len; _i++) {
             method = methods[_i];
-            result[method] = newQuery()[method](value).url;
+            result[method] = urlBuilder()[method](value).url;
           }
           result.allEquals = function(expectedUrl) {
             var url, _results;
@@ -101,68 +101,68 @@
       describe('select', function() {
         it('should add selected property in url path', function() {
           var url;
-          url = newQuery().select('name').url;
+          url = urlBuilder().select('name').url;
           return expect(url).to.equal('http://localhost:8080/Person/name');
         });
         it('should separate multiple selected properties by , in url path', function() {
           var url;
-          url = newQuery().select('name', 'salary', 'age').url;
+          url = urlBuilder().select('name', 'salary', 'age').url;
           return expect(url).to.equal('http://localhost:8080/Person/name,salary,age');
         });
         return xit('could be call multiple times', function() {
           var url;
-          url = newQuery().select('name').select('salary').select('age').url;
+          url = urlBuilder().select('name').select('salary').select('age').url;
           return expect(url).to.equal('http://localhost:8080/Person/name,salary,age');
         });
       });
       describe('clearSelect', function() {
         return it('should remove selected properties', function() {
           var url;
-          url = newQuery().select('name').clearSelect().url;
+          url = urlBuilder().select('name').clearSelect().url;
           expect(url).to.equal('http://localhost:8080/Person');
-          url = newQuery().select('name', 'age').clearSelect().url;
+          url = urlBuilder().select('name', 'age').clearSelect().url;
           return expect(url).to.equal('http://localhost:8080/Person');
         });
       });
       describe('distinct', function() {
         it('should add $distinct query parameter in url', function() {
           var url;
-          url = newQuery().distinct('name').url;
+          url = urlBuilder().distinct('name').url;
           return expect(url).to.equal('http://localhost:8080/Person/name?$distinct=true');
         });
         return it('should remove previously added select', function() {
           var url;
-          url = newQuery().select('age').distinct('name').url;
+          url = urlBuilder().select('age').distinct('name').url;
           return expect(url).to.equal('http://localhost:8080/Person/name?$distinct=true');
         });
       });
       describe('compute', function() {
         it('when just the property name is specified, should add $compute query parameter in url with $all keyword', function() {
           var url;
-          url = newQuery().compute('name').url;
+          url = urlBuilder().compute('name').url;
           return expect(url).to.equal('http://localhost:8080/Person/name?$compute=$all');
         });
         it('when the keyword is specified, should use it', function() {
           var url;
-          url = newQuery().compute('name', 'count').url;
+          url = urlBuilder().compute('name', 'count').url;
           return expect(url).to.equal('http://localhost:8080/Person/name?$compute=count');
         });
         return it('when and invalid keyword is specified, should throw an exception', function() {
           return expect(function() {
-            return newQuery().compute('name', 'diff');
+            return urlBuilder().compute('name', 'diff');
           }).to["throw"](Error);
         });
       });
       describe('key', function() {
         return it('should add the entity key in url', function() {
           var url;
-          url = newQuery().key('123').url;
+          url = urlBuilder().key('123').url;
           return expect(url).to.equal('http://localhost:8080/Person(123)');
         });
       });
       return describe('everything combined', function() {
         return it('should work', function() {
-          return newQuery();
+          return urlBuilder();
         });
       });
     });

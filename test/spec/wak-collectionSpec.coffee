@@ -9,10 +9,10 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
       expect(@catalog.employee.entities.url()).to.equal '/rest/Employee'
 
     it 'should have a className', ->
-      expect(@catalog.employee.entities.className).to.equal 'Employee'
+      expect(@catalog.employee.entities.dataClass.className).to.equal 'Employee'
 
     it 'should have a collectionName', ->
-      expect(@catalog.employee.entities.collectionName).to.equal 'Employees'
+      expect(@catalog.employee.entities.dataClass.collectionName).to.equal 'Employees'
 
   describe 'fetch', ->
 

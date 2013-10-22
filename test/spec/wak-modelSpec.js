@@ -8,8 +8,8 @@
     });
     describe('static properties', function() {
       it('should have a valid className', function() {
-        expect(this.catalog.employee.Model.className).to.equal('Employee');
-        return expect(this.catalog.company.Model.className).to.equal('Company');
+        expect(this.catalog.employee.Model.dataClass.className).to.equal('Employee');
+        return expect(this.catalog.company.Model.dataClass.className).to.equal('Company');
       });
       return it('should have a reference to the catalog', function() {
         expect(this.catalog.employee.Model.catalog).to.equal(this.catalog);
