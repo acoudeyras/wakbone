@@ -66,19 +66,23 @@
       }
 
       BackboneWalker.prototype.walk = function(expression) {
-        var sep;
-        sep = _findSeparators(expression);
-        if (sep.noneMatch) {
-          return {
+        var found, seps;
+        seps = _findSeparators(expression);
+        found = null;
+        if (seps.noneMatch) {
+          found = {
             model: this.model,
             property: expression
           };
-        }
-        if (sep.dot < sep.bracket) {
-          return _walkToDot(this.model, expression);
+        } else if (seps.dot < seps.bracket) {
+          found = _walkToDot(this.model, expression);
         } else {
-          return _walkToBracket(this.model, expression);
+          found = _walkToBracket(this.model, expression);
         }
+        found.val = function() {
+          return Backbone.Model.prototype.get.call(model, this.property);
+        };
+        return found;
       };
 
       return BackboneWalker;

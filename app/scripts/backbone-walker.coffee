@@ -17,11 +17,6 @@ define [], ->
     bracket: bracketPos
     noneMatch: dotPos is Infinity and bracketPos is Infinity
 
-  _return = (model, property) ->
-    model: model
-    property: property
-    val: -> Backbone.Model::get.call model, property
-
   _read = (str, separator) ->
     parts = str.split separator
     val = parts[0]
@@ -36,7 +31,7 @@ define [], ->
     subProp = model.get val
     if not _isModel subProp or not _isCollection subProp #only models ?
       throw new Error('Property ' + val + ' is not a model or a collection or is not fetched')
-    subProp.walk remaining
+    subProp.walk(remaining)
 
   _walkToBracket = (model, expression) ->
     {val, remaining} = _read expression, '['
@@ -51,15 +46,20 @@ define [], ->
       remaining = _.splice remaining, 0, 1
 
     subModel = subProp.at +val
-    subModel.walk remaining
+    subModel.walk(remaining)
 
   class BackboneWalker
     constructor: (@model) ->
     walk: (expression) ->
       seps = _findSeparators expression
+      found = null
       if seps.noneMatch
-        return model: @model, property: expression
-      if seps.dot < seps.bracket
-        _walkToDot @model, expression
+        found = model: @model, property: expression
+      else if seps.dot < seps.bracket
+        found = _walkToDot @model, expression
       else
-        _walkToBracket @model, expression
+        found = _walkToBracket @model, expression
+
+      found.val = -> Backbone.Model::get.call model, @property
+      found
+
