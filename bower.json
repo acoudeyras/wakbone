@@ -1,6 +1,25 @@
 {
   "name": "wakbone",
-  "version": "0.0.1",
+  "author": {
+    "name"  : "Alexis Coudeyras",
+    "email" : "acoudeyras@gmail.com"
+  },
+  "keywords" : [
+    "backbone",
+    "framework",
+    "client",
+    "wakanda"
+  ],  
+  "ignore": [
+    "coverage",
+    "docs",
+    "Gruntfile.js",
+    "karma.conf.js",
+    "node_modules",
+    "package.json",
+    "test",
+    ".gitignore"
+  ],
   "dependencies": {
     "requirejs": "~2.1.8",
     "modernizr": "~2.6.2",
