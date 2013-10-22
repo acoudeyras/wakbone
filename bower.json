@@ -20,7 +20,7 @@
     ".gitignore",
     "app/404.html",
     "app/favicon.ico",
-    "app/robot.txt",
+    "app/robot.txt"
   ],
   "dependencies": {
     "requirejs": "~2.1.8",
