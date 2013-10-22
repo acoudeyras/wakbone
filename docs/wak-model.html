@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>wak-model.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="attribute.html">
+                attribute.coffee
+              </a>
+            
+              
+              <a class="source" href="backbone-walker.html">
+                backbone-walker.coffee
+              </a>
+            
+              
+              <a class="source" href="catalog.html">
+                catalog.coffee
+              </a>
+            
+              
+              <a class="source" href="check.html">
+                check.coffee
+              </a>
+            
+              
+              <a class="source" href="filter-builder.html">
+                filter-builder.coffee
+              </a>
+            
+              
+              <a class="source" href="helpers.html">
+                helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="http-requester.html">
+                http-requester.coffee
+              </a>
+            
+              
+              <a class="source" href="model-serializer.html">
+                model-serializer.coffee
+              </a>
+            
+              
+              <a class="source" href="orderby-parser.html">
+                orderby-parser.coffee
+              </a>
+            
+              
+              <a class="source" href="query-state.html">
+                query-state.coffee
+              </a>
+            
+              
+              <a class="source" href="types.html">
+                types.coffee
+              </a>
+            
+              
+              <a class="source" href="underscore-ext.html">
+                underscore-ext.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-collection.html">
+                wak-collection.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-model.html">
+                wak-model.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-url-builder.html">
+                wak-url-builder.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>wak-model.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="string">'use strict'</span>
+define [<span class="string">'./wak-url-builder'</span>, <span class="string">'./backbone-walker'</span>, <span class="string">'./helpers'</span>, <span class="string">'./model-serializer'</span>, <span class="string">'backbone'</span>], (UrlBuilder, BackboneWalker, helpers, ModelSerializer)-&gt;
+  
+  _fieldsToRemove = [<span class="string">'__entityModel'</span>, <span class="string">'__KEY'</span>, <span class="string">'__STAMP'</span>, <span class="string">'id'</span>, <span class="string">'ID'</span>, <span class="string">'uri'</span>]
+
+  <span class="function"><span class="title">_createDef</span></span> = (dataClass, catalog, dataloader) -&gt;
+
+    constructor: (options, collection) -&gt;
+      options ?= {}
+      options.id ?= options.ID
+      <span class="property">@_urlBuilder</span> = <span class="keyword">new</span> UrlBuilder <span class="property">@urlRoot</span>
+      <span class="keyword">if</span> options.id?
+        <span class="property">@_urlBuilder</span>.key options.id
+      <span class="property">@walker</span> = <span class="keyword">new</span> BackboneWalker @
+      Backbone.Model::constructor.apply @, arguments
+    dataClass: dataClass
+    dataloader: dataloader
+    catalog: catalog
+    expand: (expanded...) -&gt;
+      <span class="property">@_expanded</span> = <span class="property">@_urlBuilder</span>.expand expanded
+      @
+    walk: (expression) -&gt; 
+      <span class="property">@walker</span>.walk expression
+    get: (expression) -&gt;
+      <span class="property">@walk</span>(expression).val()
+    set: (expression, value) -&gt;
+      <span class="keyword">if</span> <span class="keyword">typeof</span> expression <span class="keyword">is</span> <span class="string">'object'</span>
+        <span class="keyword">if</span> expression.id?
+          <span class="property">@_urlBuilder</span>.key expression.id
+        <span class="keyword">return</span> Backbone.Model::set.apply @, arguments
+
+      <span class="keyword">if</span> expression <span class="keyword">is</span> <span class="string">'id'</span>
+          <span class="property">@_urlBuilder</span>.key value
+      {model, property} = <span class="property">@walk</span> expression
+      Backbone.Model::set.call model, property, value
+    toJSON: -&gt;
+      <span class="function"><span class="title">_addToResultIfExist</span></span> = (propName, key) =&gt;
+        val = @.get propName
+        <span class="keyword">if</span> val?
+          result[key] = val
+
+      result = {}
+      attrNames = _.pluck dataClass.attr(), <span class="string">'name'</span>
+      <span class="keyword">for</span> key, value <span class="keyword">of</span> <span class="property">@attributes</span> <span class="comment">#WTF !!!</span>
+        <span class="keyword">if</span> key <span class="keyword">not</span> <span class="keyword">in</span> attrNames
+          <span class="keyword">continue</span>
+        attr = dataClass.attr key
+        <span class="keyword">if</span> attr.readOnly
+          <span class="keyword">continue</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> value?
+          result[key] = <span class="literal">null</span>
+          <span class="keyword">continue</span>
+        <span class="keyword">if</span> value <span class="keyword">instanceof</span> Backbone.Collection
+          <span class="keyword">continue</span>
+        <span class="keyword">if</span> value <span class="keyword">instanceof</span> Backbone.Model
+          <span class="keyword">if</span> value.isNew()
+            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">'You must first save a entity before making it related to another'</span>)
+          result[key] = {
+            __KEY: value.get(<span class="string">'id'</span>)
+          }
+          <span class="keyword">continue</span>
+        <span class="keyword">if</span> <span class="keyword">typeof</span> value.toJSON <span class="keyword">is</span> <span class="string">'function'</span>
+          value = value.toJSON()
+          <span class="keyword">if</span> value <span class="keyword">isnt</span> <span class="literal">undefined</span> <span class="comment">#undefined = not in json (used by collection not fetched)</span>
+            result[key] = value
+          <span class="keyword">continue</span>
+        result[key] = value
+      _addToResultIfExist <span class="string">'$stamp'</span>, <span class="string">'__STAMP'</span>
+      _addToResultIfExist <span class="string">'id'</span>, <span class="string">'__KEY'</span>
+      result
+    parse: (response) -&gt;
+      serializer = <span class="keyword">new</span> ModelSerializer @
+      serializer.fromJSON response
+
+    urlRoot: dataClass.dataURI
+    url: -&gt; <span class="property">@_urlBuilder</span>.url
+    sync: (method, model, options) -&gt;
+      def = $.Deferred()
+      <span class="property">@dataloader</span>[method](model, options)
+        .done (data) -&gt;
+          options.success?(data, <span class="literal">true</span>)
+          def.resolve()
+      .fail (response) -&gt;
+        data = response.responseJSON
+        errors = data?.__ERROR
+        options.error?(data, errors)
+        model.set <span class="string">'$errors'</span>, errors
+        def.reject errors
+      def.promise()
+
+  create: (dataClass, catalog, dataloader) -&gt;
+    definition = _createDef dataClass, catalog, dataloader
+    Model = Backbone.Model.extend(definition)
+    Model.catalog = catalog
+    Model.dataClass = dataClass
+    Model</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

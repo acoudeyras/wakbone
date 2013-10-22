@@ -17,8 +17,13 @@ define [], ->
     bracket: bracketPos
     noneMatch: dotPos is Infinity and bracketPos is Infinity
 
-  _read = (str, separator) ->
-    parts = str.split separator
+  
+  #Read the first item of an `expression` for a given `separator` and return it with the remaining text
+  #
+  #`_read('manager.company.name', '.') -> 'manager', 'company.name'`
+  #`_read('managedCompanies[0].name', '.') -> 'managedCompanies', '0].name'`
+  _read = (expression, separator) ->
+    parts = expression.split separator
     val = parts[0]
     parts.splice 0, 1
     remaining = parts.join separator
@@ -48,6 +53,8 @@ define [], ->
     subModel = subProp.at +val
     subModel.walk(remaining)
 
+  #BackboneWalker
+  #===============
   class BackboneWalker
     constructor: (@model) ->
     walk: (expression) ->

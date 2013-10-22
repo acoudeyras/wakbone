@@ -23,9 +23,9 @@
         noneMatch: dotPos === Infinity && bracketPos === Infinity
       };
     };
-    _read = function(str, separator) {
+    _read = function(expression, separator) {
       var parts, remaining, val;
-      parts = str.split(separator);
+      parts = expression.split(separator);
       val = parts[0];
       parts.splice(0, 1);
       remaining = parts.join(separator);

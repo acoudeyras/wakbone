@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>orderby-parser.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="attribute.html">
+                attribute.coffee
+              </a>
+            
+              
+              <a class="source" href="backbone-walker.html">
+                backbone-walker.coffee
+              </a>
+            
+              
+              <a class="source" href="catalog.html">
+                catalog.coffee
+              </a>
+            
+              
+              <a class="source" href="check.html">
+                check.coffee
+              </a>
+            
+              
+              <a class="source" href="filter-builder.html">
+                filter-builder.coffee
+              </a>
+            
+              
+              <a class="source" href="helpers.html">
+                helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="http-requester.html">
+                http-requester.coffee
+              </a>
+            
+              
+              <a class="source" href="model-serializer.html">
+                model-serializer.coffee
+              </a>
+            
+              
+              <a class="source" href="orderby-parser.html">
+                orderby-parser.coffee
+              </a>
+            
+              
+              <a class="source" href="query-state.html">
+                query-state.coffee
+              </a>
+            
+              
+              <a class="source" href="types.html">
+                types.coffee
+              </a>
+            
+              
+              <a class="source" href="underscore-ext.html">
+                underscore-ext.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-collection.html">
+                wak-collection.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-model.html">
+                wak-model.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-url-builder.html">
+                wak-url-builder.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>orderby-parser.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="string">'use strict'</span>
+define [], -&gt;
+
+  _directionsValues =
+    ASC: [<span class="string">'ASC'</span>, <span class="string">'asc'</span>, <span class="number">1</span>, <span class="literal">true</span>]
+    DESC: [<span class="string">'DESC'</span>, <span class="string">'desc'</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="literal">false</span>]
+
+  <span class="function"><span class="title">_parseDirection</span></span> = (direction) -&gt;
+    <span class="keyword">return</span> <span class="string">'ASC'</span> <span class="keyword">if</span> <span class="keyword">not</span> direction?
+    <span class="keyword">if</span> <span class="keyword">typeof</span> direction <span class="keyword">is</span> <span class="string">'string'</span>
+      direction = direction.trim()
+    <span class="keyword">return</span> <span class="string">'ASC'</span> <span class="keyword">if</span> direction <span class="keyword">in</span> _directionsValues.ASC
+    <span class="keyword">return</span> <span class="string">'DESC'</span> <span class="keyword">if</span> direction <span class="keyword">in</span> _directionsValues.DESC
+    <span class="string">'ASC'</span>
+    
+  <span class="function"><span class="title">_parseOne</span></span> = (field, direction) -&gt;
+    parsedDirection = _parseDirection direction
+    field: field.trim()
+    direction: parsedDirection
+
+  <span class="function"><span class="title">_parseOneFromString</span></span> = (orderBy) -&gt;
+    [field, direction] = orderBy.trim().split(<span class="string">' '</span>)
+    _parseOne field, direction
+
+  <span class="function"><span class="title">_parseArray</span></span> = (orderBys) -&gt;
+    result = {}
+    <span class="keyword">for</span> orderBy <span class="keyword">in</span> orderBys
+      parsed = _parseOneFromString orderBy
+      result[parsed.field] = parsed.direction
+    result
+
+  <span class="function"><span class="title">_parseObject</span></span> = (orderBys) -&gt;
+    result = {}
+    <span class="keyword">for</span> field, direction <span class="keyword">of</span> orderBys
+      parsed = _parseOne field, direction
+      result[parsed.field] = parsed.direction
+    result
+
+  <span class="function"><span class="title">parse</span></span> = (orderBys) -&gt;
+    <span class="keyword">return</span> _parseArray orderBys <span class="keyword">if</span> orderBys.length &gt; <span class="number">1</span>
+    orderBy = orderBys[<span class="number">0</span>]
+    <span class="keyword">if</span> <span class="keyword">typeof</span> orderBy <span class="keyword">is</span> <span class="string">'string'</span>
+      <span class="keyword">return</span> _parseArray orderBy.split(<span class="string">','</span>)
+    <span class="keyword">return</span> _parseObject orderBy</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

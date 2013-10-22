@@ -11,11 +11,11 @@ define ['./types', './wak-collection', './helpers'], (types, wakCollectionFactor
         @typeExtra = types[@type]
         if not @typeExtra?
           throw new Error ('type ' + @type + ' not supported')
-      ###
-      need to be lazy, because when we load the attributes, the catalog may not have yet loaded
-      the relatedModel. We could have added a "build" method that would have done that and be called
-      by the catalog after all model are loaded, but i thought it was overdesign yet
-      ###
+      
+    #need to be lazy, because when we load the attributes, the catalog may not have yet loaded
+    #the relatedModel. We could have added a "build" method that would have done that and be called
+    #by the catalog after all model are loaded, but i thought it was overdesign yet
+    
     @lazyval 'RelatedModel', ->
       return null if @kind isnt 'relatedEntity'
       name = @catalog.constructor.classNameInCatalog @type

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>helpers.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="attribute.html">
+                attribute.coffee
+              </a>
+            
+              
+              <a class="source" href="backbone-walker.html">
+                backbone-walker.coffee
+              </a>
+            
+              
+              <a class="source" href="catalog.html">
+                catalog.coffee
+              </a>
+            
+              
+              <a class="source" href="check.html">
+                check.coffee
+              </a>
+            
+              
+              <a class="source" href="filter-builder.html">
+                filter-builder.coffee
+              </a>
+            
+              
+              <a class="source" href="helpers.html">
+                helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="http-requester.html">
+                http-requester.coffee
+              </a>
+            
+              
+              <a class="source" href="model-serializer.html">
+                model-serializer.coffee
+              </a>
+            
+              
+              <a class="source" href="orderby-parser.html">
+                orderby-parser.coffee
+              </a>
+            
+              
+              <a class="source" href="query-state.html">
+                query-state.coffee
+              </a>
+            
+              
+              <a class="source" href="types.html">
+                types.coffee
+              </a>
+            
+              
+              <a class="source" href="underscore-ext.html">
+                underscore-ext.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-collection.html">
+                wak-collection.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-model.html">
+                wak-model.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-url-builder.html">
+                wak-url-builder.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>helpers.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="string">'use strict'</span>
+define [<span class="string">'./underscore-ext'</span>, <span class="string">'moment'</span>], (_ext, moment) -&gt;
+
+  moment.wakFormat = <span class="string">'DD!MM!YYYY'</span>
+
+  Function::<span class="function"><span class="title">property</span></span> = (prop, desc) -&gt;
+    Object.defineProperty <span class="property">@prototype</span>, prop, desc
+
+  Function::<span class="function"><span class="title">getter</span></span> = (prop, getFunc) -&gt;
+    Object.defineProperty <span class="property">@prototype</span>, prop,
+      get: getFunc
+
+  Function::<span class="function"><span class="title">lazyval</span></span> = (prop, getter) -&gt;
+    Object.defineProperty <span class="property">@prototype</span>, prop,
+      get: -&gt;
+        privateProp =  <span class="string">'__'</span> + prop
+        <span class="keyword">return</span> @[privateProp] <span class="keyword">if</span> @[privateProp]?
+        @[privateProp] = getter.apply(@)
+
+  resolvedPromise: (value) -&gt;
+    def = $.Deferred()
+    def.resolve value
+    def.promise()
+  rejectedPromise: (value) -&gt;
+    def = $.Deferred()
+    def.reject value
+    def.promise()
+  log: (message) -&gt;
+    console.log message
+  <span class="keyword">throw</span>: (message, Type=Error) -&gt;
+    <span class="keyword">throw</span> <span class="keyword">new</span> Type(message)
+  throwIf: (predicate, message) -&gt;
+    <span class="keyword">if</span> predicate
+      <span class="property">@throw</span> message
+  moment: moment</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>wak-url-builder.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="attribute.html">
+                attribute.coffee
+              </a>
+            
+              
+              <a class="source" href="backbone-walker.html">
+                backbone-walker.coffee
+              </a>
+            
+              
+              <a class="source" href="catalog.html">
+                catalog.coffee
+              </a>
+            
+              
+              <a class="source" href="check.html">
+                check.coffee
+              </a>
+            
+              
+              <a class="source" href="filter-builder.html">
+                filter-builder.coffee
+              </a>
+            
+              
+              <a class="source" href="helpers.html">
+                helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="http-requester.html">
+                http-requester.coffee
+              </a>
+            
+              
+              <a class="source" href="model-serializer.html">
+                model-serializer.coffee
+              </a>
+            
+              
+              <a class="source" href="orderby-parser.html">
+                orderby-parser.coffee
+              </a>
+            
+              
+              <a class="source" href="query-state.html">
+                query-state.coffee
+              </a>
+            
+              
+              <a class="source" href="types.html">
+                types.coffee
+              </a>
+            
+              
+              <a class="source" href="underscore-ext.html">
+                underscore-ext.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-collection.html">
+                wak-collection.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-model.html">
+                wak-model.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-url-builder.html">
+                wak-url-builder.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>wak-url-builder.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="string">'use strict'</span>
+
+define [<span class="string">'./helpers'</span>, <span class="string">'./check'</span>], (helpers, check)-&gt;
+
+  <span class="function"><span class="title">_protect</span></span> = (str) -&gt; <span class="string">'"'</span> + str + <span class="string">'"'</span>
+
+  <span class="class"><span class="keyword">class</span> <span class="title">UrlBuilder</span></span>
+    constructor: (<span class="property">@root</span>) -&gt;
+      <span class="property">@_queryParams</span> = {}
+      <span class="property">@_pathParams</span> = []
+    query: (name, value) -&gt;
+      <span class="property">@_queryParams</span>[name] = value
+    path: (name) -&gt;
+      <span class="property">@_pathParams</span>.push name
+    clearQuery: -&gt; <span class="property">@_queryParams</span> = {}
+    clearPath: -&gt; <span class="property">@_pathParams</span> = []
+    buildPathParams: -&gt;
+      <span class="keyword">return</span> <span class="string">''</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@_pathParams</span>.length
+      <span class="string">'/'</span> + <span class="property">@_pathParams</span>.join(<span class="string">'/'</span>)
+    buildQueryParams: -&gt;
+      params = Object.keys <span class="property">@_queryParams</span>
+      <span class="keyword">return</span> <span class="string">''</span> <span class="keyword">if</span> <span class="keyword">not</span> params.length
+      params = params.map (name) =&gt; name + <span class="string">'='</span> + <span class="property">@_queryParams</span>[name]
+      <span class="string">'?'</span> + params.join(<span class="string">'&amp;'</span>)
+    build: -&gt;
+      <span class="property">@root</span> + <span class="property">@buildPathParams</span>() + <span class="property">@buildQueryParams</span>()
+
+  _computedKeywords = [<span class="string">'$all'</span>, <span class="string">'count'</span>, <span class="string">'average'</span>, <span class="string">'min'</span>, <span class="string">'max'</span>, <span class="string">'sum'</span>]
+  <span class="class"><span class="keyword">class</span> <span class="title">WakUrlBuilder</span></span>
+    constructor: (<span class="property">@root</span>) -&gt;
+      check(<span class="property">@root</span>).notNull().isString().notEmpty()
+      <span class="property">@urlBuilder</span> = <span class="keyword">new</span> UrlBuilder(<span class="property">@root</span>)
+    key: (key) -&gt;
+      <span class="property">@urlBuilder</span> = <span class="keyword">new</span> UrlBuilder(<span class="property">@root</span> + <span class="string">'('</span> + key + <span class="string">')'</span>)
+      @
+    select: (properties...) -&gt;
+      <span class="property">@urlBuilder</span>.path properties.join(<span class="string">','</span>)
+      @
+    _numParam: (num, queryParamName) -&gt;
+      castedNum = parseInt(num, <span class="number">10</span>) <span class="comment">#parseInt instead of + to handle +null = 0</span>
+      <span class="keyword">if</span> castedNum <span class="keyword">isnt</span> castedNum
+        helpers.log <span class="string">'bad '</span> + queryParamName + <span class="string">' parameter: '</span> + num
+        <span class="keyword">return</span> @
+      <span class="property">@urlBuilder</span>.query <span class="string">'$'</span> + queryParamName, castedNum
+      @
+    clearSelect: -&gt;
+      <span class="property">@urlBuilder</span>.clearPath()
+      @
+    limit: (num) -&gt; <span class="property">@_numParam</span> num, <span class="string">'limit'</span>
+    skip: (num) -&gt; <span class="property">@_numParam</span> num, <span class="string">'skip'</span>
+    timeout: (num) -&gt; <span class="property">@_numParam</span> num, <span class="string">'timeout'</span>
+    expand: (expanded...) -&gt;
+      expanded = expanded.join(<span class="string">','</span>)
+      <span class="property">@urlBuilder</span>.query <span class="string">'$expand'</span>, expanded
+      @
+    where: (clause) -&gt;
+      <span class="property">@urlBuilder</span>.query <span class="string">'$filter'</span>, _protect clause
+      @
+    orderBy: (clause) -&gt;
+      orderBys = (field + <span class="string">' '</span> + direction <span class="keyword">for</span> field, direction <span class="keyword">of</span> clause)
+      <span class="property">@urlBuilder</span>.query <span class="string">'$orderby'</span>, orderBys.join(<span class="string">','</span>)
+      @
+    distinct: (property)-&gt;
+      <span class="property">@urlBuilder</span>.clearPath()
+      <span class="property">@select</span> property
+      <span class="property">@urlBuilder</span>.query <span class="string">'$distinct'</span>, <span class="string">'true'</span>
+      @
+    compute: (property, keyword = <span class="string">'$all'</span>) -&gt;
+      check(keyword).<span class="keyword">in</span> _computedKeywords <span class="comment">#remove orderby ?</span>
+      <span class="property">@urlBuilder</span>.clearPath()
+      <span class="property">@select</span> property
+      <span class="property">@urlBuilder</span>.query <span class="string">'$compute'</span>, keyword
+      @
+    <span class="property">@getter</span> <span class="string">'url'</span>, -&gt; <span class="property">@urlBuilder</span>.build()</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

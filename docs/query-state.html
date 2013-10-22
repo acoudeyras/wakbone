@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>query-state.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="attribute.html">
+                attribute.coffee
+              </a>
+            
+              
+              <a class="source" href="backbone-walker.html">
+                backbone-walker.coffee
+              </a>
+            
+              
+              <a class="source" href="catalog.html">
+                catalog.coffee
+              </a>
+            
+              
+              <a class="source" href="check.html">
+                check.coffee
+              </a>
+            
+              
+              <a class="source" href="filter-builder.html">
+                filter-builder.coffee
+              </a>
+            
+              
+              <a class="source" href="helpers.html">
+                helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="http-requester.html">
+                http-requester.coffee
+              </a>
+            
+              
+              <a class="source" href="model-serializer.html">
+                model-serializer.coffee
+              </a>
+            
+              
+              <a class="source" href="orderby-parser.html">
+                orderby-parser.coffee
+              </a>
+            
+              
+              <a class="source" href="query-state.html">
+                query-state.coffee
+              </a>
+            
+              
+              <a class="source" href="types.html">
+                types.coffee
+              </a>
+            
+              
+              <a class="source" href="underscore-ext.html">
+                underscore-ext.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-collection.html">
+                wak-collection.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-model.html">
+                wak-model.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-url-builder.html">
+                wak-url-builder.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>query-state.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="string">'use strict'</span>
+define [<span class="string">'./wak-url-builder'</span>, <span class="string">'./orderby-parser'</span>], (UrlBuilder, _parseOrderBy) -&gt;
+
+  <span class="function"><span class="title">_isSubProperty</span></span> = (property) -&gt; property.indexOf(<span class="string">'.'</span>) != -<span class="number">1</span>
+
+  <span class="class"><span class="keyword">class</span> <span class="title">QueryState</span></span>
+    constructor:(<span class="property">@collection</span>, <span class="property">@rootUrl</span>, <span class="property">@originState</span>)-&gt;
+      <span class="property">@state</span> = _.extend QueryState.<span class="reserved">default</span>, <span class="property">@originState</span>
+      <span class="property">@_urlBuilder</span> = <span class="keyword">new</span> UrlBuilder <span class="property">@rootUrl</span>
+    where:(filterClause) -&gt;
+      <span class="property">@state</span>.where = filterClause
+      <span class="property">@_urlBuilder</span>.where filterClause
+      @
+    orderBy: (orderBys...) -&gt;
+      parsedOrderBys = _parseOrderBy orderBys
+      <span class="property">@state</span>.orderBy = parsedOrderBys
+      <span class="property">@_urlBuilder</span>.orderBy parsedOrderBys
+      @
+    select: (selecteds...) -&gt;
+      <span class="property">@state</span>.select = selecteds
+      expandsNeeded = (selected.split(<span class="string">'.'</span>)[<span class="number">0</span>] <span class="keyword">for</span> selected <span class="keyword">in</span> selecteds <span class="keyword">when</span> _isSubProperty(selected))
+      <span class="keyword">if</span> expandsNeeded.length
+        <span class="property">@expand</span> expandsNeeded
+      <span class="property">@_urlBuilder</span>.select selecteds
+      @
+    skip: (skip) -&gt;
+      <span class="property">@state</span>.skip = skip
+      <span class="property">@_urlBuilder</span>.skip skip
+      @
+    limit: (limit) -&gt;
+      <span class="property">@state</span>.limit = limit
+      <span class="property">@_urlBuilder</span>.limit limit
+      @
+    expand: (expands...) -&gt;
+      <span class="property">@state</span>.expands = expands
+      <span class="property">@_urlBuilder</span>.expand expands
+      @
+    clear: -&gt;
+      <span class="property">@state</span> = _.extend QueryState.<span class="reserved">default</span>, <span class="property">@originState</span>
+      <span class="property">@_urlBuilder</span> = <span class="keyword">new</span> UrlBuilder <span class="property">@rootUrl</span>
+    url: -&gt; <span class="property">@_urlBuilder</span>.url
+    <span class="property">@default</span>:
+      skip: <span class="number">0</span>
+      limit: <span class="number">100</span></pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

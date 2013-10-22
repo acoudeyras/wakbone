@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>http-requester.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="attribute.html">
+                attribute.coffee
+              </a>
+            
+              
+              <a class="source" href="backbone-walker.html">
+                backbone-walker.coffee
+              </a>
+            
+              
+              <a class="source" href="catalog.html">
+                catalog.coffee
+              </a>
+            
+              
+              <a class="source" href="check.html">
+                check.coffee
+              </a>
+            
+              
+              <a class="source" href="filter-builder.html">
+                filter-builder.coffee
+              </a>
+            
+              
+              <a class="source" href="helpers.html">
+                helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="http-requester.html">
+                http-requester.coffee
+              </a>
+            
+              
+              <a class="source" href="model-serializer.html">
+                model-serializer.coffee
+              </a>
+            
+              
+              <a class="source" href="orderby-parser.html">
+                orderby-parser.coffee
+              </a>
+            
+              
+              <a class="source" href="query-state.html">
+                query-state.coffee
+              </a>
+            
+              
+              <a class="source" href="types.html">
+                types.coffee
+              </a>
+            
+              
+              <a class="source" href="underscore-ext.html">
+                underscore-ext.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-collection.html">
+                wak-collection.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-model.html">
+                wak-model.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-url-builder.html">
+                wak-url-builder.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>http-requester.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="string">'use strict'</span>
+define [<span class="string">'./model-serializer'</span>, <span class="string">'./helpers'</span>, <span class="string">'backbone'</span>], (ModelSerializer, helpers) -&gt;
+
+  _defaultAjaxOptions =
+    dataType: <span class="string">'json'</span>
+    contentType: <span class="string">'application/json'</span>
+
+  <span class="function"><span class="title">_finalOptions</span></span> = (httpRequesterOptions, callerOptions) -&gt;
+    $.extend {}, httpRequesterOptions, callerOptions, _defaultAjaxOptions
+
+  <span class="class"><span class="keyword">class</span> <span class="title">HttpRequester</span></span>
+    constructor: -&gt;
+
+    read: (model, options) -&gt;
+      Backbone.Model::sync.apply model, [<span class="string">'read'</span>, model, options]
+
+    upsert: (model, options) -&gt;
+      <span class="keyword">try</span>
+        data = <span class="keyword">new</span> ModelSerializer(model).toJSON()
+      <span class="keyword">catch</span> ex
+        <span class="keyword">return</span> helpers.rejectedPromise ex.message
+      <span class="keyword">return</span> helpers.resolvedPromise() <span class="keyword">if</span> <span class="keyword">not</span> data?
+      url = model.url() + <span class="string">'/?$method=update'</span>
+      methodOptions = url: url, data: data, type: <span class="string">'POST'</span>
+      $.ajax _finalOptions(methodOptions, options)
+
+    create: (model, options) -&gt; <span class="property">@upsert</span> model, options
+
+    update: (model, options) -&gt; <span class="property">@upsert</span> model, options
+
+    <span class="keyword">delete</span>: (model, options) -&gt;
+      url = model.url() + <span class="string">'/?$method=delete'</span>
+      methodOptions = url: url, type: <span class="string">'POST'</span>
+      $.ajax _finalOptions(methodOptions, options)</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

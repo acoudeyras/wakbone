@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>catalog.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="attribute.html">
+                attribute.coffee
+              </a>
+            
+              
+              <a class="source" href="backbone-walker.html">
+                backbone-walker.coffee
+              </a>
+            
+              
+              <a class="source" href="catalog.html">
+                catalog.coffee
+              </a>
+            
+              
+              <a class="source" href="check.html">
+                check.coffee
+              </a>
+            
+              
+              <a class="source" href="filter-builder.html">
+                filter-builder.coffee
+              </a>
+            
+              
+              <a class="source" href="helpers.html">
+                helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="http-requester.html">
+                http-requester.coffee
+              </a>
+            
+              
+              <a class="source" href="model-serializer.html">
+                model-serializer.coffee
+              </a>
+            
+              
+              <a class="source" href="orderby-parser.html">
+                orderby-parser.coffee
+              </a>
+            
+              
+              <a class="source" href="query-state.html">
+                query-state.coffee
+              </a>
+            
+              
+              <a class="source" href="types.html">
+                types.coffee
+              </a>
+            
+              
+              <a class="source" href="underscore-ext.html">
+                underscore-ext.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-collection.html">
+                wak-collection.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-model.html">
+                wak-model.coffee
+              </a>
+            
+              
+              <a class="source" href="wak-url-builder.html">
+                wak-url-builder.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>catalog.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="string">'use strict'</span>
+define [<span class="string">'./wak-model'</span>, <span class="string">'./wak-collection'</span>, <span class="string">'./attribute'</span>, <span class="string">'./http-requester'</span>, <span class="string">'./helpers'</span>, <span class="string">'./check'</span>, <span class="string">'backbone'</span>], (wakModelFactory, wakCollectionFactory, Attribute, HttpRequester, helpers, check) -&gt;
+      
+  <span class="class"><span class="keyword">class</span> <span class="title">DataClass</span></span>
+    constructor: ({<span class="property">@className</span>, <span class="property">@collectionName</span>, <span class="property">@dataURI</span>, attributes}, <span class="property">@catalog</span>) -&gt;
+      <span class="property">@_attributes</span> = attributes.map (attr) =&gt; <span class="keyword">new</span> Attribute(attr, @)
+      <span class="property">@_attributesByName</span> = _.indexBy <span class="property">@_attributes</span>, <span class="string">'name'</span>
+    finalize: (<span class="property">@Collection</span>, <span class="property">@Model</span>) -&gt;
+      <span class="property">@entities</span> = <span class="keyword">new</span> <span class="property">@Collection</span>()
+    attr: (name) -&gt;
+      <span class="keyword">return</span> <span class="property">@_attributes</span> <span class="keyword">if</span> <span class="keyword">not</span> name?
+      <span class="property">@_attributesByName</span>[name]
+
+  <span class="class"><span class="keyword">class</span> <span class="title">Catalog</span></span>
+    constructor: (data) -&gt;
+      <span class="property">@$classNames</span> = []
+      <span class="property">@$dataLoader</span> = <span class="keyword">new</span> HttpRequester()
+      <span class="property">@_colsByEntryName</span> = {}
+      <span class="keyword">for</span> rawDataClass <span class="keyword">in</span> data.dataClasses
+        entryName = Catalog.classNameInCatalog rawDataClass.className
+        <span class="property">@$classNames</span>.push entryName
+        helpers.throwIf @[entryName]?, <span class="string">"conflict in catalog with dataclass <span class="subst">#{entryName}</span>"</span>
+        <span class="property">@_colsByEntryName</span>[rawDataClass.collectionName] = entryName
+        <span class="property">@_addEntry</span> entryName, rawDataClass
+    $entryFromCollectionName: (collectionName) -&gt;
+      entryName = <span class="property">@_colsByEntryName</span>[collectionName]
+      @[entryName]
+    _addEntry: (entryName, rawDataClass) -&gt;
+      dataClass = <span class="keyword">new</span> DataClass rawDataClass, @
+      Model = wakModelFactory.create dataClass, @, <span class="property">@$dataLoader</span>
+      Collection = wakCollectionFactory.create dataClass, Model, @
+      dataClass.finalize Collection, Model
+      @[entryName] = dataClass
+    <span class="property">@classNameInCatalog</span>: (className) -&gt; _.lowerCamelize className
+    <span class="property">@load</span>: (success) -&gt;
+      $.ajax(<span class="string">'/rest/$catalog/$all'</span>)
+        .<span class="keyword">then</span> (data) -&gt; <span class="keyword">new</span> Catalog data</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

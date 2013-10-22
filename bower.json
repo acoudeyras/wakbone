@@ -8,7 +8,9 @@
     "backbone": "~1.1.0",
     "underscore": "~1.5.2",
     "underscore.string": "~2.3.3",
-    "moment": "~2.3.1"
+    "moment": "~2.3.1",
+    "bootstrap": "~3.0.0",
+    "backbone.stickit": "~0.6.3"
   },
   "devDependencies": {}
 }

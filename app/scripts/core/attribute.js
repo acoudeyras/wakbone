@@ -21,12 +21,6 @@
             throw new Error('type ' + this.type + ' not supported');
           }
         }
-        /*
-        need to be lazy, because when we load the attributes, the catalog may not have yet loaded
-        the relatedModel. We could have added a "build" method that would have done that and be called
-        by the catalog after all model are loaded, but i thought it was overdesign yet
-        */
-
       }
 
       Attribute.lazyval('RelatedModel', function() {
