@@ -14,16 +14,20 @@ define ['./model-serializer', './helpers', 'backbone'], (ModelSerializer, helper
     read: (model, options) ->
       Backbone.Model::sync.apply model, ['read', model, options]
 
-    create: ->
-      throw new Error('method not supported yet')
-
-    update: (model, options) ->
-      data = new ModelSerializer(model).toJSON()
+    upsert: (data, model, options) ->
+      console.log data
       return helpers.resolvedPromise() if not data?
-
       url = model.url() + '/?$method=update'
       methodOptions = url: url, data: data, type: 'POST'
-      $.ajax _finalOptions(methodOptions, options)
+      $.ajax _finalOptions(methodOptions, options)      
 
-    delete: ->
+    create: (model, options) ->
+      data = new ModelSerializer(model).allToJSON()
+      @upsert data, model, options
+
+    update: (model, options) ->
+      data = new ModelSerializer(model).allToJSON()
+      @upsert data, model, options
+
+    delete: (model, options) ->
       throw new Error('method not supported yet')

@@ -16,13 +16,9 @@
         return Backbone.Model.prototype.sync.apply(model, ['read', model, options]);
       };
 
-      HttpRequester.prototype.create = function() {
-        throw new Error('method not supported yet');
-      };
-
-      HttpRequester.prototype.update = function(model, options) {
-        var data, methodOptions, url;
-        data = new ModelSerializer(model).toJSON();
+      HttpRequester.prototype.upsert = function(data, model, options) {
+        var methodOptions, url;
+        console.log(data);
         if (data == null) {
           return helpers.resolvedPromise();
         }
@@ -35,7 +31,19 @@
         return $.ajax(_finalOptions(methodOptions, options));
       };
 
-      HttpRequester.prototype["delete"] = function() {
+      HttpRequester.prototype.create = function(model, options) {
+        var data;
+        data = new ModelSerializer(model).allToJSON();
+        return this.upsert(data, model, options);
+      };
+
+      HttpRequester.prototype.update = function(model, options) {
+        var data;
+        data = new ModelSerializer(model).allToJSON();
+        return this.upsert(data, model, options);
+      };
+
+      HttpRequester.prototype["delete"] = function(model, options) {
         throw new Error('method not supported yet');
       };
 

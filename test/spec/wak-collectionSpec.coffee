@@ -34,7 +34,7 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
 
   describe 'query', ->
 
-    after -> @employees.query.clear()
+    afterEach -> @employees.query.clear()
 
     describe 'limit', ->
 
@@ -118,3 +118,49 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
           expect(emp.get 'firstName').to.equal 'MARQUITA'
           done()
 
+    describe 'select', ->
+
+      it 'should fetch only selected property', (done) ->
+        @employees.query
+          .select('firstName')
+          .limit(5)
+        @employees.fetch(reset:true).done =>
+          emp = @employees.at 0
+          expect(emp.get 'firstName').to.exist
+          expect(emp.get 'lastName').not.to.exist
+          done()
+
+      it 'should fetch only selected properties', (done) ->
+        @employees.query
+          .select('firstName', 'lastName')
+          .limit(5)
+        @employees.fetch(reset:true).done =>
+          emp = @employees.at 0
+          expect(emp.get 'firstName').to.exist
+          expect(emp.get 'lastName').to.exist
+          expect(emp.get 'age').not.to.exist
+          done()
+
+      it 'should expand related entity if selected property need expand', (done) ->
+        @employees.query
+          .select('company.name', 'lastName')
+          .limit(5)
+        @employees.fetch(reset:true).done =>
+          emp = @employees.at 0
+          expect(emp.get 'lastName').to.exist
+          expect(emp.get 'age').not.to.exist
+          expect(emp.get 'company.name').to.exist
+          done()
+
+      it 'should expand related entities if selected property need expand', (done) ->
+        @employees.query
+          .select('company.name', 'staff.lastName')
+          .limit(5)
+        @employees.fetch(reset:true).done =>
+          emp = @employees.at 0
+          expect(emp.get 'company.name').to.exist
+          expect(emp.get 'staff[0].lastName').to.exist
+          expect(emp.get 'staff[0].age').not.to.exist          
+          done()
+
+          

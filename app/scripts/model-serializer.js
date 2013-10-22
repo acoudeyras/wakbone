@@ -2,26 +2,33 @@
   'use strict';
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define([], function() {
+  define(['backbone'], function() {
     var ModelSerializer, _fieldsToRemove, _removePropertiesNotInDataclass;
     _fieldsToRemove = ['__entityModel', '__KEY', '__STAMP', 'id', 'ID', 'uri'];
-    _removePropertiesNotInDataclass = function(data, dataClass, attrNames) {
-      var key, val, _results;
+    _removePropertiesNotInDataclass = function(data, dataClass, attrNames, alreadyVisited) {
+      var key, result, val;
+      if (alreadyVisited == null) {
+        alreadyVisited = [];
+      }
       if (attrNames == null) {
         attrNames = _.pluck(dataClass.attr(), 'name');
       }
-      _results = [];
+      result = {};
       for (key in data) {
         val = data[key];
-        if (typeof val === 'object') {
-          _results.push(_removePropertiesNotInDataclass(val, dataClass, attrNames));
-        } else if (__indexOf.call(attrNames, key) < 0) {
-          _results.push(delete data[key]);
+        if (__indexOf.call(attrNames, key) < 0) {
+          continue;
+        }
+        if (val instanceof Backbone.Model || val instanceof Backbone.Collection) {
+          if (typeof val === 'object' && __indexOf.call(alreadyVisited, val) < 0) {
+            alreadyVisited.push(val);
+            result[key](_removePropertiesNotInDataclass(val, dataClass, attrNames, alreadyVisited));
+          }
         } else {
-          _results.push(void 0);
+          result[key] = val;
         }
       }
-      return _results;
+      return result;
     };
     return ModelSerializer = (function() {
       function ModelSerializer(model) {
@@ -29,16 +36,24 @@
         this.dataClass = this.model.dataClass;
       }
 
-      ModelSerializer.prototype.toJSON = function() {
-        var data;
-        data = this.model.changedAttributes();
+      ModelSerializer.prototype.changesToJSON = function() {
+        return this.toJSON(this.model.changedAttributes());
+      };
+
+      ModelSerializer.prototype.allToJSON = function() {
+        return this.toJSON(this.model.attributes);
+      };
+
+      ModelSerializer.prototype.toJSON = function(data) {
+        var json;
         if (!data) {
           return null;
         }
+        json = this.model.toJSON();
         data.__KEY = this.model.id;
+        console.log(this.model.get('$stamp'));
         data.__STAMP = this.model.get('$stamp');
-        _removePropertiesNotInDataclass(data, this.dataClass);
-        return JSON.stringify(data);
+        return JSON.stringify(json);
       };
 
       ModelSerializer.prototype.fromJSON = function(data) {

@@ -181,6 +181,13 @@
       });
       return shouldBeAValidModel();
     });
+    describe('url for new entity', function() {
+      return it('should be the urlRoot of the collection', function() {
+        var emp;
+        emp = new this.catalog.employee.Model();
+        return expect(emp.url()).to.equal('/rest/Employee');
+      });
+    });
     describe('expand', function() {
       return it('should load expanded data and load them as a model or collection', function(done) {
         var Employee, emp,
@@ -240,7 +247,7 @@
         }).to["throw"](Error);
       });
     });
-    return describe('set', function() {
+    describe('set', function() {
       it('should support direct set to a related model', function() {
         this.emp.set('company.name', '4D');
         return expect(this.emp.get('company.name')).to.equal('4D');
@@ -248,6 +255,41 @@
       return it('should support direct set to a related model via a collection', function() {
         this.emp.set('staff[0].company.name', '4D');
         return expect(this.emp.get('staff[0].company.name')).to.equal('4D');
+      });
+    });
+    return describe('save for new entity (create)', function() {
+      it('should work', function(done) {
+        var emp;
+        emp = new this.catalog.employee.Model({
+          firstName: 'Bob',
+          lastName: 'Simon'
+        });
+        return emp.save().done(function() {
+          expect(emp.get('firstName')).to.equal('Bob');
+          expect(emp.get('lastName')).to.equal('Simon');
+          expect(emp.get('fullName')).to.equal('Bob Simon');
+          expect(emp.id).to.exist;
+          return done();
+        });
+      });
+      return it('should to an update if we try to save it later', function(done) {
+        var emp;
+        emp = new this.catalog.employee.Model({
+          firstName: 'Bob',
+          lastName: 'Simon'
+        });
+        return emp.save().done(function() {
+          var originalId;
+          originalId = emp.id;
+          emp.set('lastName', 'Roups');
+          return emp.save().done(function() {
+            expect(emp.get('firstName')).to.equal('Bob');
+            expect(emp.get('lastName')).to.equal('Roups');
+            expect(emp.get('fullName')).to.equal('Bob Roups');
+            expect(emp.id).to.equal(originalId);
+            return done();
+          });
+        });
       });
     });
   });

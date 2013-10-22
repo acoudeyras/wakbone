@@ -8,6 +8,10 @@ define ['query-state', 'backbone'], (QueryState)->
     dataClass: dataClass
     catalog: catalog
     model: model
+    toJSON: ->
+      return undefined if @models.length is 0
+      debugger
+      @models.map -> (model) model.toJSON()
     parse: (response) ->
       @$total = response.__COUNT
       response.__ENTITIES

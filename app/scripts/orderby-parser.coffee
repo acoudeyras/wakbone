@@ -12,25 +12,30 @@ define [], ->
     return 'ASC' if direction in _directionsValues.ASC
     return 'DESC' if direction in _directionsValues.DESC
     'ASC'
+    
   _parseOne = (field, direction) ->
     parsedDirection = _parseDirection direction
     field: field.trim()
     direction: parsedDirection
+
   _parseOneFromString = (orderBy) ->
     [field, direction] = orderBy.trim().split(' ')
     _parseOne field, direction
+
   _parseArray = (orderBys) ->
     result = {}
     for orderBy in orderBys
       parsed = _parseOneFromString orderBy
       result[parsed.field] = parsed.direction
     result
+
   _parseObject = (orderBys) ->
     result = {}
     for field, direction of orderBys
       parsed = _parseOne field, direction
       result[parsed.field] = parsed.direction
     result
+
   parse = (orderBys) ->
     return _parseArray orderBys if orderBys.length > 1
     orderBy = orderBys[0]

@@ -6,13 +6,14 @@
     var Attribute;
     return Attribute = (function() {
       function Attribute(_arg, dataClass) {
-        var _ref;
+        var _ref, _ref1, _ref2;
         this.identifying = _arg.identifying, this.indexed = _arg.indexed, this.kind = _arg.kind, this.name = _arg.name, this.scope = _arg.scope, this.type = _arg.type, this.path = _arg.path;
         this.dataClass = dataClass;
         if (this.identifying == null) {
           this.identifying = false;
         }
         this.isRaw = (_ref = this.kind, __indexOf.call(Attribute.rawKinds, _ref) >= 0);
+        this.readOnly = (_ref1 = this.kind, __indexOf.call(Attribute.readOnlyKinds, _ref1) >= 0) || (_ref2 = this.type, __indexOf.call(Attribute.readOnlyTypes, _ref2) >= 0);
         this.catalog = this.dataClass.catalog;
         if (this.isRaw) {
           this.typeExtra = types[this.type];
@@ -51,13 +52,14 @@
         if (value === null) {
           return null;
         }
-        if (value.ID) {
+        if (value.__deferred != null) {
+          id = value.__deferred.__KEY;
+          return new this.RelatedModel({
+            id: id
+          });
+        } else {
           return new this.RelatedModel(value);
         }
-        id = value.__deferred.__KEY;
-        return new this.RelatedModel({
-          id: id
-        });
       };
 
       Attribute.prototype._convertToRelatedCollection = function(value) {
@@ -92,6 +94,10 @@
       Attribute.prototype.toRaw = function(value) {};
 
       Attribute.rawKinds = ['storage', 'alias', 'calculated'];
+
+      Attribute.readOnlyKinds = ['calculated', 'alias'];
+
+      Attribute.readOnlyTypes = ['image'];
 
       return Attribute;
 

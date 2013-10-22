@@ -11,6 +11,15 @@
         dataClass: dataClass,
         catalog: catalog,
         model: model,
+        toJSON: function() {
+          if (this.models.length === 0) {
+            return void 0;
+          }
+          debugger;
+          return this.models.map(function() {
+            return model(model.toJSON());
+          });
+        },
         parse: function(response) {
           this.$total = response.__COUNT;
           return response.__ENTITIES;

@@ -1,6 +1,7 @@
 (function() {
   'use strict';
-  var __slice = [].slice;
+  var __slice = [].slice,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(['wak-url-builder', 'backbone-walker', 'helpers', 'model-serializer', 'backbone'], function(UrlBuilder, BackboneWalker, helpers, ModelSerializer) {
     var _createDef, _fieldsToRemove;
@@ -8,10 +9,16 @@
     _createDef = function(dataClass, catalog, dataloader) {
       return {
         constructor: function(options, collection) {
+          if (options == null) {
+            options = {};
+          }
           if (options.id == null) {
             options.id = options.ID;
           }
-          this._urlBuilder = new UrlBuilder(this.urlRoot + '(' + options.id + ')');
+          this._urlBuilder = new UrlBuilder(this.urlRoot);
+          if (options.id != null) {
+            this._urlBuilder.key(options.id);
+          }
           this.walker = new BackboneWalker(this);
           return Backbone.Model.prototype.constructor.apply(this, arguments);
         },
@@ -37,6 +44,45 @@
           }
           _ref = this.walk(expression), model = _ref.model, property = _ref.property;
           return Backbone.Model.prototype.set.call(model, property, value);
+        },
+        toJSON: function() {
+          var attr, attrNames, key, result, value, _addToResultIfExist, _ref,
+            _this = this;
+          _addToResultIfExist = function(propName, key) {
+            var val;
+            val = _this.get(propName);
+            if (val != null) {
+              return result[key] = val;
+            }
+          };
+          result = {};
+          attrNames = _.pluck(dataClass.attr(), 'name');
+          _ref = this.attributes;
+          for (key in _ref) {
+            value = _ref[key];
+            if (__indexOf.call(attrNames, key) < 0) {
+              continue;
+            }
+            attr = dataClass.attr(key);
+            if (attr.readOnly) {
+              continue;
+            }
+            if (value == null) {
+              result[key] = null;
+              continue;
+            }
+            if (typeof value.toJSON === 'function') {
+              value = value.toJSON();
+              if (value !== void 0) {
+                result[key] = value;
+              }
+              continue;
+            }
+            result[key] = value;
+          }
+          _addToResultIfExist('$stamp', '__STAMP');
+          _addToResultIfExist('id', '__KEY');
+          return result;
         },
         parse: function(response) {
           var serializer;

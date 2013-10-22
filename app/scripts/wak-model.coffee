@@ -6,8 +6,11 @@ define ['wak-url-builder', 'backbone-walker', 'helpers', 'model-serializer', 'ba
   _createDef = (dataClass, catalog, dataloader) ->
 
     constructor: (options, collection) ->
+      options ?= {}
       options.id ?= options.ID
-      @_urlBuilder = new UrlBuilder @urlRoot + '(' + options.id + ')'
+      @_urlBuilder = new UrlBuilder @urlRoot
+      if options.id?
+        @_urlBuilder.key options.id
       @walker = new BackboneWalker @
       Backbone.Model::constructor.apply @, arguments
     dataClass: dataClass
@@ -25,6 +28,32 @@ define ['wak-url-builder', 'backbone-walker', 'helpers', 'model-serializer', 'ba
         return Backbone.Model::set.apply @, arguments
       {model, property} = @walk expression
       Backbone.Model::set.call model, property, value
+    toJSON: ->
+      _addToResultIfExist = (propName, key) =>
+        val = @.get propName
+        if val?
+          result[key] = val
+
+      result = {}
+      attrNames = _.pluck dataClass.attr(), 'name'
+      for key, value of @attributes
+        if key not in attrNames
+          continue
+        attr = dataClass.attr key
+        if attr.readOnly
+          continue
+        if not value?
+          result[key] = null
+          continue
+        if typeof value.toJSON is 'function'
+          value = value.toJSON()
+          if value isnt undefined #undefined = not in json (used by collection not fetched)
+            result[key] = value
+          continue
+        result[key] = value
+      _addToResultIfExist '$stamp', '__STAMP'
+      _addToResultIfExist 'id', '__KEY'
+      result
     parse: (response) ->
       serializer = new ModelSerializer @
       serializer.fromJSON response

@@ -1,27 +1,38 @@
 'use strict'
-define [], ->
+define ['backbone'], ->
 
   _fieldsToRemove = ['__entityModel', '__KEY', '__STAMP', 'id', 'ID', 'uri']
-
-  _removePropertiesNotInDataclass = (data, dataClass, attrNames) ->
+  _removePropertiesNotInDataclass = (data, dataClass, attrNames, alreadyVisited) ->
+    alreadyVisited ?= []
     attrNames ?= _.pluck dataClass.attr(), 'name'
+    result = {}
     for key, val of data
-        if typeof val is 'object'
-          _removePropertiesNotInDataclass val, dataClass, attrNames
-        else if key not in attrNames
-          delete data[key]
+      if key not in attrNames
+        continue
+      if val instanceof Backbone.Model or val instanceof Backbone.Collection
+        if typeof val is 'object' and val not in alreadyVisited
+          alreadyVisited.push val
+          result[key] _removePropertiesNotInDataclass val, dataClass, attrNames, alreadyVisited
+      else
+        result[key] = val
+    result
 
   class ModelSerializer
     constructor: (@model) ->
       @dataClass = @model.dataClass
-    toJSON: ->
-      data = @model.changedAttributes()
+    changesToJSON: ->
+      @toJSON @model.changedAttributes()
+    allToJSON: ->
+      @toJSON @model.attributes
+    toJSON: (data) ->
       return null if not data
-
+      json = @model.toJSON()
+      # fullName
+      #_removePropertiesNotInDataclass data, @dataClass
       data.__KEY = @model.id
-      data.__STAMP = @model.get '$stamp'    
-      _removePropertiesNotInDataclass data, @dataClass    
-      JSON.stringify data
+      console.log @model.get '$stamp'
+      data.__STAMP = @model.get '$stamp'
+      JSON.stringify json
     fromJSON: (data) ->
       result = {}
       for key, value of data

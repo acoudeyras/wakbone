@@ -5,6 +5,7 @@ define ['./types', './wak-collection', './helpers'], (types, wakCollectionFactor
     constructor: ({@identifying, @indexed, @kind, @name, @scope, @type, @path}, @dataClass) ->
       @identifying ?= false
       @isRaw = @kind in Attribute.rawKinds
+      @readOnly = @kind in Attribute.readOnlyKinds or @type in Attribute.readOnlyTypes
       @catalog = @dataClass.catalog
       if @isRaw
         @typeExtra = types[@type]
@@ -25,11 +26,12 @@ define ['./types', './wak-collection', './helpers'], (types, wakCollectionFactor
       dataClass.Collection
     _convertToRelatedModel: (value) ->
       return null if value is null
-      if value.ID
-        return new @RelatedModel value #already loaded, maybe an expand
+      if value.__deferred?
+        id = value.__deferred.__KEY #not loaded yet
+        new @RelatedModel(id: id)
+      else
+        new @RelatedModel value #already loaded, maybe an expand
 
-      id = value.__deferred.__KEY #not loaded yet
-      new @RelatedModel(id: id)
     _convertToRelatedCollection: (value) ->
       return null if value is null
       url = value.__deferred?.uri
@@ -45,3 +47,5 @@ define ['./types', './wak-collection', './helpers'], (types, wakCollectionFactor
       console.log 'oups'
     toRaw: (value) ->
     @rawKinds: ['storage', 'alias', 'calculated']
+    @readOnlyKinds: ['calculated', 'alias']
+    @readOnlyTypes: ['image']

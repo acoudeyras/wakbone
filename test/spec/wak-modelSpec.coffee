@@ -152,6 +152,12 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
 
     shouldBeAValidModel()
 
+  describe 'url for new entity', ->
+
+    it 'should be the urlRoot of the collection', ->
+      emp = new @catalog.employee.Model()
+      expect(emp.url()).to.equal '/rest/Employee'
+
   describe 'expand', ->
 
     it 'should load expanded data and load them as a model or collection', (done) ->
@@ -204,5 +210,26 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
       @emp.set 'staff[0].company.name', '4D'
       expect(@emp.get 'staff[0].company.name').to.equal '4D'
 
+  describe 'save for new entity (create)', ->
 
+    it 'should work', (done) ->
+      emp = new @catalog.employee.Model(firstName: 'Bob', lastName: 'Simon')
+      emp.save().done ->
+        expect(emp.get 'firstName').to.equal 'Bob'
+        expect(emp.get 'lastName').to.equal 'Simon'
+        expect(emp.get 'fullName').to.equal 'Bob Simon'
+        expect(emp.id).to.exist
+        done()
+
+    it 'should to an update if we try to save it later', (done) ->
+      emp = new @catalog.employee.Model(firstName: 'Bob', lastName: 'Simon')
+      emp.save().done ->
+        originalId = emp.id
+        emp.set 'lastName', 'Roups'
+        emp.save().done ->
+          expect(emp.get 'firstName').to.equal 'Bob'
+          expect(emp.get 'lastName').to.equal 'Roups'
+          expect(emp.get 'fullName').to.equal 'Bob Roups'
+          expect(emp.id).to.equal originalId
+          done()
 

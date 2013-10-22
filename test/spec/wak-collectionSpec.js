@@ -41,7 +41,7 @@
       });
     });
     return describe('query', function() {
-      after(function() {
+      afterEach(function() {
         return this.employees.query.clear();
       });
       describe('limit', function() {
@@ -104,7 +104,7 @@
           });
         });
       });
-      return describe('expand', function() {
+      describe('expand', function() {
         it('should accept single expand on a related entity, fetch corresponding data and load it as a model', function(done) {
           var _this = this;
           this.employees.query.expand('company').limit(5);
@@ -145,6 +145,63 @@
             expect(staff).to.have.length(1);
             emp = staff.at(0);
             expect(emp.get('firstName')).to.equal('MARQUITA');
+            return done();
+          });
+        });
+      });
+      return describe('select', function() {
+        it('should fetch only selected property', function(done) {
+          var _this = this;
+          this.employees.query.select('firstName').limit(5);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var emp;
+            emp = _this.employees.at(0);
+            expect(emp.get('firstName')).to.exist;
+            expect(emp.get('lastName')).not.to.exist;
+            return done();
+          });
+        });
+        it('should fetch only selected properties', function(done) {
+          var _this = this;
+          this.employees.query.select('firstName', 'lastName').limit(5);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var emp;
+            emp = _this.employees.at(0);
+            expect(emp.get('firstName')).to.exist;
+            expect(emp.get('lastName')).to.exist;
+            expect(emp.get('age')).not.to.exist;
+            return done();
+          });
+        });
+        it('should expand related entity if selected property need expand', function(done) {
+          var _this = this;
+          this.employees.query.select('company.name', 'lastName').limit(5);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var emp;
+            emp = _this.employees.at(0);
+            expect(emp.get('lastName')).to.exist;
+            expect(emp.get('age')).not.to.exist;
+            expect(emp.get('company.name')).to.exist;
+            return done();
+          });
+        });
+        return it('should expand related entities if selected property need expand', function(done) {
+          var _this = this;
+          this.employees.query.select('company.name', 'staff.lastName').limit(5);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var emp;
+            emp = _this.employees.at(0);
+            expect(emp.get('company.name')).to.exist;
+            expect(emp.get('staff[0].lastName')).to.exist;
+            expect(emp.get('staff[0].age')).not.to.exist;
             return done();
           });
         });
