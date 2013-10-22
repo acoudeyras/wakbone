@@ -1,6 +1,8 @@
 (function() {
   'use strict';
-  define(['catalog'], function(Catalog) {
+  define(['core/catalog', 'chai'], function(Catalog, _arg) {
+    var expect;
+    expect = _arg.expect;
     return {
       init: function(context, done) {
         var _this = this;
@@ -12,6 +14,12 @@
           context.catalog = _this.catalog = catalog;
           return done();
         });
+      },
+      testFail: function() {
+        return expect(true).to.be["false"];
+      },
+      testSuccess: function() {
+        return expect(true).to.be["true"];
       }
     };
   });

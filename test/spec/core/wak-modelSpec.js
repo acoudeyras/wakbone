@@ -1,8 +1,8 @@
 (function() {
   'use strict';
-  define(['catalog', 'chai', 'test-helpers'], function(Catalog, _arg, helpers) {
-    var expect, shouldBeAValidModel;
-    expect = _arg.expect;
+  define(['chai', 'test-helpers'], function(_arg, helpers) {
+    var assert, expect, shouldBeAValidModel;
+    expect = _arg.expect, assert = _arg.assert;
     before(function(done) {
       return helpers.init(this, done);
     });
@@ -94,7 +94,7 @@
             expect(_this.emp.get('gender')).to.equal(invertedGender);
             return done();
           }).fail(function() {
-            expect(true).to.be["false"];
+            assert.fail();
             return done();
           });
         });
@@ -114,34 +114,34 @@
             expect(expectedDate.month()).to.equal(newDate.month());
             return done();
           }).fail(function() {
-            expect(true).to.be["false"];
+            helpers.testFail();
             return done();
           });
         });
         describe('handling errors', function() {
-          var _isErrorInAge;
-          _isErrorInAge = function(errors) {
+          var _isErrorInFirstName;
+          _isErrorInFirstName = function(errors) {
             var error;
-            expect(errors).to.have.length(1);
+            expect(errors).to.have.length.above(0);
             error = errors[0];
-            return expect(error.message).to.have.string('"age"');
+            return expect(error.message).to.have.string('String length');
           };
           it('should return an array of errors in the fail callback when an error happends on server', function(done) {
             var _this = this;
-            this.emp.set('age', 'robert');
+            this.emp.set('firstName', 'thisIsATooBigStringForTheFirstNameAttributeWayAboveItsMaxLength');
             return this.emp.save().done(function() {
-              expect(true).to.be["false"];
+              helpers.testFail();
               return done();
             }).fail(function(errors) {
-              _isErrorInAge(errors);
+              _isErrorInFirstName(errors);
               return done();
             });
           });
           return it('should trigger the model error event', function(done) {
             var _this = this;
-            this.emp.set('age', 'roberto');
+            this.emp.set('age', 'thisIsATooBigStringForTheFirstNameAttributeWayAboveItsMaxLength');
             this.emp.once('error', function() {
-              _isErrorInAge(_this.emp.get('$errors'));
+              _isErrorInFirstName(_this.emp.get('$errors'));
               return done();
             });
             return this.emp.save();
@@ -257,7 +257,7 @@
         return expect(this.emp.get('staff[0].company.name')).to.equal('4D');
       });
     });
-    return describe('save for new entity (create)', function() {
+    describe('save for new entity (create)', function() {
       it('should work', function(done) {
         var emp;
         emp = new this.catalog.employee.Model({
@@ -289,6 +289,69 @@
             expect(emp.id).to.equal(originalId);
             return done();
           });
+        });
+      });
+    });
+    describe('deleting an entity', function() {
+      return it('should work', function(done) {
+        var emp;
+        emp = new this.catalog.employee.Model({
+          firstName: 'Bob',
+          lastName: 'Simon'
+        });
+        return emp.save().done(function() {
+          return emp.destroy().done(function() {
+            helpers.testSuccess();
+            return done();
+          }).fail(function() {
+            helpers.testFail();
+            return done();
+          });
+        });
+      });
+    });
+    return describe('saving with a related entity', function() {
+      it('should work', function(done) {
+        var Employee, manager;
+        Employee = this.catalog.employee.Model;
+        manager = new Employee({
+          firstName: 'Bob',
+          lastName: 'TheManager'
+        });
+        return manager.save().done(function() {
+          var emp;
+          emp = new Employee({
+            firstName: 'Jim',
+            lastName: 'TheGuy',
+            manager: manager
+          });
+          return emp.save().done(function() {
+            helpers.testSuccess();
+            return done();
+          }).fail(function() {
+            helpers.testFail();
+            return done();
+          });
+        });
+      });
+      return it('should fail when the relatedEntity has not been saved', function(done) {
+        var Employee, emp, manager;
+        Employee = this.catalog.employee.Model;
+        manager = new Employee({
+          firstName: 'Bob',
+          lastName: 'TheManager'
+        });
+        emp = new Employee({
+          firstName: 'Jim',
+          lastName: 'TheGuy',
+          manager: manager
+        });
+        return emp.save().done(function() {
+          helpers.testFail();
+          return done();
+        }).fail(function() {
+          helpers.testSuccess();
+          return done();
         });
       });
     });

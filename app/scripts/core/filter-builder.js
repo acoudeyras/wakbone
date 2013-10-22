@@ -3,7 +3,7 @@
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define([], function() {
-    var FilterClause, QueryBuilder;
+    var FilterBuilder, FilterClause;
     FilterClause = (function() {
       function FilterClause(_arg) {
         this.name = _arg.name, this.val = _arg.val, this.op = _arg.op, this.attr = _arg.attr;
@@ -94,62 +94,58 @@
       return FilterClause;
 
     })();
-    return QueryBuilder = (function() {
-      function QueryBuilder(def) {
-        this.def = def;
-        this.queryArgs = {};
+    return FilterBuilder = (function() {
+      function FilterBuilder(dataClass) {
+        this.dataClass = dataClass;
+        this.filters = {};
       }
 
-      QueryBuilder.prototype.isEmpty = function() {
-        return Object.keys(this.queryArgs).length === 0;
+      FilterBuilder.prototype.isEmpty = function() {
+        return Object.keys(this.filters).length === 0;
       };
 
-      QueryBuilder.prototype.contains = function(name) {
-        return this.queryArgs[name] != null;
+      FilterBuilder.prototype.contains = function(name) {
+        return this.filters[name] != null;
       };
 
-      QueryBuilder.prototype.getClause = function(name) {
-        return this.queryArgs[name];
+      FilterBuilder.prototype.getClause = function(name) {
+        return this.filters[name];
       };
 
-      QueryBuilder.prototype.attr = function(name) {
-        return _.find(this.def.attributes, function(attr) {
-          return attr.name === name;
-        });
-      };
-
-      QueryBuilder.prototype.add = function(fieldName, val, op) {
-        var clause;
-        if (this.attr(fieldName) === null) {
-          debugger;
+      FilterBuilder.prototype.add = function(name, op, val) {
+        var attr, clause;
+        if (arguments.length = 2) {
+          val = op;
+          op = null;
         }
+        attr = this.dataClass.attr(name);
         clause = new FilterClause({
-          name: fieldName,
+          name: name,
           op: op,
           val: val,
-          attr: this.attr(fieldName)
+          attr: attr
         });
         if (clause.isEmpty()) {
           delete this.queryArgs[clause.name];
         } else {
-          this.queryArgs[clause.name] = clause;
+          this.filters[clause.name] = clause;
         }
         return this;
       };
 
-      QueryBuilder.prototype.clear = function() {
-        this.queryArgs = {};
+      FilterBuilder.prototype.clear = function() {
+        this.filters = {};
         return this;
       };
 
-      QueryBuilder.prototype.build = function() {
+      FilterBuilder.prototype.build = function() {
         var _this = this;
-        return '"' + Object.keys(this.queryArgs).map(function(field) {
-          return _this.queryArgs[field].build();
+        return '"' + Object.keys(this.filters).map(function(field) {
+          return _this.filters[field].build();
         }).join(' AND ') + '"';
       };
 
-      return QueryBuilder;
+      return FilterBuilder;
 
     })();
   });

@@ -45,33 +45,32 @@ define [], ->
     build: -> @_buildField() + @_buildOp() + @_buildValue()
     @operators: ['<', '>', '=', '!', '!=', '>=', '<=']
 
-  class QueryBuilder
-    constructor: (@def) ->
-      @queryArgs = {}
-    isEmpty: -> Object.keys(@queryArgs).length is 0
-    contains: (name) -> @queryArgs[name]?
-    getClause: (name) -> @queryArgs[name]
-    attr: (name) ->
-      _.find @def.attributes, (attr) ->
-        attr.name is name
-    add : (fieldName, val, op) ->
-      if @attr(fieldName) == null
-        debugger
+  class FilterBuilder
+    constructor: (@dataClass) ->
+      @filters = {}
+    isEmpty: -> Object.keys(@filters).length is 0
+    contains: (name) -> @filters[name]?
+    getClause: (name) -> @filters[name]
+    add : (name, op, val) ->
+      if arguments.length = 2
+        val = op
+        op = null
+      attr = @dataClass.attr name
       clause = new FilterClause(
-        name: fieldName
+        name: name
         op: op
         val: val
-        attr: @attr(fieldName)
+        attr: attr
       )
       if clause.isEmpty()
         delete @queryArgs[clause.name]
       else
-        @queryArgs[clause.name] = clause
+        @filters[clause.name] = clause
       @
     clear: ->
-      @queryArgs = {}
+      @filters = {}
       @
     build: ->
-      '"' + Object.keys(@queryArgs).map( (field) =>
-        @queryArgs[field].build()
+      '"' + Object.keys(@filters).map( (field) =>
+        @filters[field].build()
       ).join(' AND ') + '"'

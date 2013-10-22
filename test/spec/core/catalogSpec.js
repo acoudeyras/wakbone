@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  define(['catalog', 'chai', 'test-helpers'], function(Catalog, _arg, helpers) {
+  define(['core/catalog', 'chai', 'test-helpers'], function(Catalog, _arg, helpers) {
     var expect;
     expect = _arg.expect;
     before(function(done) {

@@ -2,7 +2,7 @@
   'use strict';
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(['wak-url-builder', 'chai'], function(UrlBuilder, _arg) {
+  define(['core/wak-url-builder', 'chai'], function(UrlBuilder, _arg) {
     var expect, rootUrl, urlBuilder;
     expect = _arg.expect;
     rootUrl = 'http://localhost:8080';

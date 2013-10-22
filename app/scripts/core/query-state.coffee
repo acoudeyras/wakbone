@@ -7,11 +7,14 @@ define ['./wak-url-builder', './orderby-parser'], (UrlBuilder, _parseOrderBy) ->
     constructor:(@collection, @rootUrl, @originState)->
       @state = _.extend QueryState.default, @originState
       @_urlBuilder = new UrlBuilder @rootUrl
-    filter:(fieldName, val, op) ->
+    where:(filterClause) ->
+      @state.where = filterClause
+      @_urlBuilder.where filterClause
+      @
     orderBy: (orderBys...) ->
       parsedOrderBys = _parseOrderBy orderBys
+      @state.orderBy = parsedOrderBys
       @_urlBuilder.orderBy parsedOrderBys
-      @_orderBy = parsedOrderBys
       @
     select: (selecteds...) ->
       @state.select = selecteds

@@ -1,5 +1,5 @@
 'use strict'
-define ['wak-url-builder', 'backbone-walker', 'helpers', 'model-serializer', 'backbone'], (UrlBuilder, BackboneWalker, helpers, ModelSerializer)->
+define ['./wak-url-builder', './backbone-walker', './helpers', './model-serializer', 'backbone'], (UrlBuilder, BackboneWalker, helpers, ModelSerializer)->
   
   _fieldsToRemove = ['__entityModel', '__KEY', '__STAMP', 'id', 'ID', 'uri']
 
@@ -25,7 +25,12 @@ define ['wak-url-builder', 'backbone-walker', 'helpers', 'model-serializer', 'ba
       @walk(expression).val()
     set: (expression, value) ->
       if typeof expression is 'object'
+        if expression.id?
+          @_urlBuilder.key expression.id
         return Backbone.Model::set.apply @, arguments
+
+      if expression is 'id'
+          @_urlBuilder.key value
       {model, property} = @walk expression
       Backbone.Model::set.call model, property, value
     toJSON: ->
@@ -36,7 +41,7 @@ define ['wak-url-builder', 'backbone-walker', 'helpers', 'model-serializer', 'ba
 
       result = {}
       attrNames = _.pluck dataClass.attr(), 'name'
-      for key, value of @attributes
+      for key, value of @attributes #WTF !!!
         if key not in attrNames
           continue
         attr = dataClass.attr key
@@ -44,6 +49,15 @@ define ['wak-url-builder', 'backbone-walker', 'helpers', 'model-serializer', 'ba
           continue
         if not value?
           result[key] = null
+          continue
+        if value instanceof Backbone.Collection
+          continue
+        if value instanceof Backbone.Model
+          if value.isNew()
+            throw new Error('You must first save a entity before making it related to another')
+          result[key] = {
+            __KEY: value.get('id')
+          }
           continue
         if typeof value.toJSON is 'function'
           value = value.toJSON()

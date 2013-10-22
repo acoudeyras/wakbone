@@ -1,5 +1,5 @@
 'use strict'
-define ['query-state', 'backbone'], (QueryState)->
+define ['./query-state', 'backbone'], (QueryState)->
 
   _createDef = (dataClass, model, catalog) ->
     constructor: ->
@@ -10,8 +10,7 @@ define ['query-state', 'backbone'], (QueryState)->
     model: model
     toJSON: ->
       return undefined if @models.length is 0
-      debugger
-      @models.map -> (model) model.toJSON()
+      @models.map (model) -> model.toJSON()
     parse: (response) ->
       @$total = response.__COUNT
       response.__ENTITIES

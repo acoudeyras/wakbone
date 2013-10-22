@@ -1,5 +1,5 @@
 'use strict'
-define ['orderby-parser', 'chai'], (parse, {expect}) ->
+define ['core/orderby-parser', 'chai'], (parse, {expect}) ->
 
   describe 'with one string', ->
 

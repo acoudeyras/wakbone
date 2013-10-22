@@ -1,5 +1,5 @@
 'use strict'
-define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, helpers) ->
+define ['core/wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, helpers) ->
 
   before (done) -> helpers.init @, done
 
@@ -77,7 +77,7 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
           .limit(5)
         @employees.fetch(reset:true).done =>
           found = @employees.at(0).get('firstName')
-          expect(found).to.equal 'ZACKARY'
+          expect(found).to.equal 'ZANE'
           done()
 
     describe 'expand', ->
@@ -89,7 +89,7 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
         @employees.fetch(reset:true).done =>
           company = @employees.at(0).get('company')
           expect(company).to.be.an.instanceof Backbone.Model
-          expect(company.get 'name').to.equal 'Table Right Ice'
+          expect(company.get 'name').to.equal 'Pico Myaki Badge'
           done()
 
       it 'should accept multiple expand on related entities, fetch corresponding data and load it as a collection', (done) ->
@@ -100,22 +100,9 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
         @employees.fetch(reset:true).done =>
           staff = @employees.at(2).get('staff')
           expect(staff).to.be.an.instanceof Backbone.Collection
-          expect(staff).to.have.length 1
+          expect(staff).to.have.length 6
           emp = staff.at 0
-          expect(emp.get 'firstName').to.equal 'MARQUITA'
-          done()
-
-      it 'should accept multiple expand on related entities, fetch corresponding data and load it as a collection', (done) ->
-        @employees.query
-          .expand('managedCompanies', 'staff')
-          .skip(5)
-          .limit(10)
-        @employees.fetch(reset:true).done =>
-          staff = @employees.at(2).get('staff')
-          expect(staff).to.be.an.instanceof Backbone.Collection
-          expect(staff).to.have.length 1
-          emp = staff.at 0
-          expect(emp.get 'firstName').to.equal 'MARQUITA'
+          expect(emp.get 'firstName').to.equal 'JUDY'
           done()
 
     describe 'select', ->
@@ -160,7 +147,29 @@ define ['wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, hel
           emp = @employees.at 0
           expect(emp.get 'company.name').to.exist
           expect(emp.get 'staff[0].lastName').to.exist
-          expect(emp.get 'staff[0].age').not.to.exist          
+          expect(emp.get 'staff[0].age').not.to.exist
           done()
 
-          
+    describe 'filter', ->
+
+      it 'should accept and filter with a simple filter string', (done) ->
+        @employees.query
+          .where('firstName begin a')
+          .orderBy(firstName: -1)
+          .limit(5)
+        @employees.fetch(reset:true).done =>
+          emp = @employees.at 0
+          firstName = emp.get 'firstName'
+          expect(firstName[0]).to.equal 'A'
+          done()
+
+      it 'should accept and filter with a complex filter string', (done) ->
+        @employees.query
+          .where('firstName begin a and age = 32')
+          .orderBy(firstName: -1)
+          .limit(5)
+        @employees.fetch(reset:true).done =>
+          emp = @employees.at 0
+          firstName = emp.get 'firstName'
+          expect(firstName).to.equal 'AVIS'
+          done()          

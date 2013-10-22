@@ -16,14 +16,18 @@
         this._urlBuilder = new UrlBuilder(this.rootUrl);
       }
 
-      QueryState.prototype.filter = function(fieldName, val, op) {};
+      QueryState.prototype.where = function(filterClause) {
+        this.state.where = filterClause;
+        this._urlBuilder.where(filterClause);
+        return this;
+      };
 
       QueryState.prototype.orderBy = function() {
         var orderBys, parsedOrderBys;
         orderBys = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         parsedOrderBys = _parseOrderBy(orderBys);
+        this.state.orderBy = parsedOrderBys;
         this._urlBuilder.orderBy(parsedOrderBys);
-        this._orderBy = parsedOrderBys;
         return this;
       };
 

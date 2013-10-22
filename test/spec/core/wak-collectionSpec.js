@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  define(['wak-collection', 'chai', 'test-helpers'], function(WakCollection, _arg, helpers) {
+  define(['core/wak-collection', 'chai', 'test-helpers'], function(WakCollection, _arg, helpers) {
     var expect;
     expect = _arg.expect;
     before(function(done) {
@@ -99,7 +99,7 @@
           }).done(function() {
             var found;
             found = _this.employees.at(0).get('firstName');
-            expect(found).to.equal('ZACKARY');
+            expect(found).to.equal('ZANE');
             return done();
           });
         });
@@ -114,22 +114,7 @@
             var company;
             company = _this.employees.at(0).get('company');
             expect(company).to.be.an["instanceof"](Backbone.Model);
-            expect(company.get('name')).to.equal('Table Right Ice');
-            return done();
-          });
-        });
-        it('should accept multiple expand on related entities, fetch corresponding data and load it as a collection', function(done) {
-          var _this = this;
-          this.employees.query.expand('managedCompanies', 'staff').skip(5).limit(10);
-          return this.employees.fetch({
-            reset: true
-          }).done(function() {
-            var emp, staff;
-            staff = _this.employees.at(2).get('staff');
-            expect(staff).to.be.an["instanceof"](Backbone.Collection);
-            expect(staff).to.have.length(1);
-            emp = staff.at(0);
-            expect(emp.get('firstName')).to.equal('MARQUITA');
+            expect(company.get('name')).to.equal('Pico Myaki Badge');
             return done();
           });
         });
@@ -142,14 +127,14 @@
             var emp, staff;
             staff = _this.employees.at(2).get('staff');
             expect(staff).to.be.an["instanceof"](Backbone.Collection);
-            expect(staff).to.have.length(1);
+            expect(staff).to.have.length(6);
             emp = staff.at(0);
-            expect(emp.get('firstName')).to.equal('MARQUITA');
+            expect(emp.get('firstName')).to.equal('JUDY');
             return done();
           });
         });
       });
-      return describe('select', function() {
+      describe('select', function() {
         it('should fetch only selected property', function(done) {
           var _this = this;
           this.employees.query.select('firstName').limit(5);
@@ -202,6 +187,38 @@
             expect(emp.get('company.name')).to.exist;
             expect(emp.get('staff[0].lastName')).to.exist;
             expect(emp.get('staff[0].age')).not.to.exist;
+            return done();
+          });
+        });
+      });
+      return describe('filter', function() {
+        it('should accept and filter with a simple filter string', function(done) {
+          var _this = this;
+          this.employees.query.where('firstName begin a').orderBy({
+            firstName: -1
+          }).limit(5);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var emp, firstName;
+            emp = _this.employees.at(0);
+            firstName = emp.get('firstName');
+            expect(firstName[0]).to.equal('A');
+            return done();
+          });
+        });
+        return it('should accept and filter with a complex filter string', function(done) {
+          var _this = this;
+          this.employees.query.where('firstName begin a and age = 32').orderBy({
+            firstName: -1
+          }).limit(5);
+          return this.employees.fetch({
+            reset: true
+          }).done(function() {
+            var emp, firstName;
+            emp = _this.employees.at(0);
+            firstName = emp.get('firstName');
+            expect(firstName).to.equal('AVIS');
             return done();
           });
         });

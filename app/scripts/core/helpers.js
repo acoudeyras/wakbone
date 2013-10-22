@@ -29,6 +29,12 @@
         def.resolve(value);
         return def.promise();
       },
+      rejectedPromise: function(value) {
+        var def;
+        def = $.Deferred();
+        def.reject(value);
+        return def.promise();
+      },
       log: function(message) {
         return console.log(message);
       },

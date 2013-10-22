@@ -41,8 +41,16 @@ module.exports = function (grunt) {
                         expand: true,
                         flatten: true,
                         cwd: './',
-                        src: ['app/scripts/*.coffee'],
-                        dest: 'app/scripts/',
+                        src: ['app/scripts/core/*.coffee'],
+                        dest: 'app/scripts/core/',
+                        ext: '.js'
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        cwd: './',
+                        src: ['app/scripts/views/*.coffee'],
+                        dest: 'app/scripts/views/',
                         ext: '.js'
                     },
                     {
@@ -51,14 +59,30 @@ module.exports = function (grunt) {
                         cwd: './',
                         src: ['test/spec/*.coffee'],
                         dest: 'test/spec/',
-                        ext: '.js'                        
+                        ext: '.js'
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        cwd: './',
+                        src: ['test/spec/core/*.coffee'],
+                        dest: 'test/spec/core/',
+                        ext: '.js' 
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        cwd: './',
+                        src: ['test/spec/views/*.coffee'],
+                        dest: 'test/spec/views/',
+                        ext: '.js' 
                     }
                 ]
 
             }
         },
         coffeelint: {
-            app: ['app/scripts/*.coffee', 'test/spec/*.coffee'],
+            app: ['app/scripts/**/*.coffee', 'test/spec/**/*.coffee'],
             options: {
                 'no_trailing_whitespace': {
                     'level': 'error'
@@ -88,15 +112,15 @@ module.exports = function (grunt) {
     
             coffee: {
                 files: [
-                    'app/scripts/*.coffee',
-                    'test/spec/*.coffee',
+                    'app/scripts/**/*.coffee',
+                    'test/spec/**/*.coffee',
                 ],
                 tasks: ['coffee']
             },
             karma: {
                 files: [
-                    'app/scripts/*.js',
-                    'test/spec/*.js',
+                    'app/scripts/**/*.js',
+                    'test/spec/**/*.js',
                 ],                
                 tasks: ['karma:unit:run']
             }            

@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  define(['query-state', 'backbone'], function(QueryState) {
+  define(['./query-state', 'backbone'], function(QueryState) {
     var _createDef;
     _createDef = function(dataClass, model, catalog) {
       return {
@@ -15,9 +15,8 @@
           if (this.models.length === 0) {
             return void 0;
           }
-          debugger;
-          return this.models.map(function() {
-            return model(model.toJSON());
+          return this.models.map(function(model) {
+            return model.toJSON();
           });
         },
         parse: function(response) {

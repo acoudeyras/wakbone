@@ -3,7 +3,7 @@
   var __slice = [].slice,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(['wak-url-builder', 'backbone-walker', 'helpers', 'model-serializer', 'backbone'], function(UrlBuilder, BackboneWalker, helpers, ModelSerializer) {
+  define(['./wak-url-builder', './backbone-walker', './helpers', './model-serializer', 'backbone'], function(UrlBuilder, BackboneWalker, helpers, ModelSerializer) {
     var _createDef, _fieldsToRemove;
     _fieldsToRemove = ['__entityModel', '__KEY', '__STAMP', 'id', 'ID', 'uri'];
     _createDef = function(dataClass, catalog, dataloader) {
@@ -40,7 +40,13 @@
         set: function(expression, value) {
           var model, property, _ref;
           if (typeof expression === 'object') {
+            if (expression.id != null) {
+              this._urlBuilder.key(expression.id);
+            }
             return Backbone.Model.prototype.set.apply(this, arguments);
+          }
+          if (expression === 'id') {
+            this._urlBuilder.key(value);
           }
           _ref = this.walk(expression), model = _ref.model, property = _ref.property;
           return Backbone.Model.prototype.set.call(model, property, value);
@@ -69,6 +75,18 @@
             }
             if (value == null) {
               result[key] = null;
+              continue;
+            }
+            if (value instanceof Backbone.Collection) {
+              continue;
+            }
+            if (value instanceof Backbone.Model) {
+              if (value.isNew()) {
+                throw new Error('You must first save a entity before making it related to another');
+              }
+              result[key] = {
+                __KEY: value.get('id')
+              };
               continue;
             }
             if (typeof value.toJSON === 'function') {

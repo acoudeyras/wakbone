@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  define(['orderby-parser', 'chai'], function(parse, _arg) {
+  define(['core/orderby-parser', 'chai'], function(parse, _arg) {
     var expect;
     expect = _arg.expect;
     describe('with one string', function() {

@@ -1,5 +1,5 @@
 'use strict'
-define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
+define ['chai', 'test-helpers'], ({expect, assert}, helpers) ->
 
   before (done) -> helpers.init @, done
 
@@ -83,7 +83,7 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
             expect(@emp.get 'gender').to.equal invertedGender
             done()
         .fail ->
-          expect(true).to.be.false #TODO ?
+          assert.fail() #TODO ?
           done()
 
       it 'should be able to update an employee for a type that need conversion (date)', (done) ->
@@ -99,30 +99,30 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
             expect(expectedDate.month()).to.equal newDate.month()
             done()
         .fail ->
-          expect(true).to.be.false #TODO ?
+          helpers.testFail()
           done()
 
       describe 'handling errors', ->
 
-        _isErrorInAge = (errors) ->
-          expect(errors).to.have.length 1
+        _isErrorInFirstName = (errors) ->
+          expect(errors).to.have.length.above 0
           error = errors[0]
-          expect(error.message).to.have.string '"age"'
+          expect(error.message).to.have.string 'String length'
 
         it 'should return an array of errors in the fail callback when an error happends on server', (done) ->
-          @emp.set 'age', 'robert'
+          @emp.set 'firstName', 'thisIsATooBigStringForTheFirstNameAttributeWayAboveItsMaxLength'
           @emp.save()
             .done =>
-              expect(true).to.be.false #TODO ?
+              helpers.testFail()
               done()
           .fail (errors)=>
-            _isErrorInAge errors
+            _isErrorInFirstName errors
             done()
 
         it 'should trigger the model error event', (done) ->
-          @emp.set 'age', 'roberto'
+          @emp.set 'age', 'thisIsATooBigStringForTheFirstNameAttributeWayAboveItsMaxLength'
           @emp.once 'error', =>
-            _isErrorInAge @emp.get('$errors')
+            _isErrorInFirstName @emp.get('$errors')
             done()
           @emp.save()
 
@@ -232,4 +232,41 @@ define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers) ->
           expect(emp.get 'fullName').to.equal 'Bob Roups'
           expect(emp.id).to.equal originalId
           done()
+
+  describe 'deleting an entity', ->
+
+    it 'should work', (done) ->
+      emp = new @catalog.employee.Model(firstName: 'Bob', lastName: 'Simon')
+      emp.save().done ->
+        emp.destroy().done ->
+          helpers.testSuccess()
+          done()
+        .fail ->
+          helpers.testFail()
+          done()
+
+  describe 'saving with a related entity', ->
+
+    it 'should work', (done) ->
+      Employee = @catalog.employee.Model
+      manager = new Employee(firstName: 'Bob', lastName: 'TheManager')
+      manager.save().done ->
+        emp = new Employee(firstName: 'Jim', lastName: 'TheGuy', manager: manager)
+        emp.save().done ->
+          helpers.testSuccess()
+          done()
+        .fail ->
+          helpers.testFail()
+          done()
+
+    it 'should fail when the relatedEntity has not been saved', (done) ->
+      Employee = @catalog.employee.Model
+      manager = new Employee(firstName: 'Bob', lastName: 'TheManager')
+      emp = new Employee(firstName: 'Jim', lastName: 'TheGuy', manager: manager)
+      emp.save().done ->
+        helpers.testFail()
+        done()
+      .fail ->
+        helpers.testSuccess()
+        done()
 

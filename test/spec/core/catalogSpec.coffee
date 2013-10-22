@@ -1,5 +1,5 @@
 'use strict'
-define ['catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers)->
+define ['core/catalog', 'chai', 'test-helpers'], (Catalog, {expect}, helpers)->
 
   before (done) -> helpers.init @, done
 

@@ -16,9 +16,14 @@
         return Backbone.Model.prototype.sync.apply(model, ['read', model, options]);
       };
 
-      HttpRequester.prototype.upsert = function(data, model, options) {
-        var methodOptions, url;
-        console.log(data);
+      HttpRequester.prototype.upsert = function(model, options) {
+        var data, ex, methodOptions, url;
+        try {
+          data = new ModelSerializer(model).toJSON();
+        } catch (_error) {
+          ex = _error;
+          return helpers.rejectedPromise(ex.message);
+        }
         if (data == null) {
           return helpers.resolvedPromise();
         }
@@ -32,19 +37,21 @@
       };
 
       HttpRequester.prototype.create = function(model, options) {
-        var data;
-        data = new ModelSerializer(model).allToJSON();
-        return this.upsert(data, model, options);
+        return this.upsert(model, options);
       };
 
       HttpRequester.prototype.update = function(model, options) {
-        var data;
-        data = new ModelSerializer(model).allToJSON();
-        return this.upsert(data, model, options);
+        return this.upsert(model, options);
       };
 
       HttpRequester.prototype["delete"] = function(model, options) {
-        throw new Error('method not supported yet');
+        var methodOptions, url;
+        url = model.url() + '/?$method=delete';
+        methodOptions = {
+          url: url,
+          type: 'POST'
+        };
+        return $.ajax(_finalOptions(methodOptions, options));
       };
 
       return HttpRequester;

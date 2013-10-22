@@ -1,5 +1,5 @@
 'use strict'
-define ['wak-url-builder', 'chai'], (UrlBuilder, {expect}) ->
+define ['core/wak-url-builder', 'chai'], (UrlBuilder, {expect}) ->
 
   rootUrl = 'http://localhost:8080'
 

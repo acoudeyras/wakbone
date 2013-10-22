@@ -21,6 +21,10 @@ define ['./underscore-ext', 'moment'], (_ext, moment) ->
     def = $.Deferred()
     def.resolve value
     def.promise()
+  rejectedPromise: (value) ->
+    def = $.Deferred()
+    def.reject value
+    def.promise()
   log: (message) ->
     console.log message
   throw: (message, Type=Error) ->
