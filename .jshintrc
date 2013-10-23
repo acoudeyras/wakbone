@@ -1,5 +1,5 @@
 {
-    "node": false,
+    "node": true,
     "boss": true,
     "browser": true,
     "esnext": true,
@@ -22,6 +22,7 @@
      "globals": {
         "_": false,
         "Backbone": false,
-        "define": false
+        "define": false,
+        "requirejs": false
     }
 }

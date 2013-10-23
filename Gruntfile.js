@@ -1,4 +1,3 @@
-// Generated on 2013-10-18 using generator-webapp 0.4.3
 'use strict';
 
 // # Globbing
@@ -15,6 +14,19 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-contrib-coffee');
     grunt.loadNpmTasks('grunt-coffeelint');
+    grunt.loadNpmTasks('grunt-docco');
+
+    function _toJs(fileName) {
+        return fileName.replace(/\.coffee$/, '.js');
+    }
+
+    var _coffeeSrc = 'app/scripts/**/*.coffee';
+    var _coffeeTest = 'test/spec/**/*.coffee';
+    var _coffeeAll = [_coffeeSrc, _coffeeTest];
+    var _jsSrc = _toJs(_coffeeSrc);
+    var _jsTest = _toJs(_coffeeTest);
+    var _jsAll = _coffeeAll.map(_toJs);
+    var _jsPure = ['Gruntfile.js', 'test/test-main.js'];
 
     grunt.initConfig({
         // configurable paths
@@ -22,11 +34,18 @@ module.exports = function (grunt) {
             app: 'app',
             dist: 'dist'
         },
+        docco: {
+            src: _coffeeSrc,
+            options: {
+              output: 'docs/annotated-source'
+            }
+        },
         karma: {
             unit: {
                 configFile: 'karma.conf.js',
                 background: true,
                 reporters: ['progress', 'osx'],
+                singleRun: false
             },
             once: {
                 configFile: 'karma.conf.js',
@@ -36,53 +55,15 @@ module.exports = function (grunt) {
         },
         coffee: {
             compile: {
-                files: [
-                    {
-                        expand: true,
-                        flatten: true,
-                        cwd: './',
-                        src: ['app/scripts/core/*.coffee'],
-                        dest: 'app/scripts/core/',
-                        ext: '.js'
-                    },
-                    {
-                        expand: true,
-                        flatten: true,
-                        cwd: './',
-                        src: ['app/scripts/views/*.coffee'],
-                        dest: 'app/scripts/views/',
-                        ext: '.js'
-                    },
-                    {
-                        expand: true,
-                        flatten: true,
-                        cwd: './',
-                        src: ['test/spec/*.coffee'],
-                        dest: 'test/spec/',
-                        ext: '.js'
-                    },
-                    {
-                        expand: true,
-                        flatten: true,
-                        cwd: './',
-                        src: ['test/spec/core/*.coffee'],
-                        dest: 'test/spec/core/',
-                        ext: '.js' 
-                    },
-                    {
-                        expand: true,
-                        flatten: true,
-                        cwd: './',
-                        src: ['test/spec/views/*.coffee'],
-                        dest: 'test/spec/views/',
-                        ext: '.js' 
+                files: grunt.file.expandMapping([_coffeeSrc],'./', {
+                    rename: function(destBase,destPath) {
+                        return _toJs(destBase + destPath);
                     }
-                ]
-
+                })
             }
         },
         coffeelint: {
-            app: ['app/scripts/**/*.coffee', 'test/spec/**/*.coffee'],
+            app: _coffeeAll,
             options: {
                 'no_trailing_whitespace': {
                     'level': 'error'
@@ -111,19 +92,13 @@ module.exports = function (grunt) {
            // },
     
             coffee: {
-                files: [
-                    'app/scripts/**/*.coffee',
-                    'test/spec/**/*.coffee',
-                ],
+                files: _coffeeAll,
                 tasks: ['coffee']
             },
             karma: {
-                files: [
-                    'app/scripts/**/*.js',
-                    'test/spec/**/*.js',
-                ],                
+                files: _jsAll,
                 tasks: ['karma:unit:run']
-            }            
+            }
         },
         connect: {
             options: {
@@ -163,6 +138,8 @@ module.exports = function (grunt) {
                     dot: true,
                     src: [
                         '.tmp',
+                        './docs/**',
+                        './coverage/**',
                         '<%= yeoman.dist %>/*',
                         '!<%= yeoman.dist %>/.git*'
                     ]
@@ -176,10 +153,10 @@ module.exports = function (grunt) {
             },
             all: [
                 'Gruntfile.js',
-                '<%= yeoman.app %>/scripts/{,*/}*.js',
-                '!<%= yeoman.app %>/scripts/vendor/*',
-                'test/spec/{,*/}*.js'
-            ]
+                _jsSrc,
+                _jsTest
+            ],
+            purejs: _jsPure
         },
         autoprefixer: {
             options: {
@@ -381,6 +358,9 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build', [
+        'coffeelint',
+        'coffee',
+        'jshint:purejs',
         'clean:dist',
         'useminPrepare',
         'concurrent:dist',
@@ -388,6 +368,7 @@ module.exports = function (grunt) {
         'requirejs',
         'concat',
         'cssmin',
+        'docco',
         'uglify',
         'modernizr',
         'copy:dist',
@@ -396,8 +377,6 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('default', [
-        'coffeelint',
-        'coffee',
         'test',
         'build'
     ]);

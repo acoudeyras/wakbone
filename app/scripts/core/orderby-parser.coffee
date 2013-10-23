@@ -41,4 +41,4 @@ define [], ->
     orderBy = orderBys[0]
     if typeof orderBy is 'string'
       return _parseArray orderBy.split(',')
-    return _parseObject orderBy  
+    return _parseObject orderBy

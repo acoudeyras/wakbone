@@ -137,7 +137,7 @@ define [<span class="string">'./wak-url-builder'</span>, <span class="string">'.
     expand: (expanded...) -&gt;
       <span class="property">@_expanded</span> = <span class="property">@_urlBuilder</span>.expand expanded
       @
-    walk: (expression) -&gt; 
+    walk: (expression) -&gt;
       <span class="property">@walker</span>.walk expression
     get: (expression) -&gt;
       <span class="property">@walk</span>(expression).val()
@@ -148,7 +148,7 @@ define [<span class="string">'./wak-url-builder'</span>, <span class="string">'.
         <span class="keyword">return</span> Backbone.Model::set.apply @, arguments
 
       <span class="keyword">if</span> expression <span class="keyword">is</span> <span class="string">'id'</span>
-          <span class="property">@_urlBuilder</span>.key value
+        <span class="property">@_urlBuilder</span>.key value
       {model, property} = <span class="property">@walk</span> expression
       Backbone.Model::set.call model, property, value
     toJSON: -&gt;

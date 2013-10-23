@@ -19,7 +19,7 @@ define ['./wak-url-builder', './backbone-walker', './helpers', './model-serializ
     expand: (expanded...) ->
       @_expanded = @_urlBuilder.expand expanded
       @
-    walk: (expression) -> 
+    walk: (expression) ->
       @walker.walk expression
     get: (expression) ->
       @walk(expression).val()
@@ -30,7 +30,7 @@ define ['./wak-url-builder', './backbone-walker', './helpers', './model-serializ
         return Backbone.Model::set.apply @, arguments
 
       if expression is 'id'
-          @_urlBuilder.key value
+        @_urlBuilder.key value
       {model, property} = @walk expression
       Backbone.Model::set.call model, property, value
     toJSON: ->

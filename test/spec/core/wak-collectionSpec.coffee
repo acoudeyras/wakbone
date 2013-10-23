@@ -172,4 +172,4 @@ define ['core/wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}
           emp = @employees.at 0
           firstName = emp.get 'firstName'
           expect(firstName).to.equal 'AVIS'
-          done()          
+          done()
