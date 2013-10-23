@@ -14,7 +14,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-contrib-coffee');
     grunt.loadNpmTasks('grunt-coffeelint');
-    grunt.loadNpmTasks('grunt-docco');
+    grunt.loadNpmTasks('grunt-docco2');
 
     function _toJs(fileName) {
         return fileName.replace(/\.coffee$/, '.js');
@@ -35,9 +35,11 @@ module.exports = function (grunt) {
             dist: 'dist'
         },
         docco: {
-            src: _coffeeSrc,
-            options: {
-              output: 'docs/annotated-source'
+            docs: {
+                src: _coffeeSrc,
+                options: {
+                  output: 'docs/annotated-source'
+                }
             }
         },
         karma: {
@@ -379,12 +381,13 @@ module.exports = function (grunt) {
         'karma:once'
     ]);
 
+
+
     grunt.registerTask('build', [
         'coffeelint',
         'coffee',
         'jshint:purejs',
         'jsonlint',
-        'clean:dist',
         'useminPrepare',
         'concurrent:dist',
         'autoprefixer',
@@ -392,13 +395,14 @@ module.exports = function (grunt) {
         'cssmin',
         'uglify:wakbone',
         'docco',
-        'modernizr',
-        'copy:dist',
+        //'modernizr',
+        //'copy:dist',
         'rev',
         'usemin'
     ]);
 
     grunt.registerTask('default', [
+        'clean:dist',
         'test',
         'build'
     ]);
