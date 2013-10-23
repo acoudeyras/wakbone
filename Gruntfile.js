@@ -147,6 +147,11 @@ module.exports = function (grunt) {
             },
             server: '.tmp'
         },
+        jsonlint: {
+            all: {
+                src: ['bower.json', 'package.json']
+            }
+        },
         jshint: {
             options: {
                 jshintrc: '.jshintrc'
@@ -177,7 +182,7 @@ module.exports = function (grunt) {
             dist: {}
         },*/
         requirejs: {
-            dist: {
+            wakbone: {
                 // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
                 options: {
                     // `name` and `out` is set by grunt-usemin
@@ -188,9 +193,19 @@ module.exports = function (grunt) {
                     //generateSourceMaps: true,
                     // required to support SourceMaps
                     // http://requirejs.org/docs/errors.html#sourcemapcomments
+                    name: 'wakbone',
                     preserveLicenseComments: false,
                     useStrict: true,
-                    wrap: true
+                    wrap: true,
+                    paths: {
+                        jquery: 'empty:',
+                        underscore: 'empty:',
+                        backbone: 'empty:',
+                        'underscore.string': 'empty:',
+                        moment: 'empty:'
+                    },
+                    mainConfigFile: '<%= yeoman.app %>/scripts/wakbone.js',
+                    out: 'dist/scripts/wakbone.js'
                     //uglify2: {} // https://github.com/mishoo/UglifyJS2
                 }
             }
@@ -277,6 +292,13 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        uglify: {
+            wakbone: {
+              files: {
+                '<%= yeoman.dist %>/scripts/wakbone.min.js': ['<%= yeoman.dist %>/scripts/wakbone.js']
+              }
+            }
+        },
         // Put files not handled in other tasks here
         copy: {
             dist: {
@@ -309,7 +331,7 @@ module.exports = function (grunt) {
                 '<%= yeoman.dist %>/styles/{,*/}*.css',
                 '!<%= yeoman.dist %>/scripts/vendor/*'
             ],
-            uglify: true
+            uglify: false
         },
         concurrent: {
             server: [
@@ -361,12 +383,12 @@ module.exports = function (grunt) {
         'coffeelint',
         'coffee',
         'jshint:purejs',
+        'jsonlint',
         'clean:dist',
         'useminPrepare',
         'concurrent:dist',
         'autoprefixer',
         'requirejs',
-        'concat',
         'cssmin',
         'docco',
         'uglify',

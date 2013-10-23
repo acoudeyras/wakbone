@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>types.coffee</title>
+  <title>wakbone.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -106,7 +106,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>types.coffee</h1>
+                  <h1>wakbone.coffee</h1>
               </div>
           </li>
         
@@ -121,24 +121,22 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>define [<span class="string">'./helpers'</span>], (helpers) -&gt;
-  <span class="function"><span class="title">_asItCome</span></span> = (value) -&gt; value
-  _types =
-    string:
-      fromRaw: _asItCome
-      toRaw: _asItCome
-    number:
-      fromRaw: _asItCome
-      toRaw: _asItCome
-    long:
-      fromRaw: _asItCome
-      toRaw: _asItCome
-    date:
-      fromRaw: (value) -&gt; moment value, moment.wakFormat
-      toRaw: _asItCome <span class="comment">#TODO</span>
-    image:
-      fromRaw: _asItCome <span class="comment">#TODO</span>
-      toRaw: _asItCome <span class="comment">#TODO</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>require.config(
+  paths:
+    jquery: <span class="string">'../bower_components/jquery/jquery'</span>
+    underscore: <span class="string">'../bower_components/underscore/underscore'</span>
+    backbone: <span class="string">'../bower_components/backbone/backbone'</span>
+    <span class="string">'underscore.string'</span>: <span class="string">'../bower_components/underscore.string/dist/underscore.string.min'</span>
+    moment: <span class="string">'../bower_components/moment/moment'</span>
+  shim:
+    backbone:
+      deps: [<span class="string">'underscore'</span>, <span class="string">'jquery'</span>]
+    <span class="string">'underscore.string'</span>:
+      deps: [<span class="string">'underscore'</span>]
+)
+
+define [<span class="string">'./core/catalog'</span>], (Catalog) -&gt;
+  Catalog</pre></div></div>
             
         </li>
         
