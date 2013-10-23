@@ -5,7 +5,7 @@
       underscore: '../bower_components/underscore/underscore',
       backbone: '../bower_components/backbone/backbone',
       'underscore.string': '../bower_components/underscore.string/dist/underscore.string.min',
-      moment: '../bower_components/moment/moment'
+      moment: '../bower_components/moment/min/moment-with-langs'
     },
     shim: {
       backbone: {
@@ -13,6 +13,9 @@
       },
       'underscore.string': {
         deps: ['underscore']
+      },
+      stickit: {
+        deps: ['backbone']
       }
     }
   });

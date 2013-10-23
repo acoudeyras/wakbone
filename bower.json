@@ -18,7 +18,10 @@
     "node_modules",
     "package.json",
     "test",
-    ".gitignore"
+    ".gitignore",
+    ".gitattributes",
+    ".jshintrc",
+    ".bowerrc"
   ],
   "dependencies": {
     "requirejs": "~2.1.8",

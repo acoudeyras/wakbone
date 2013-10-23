@@ -5,6 +5,7 @@ require.config(
     backbone: '../bower_components/backbone/backbone'
     'underscore.string': '../bower_components/underscore.string/dist/underscore.string.min'
     moment: '../bower_components/moment/min/moment-with-langs'
+    stickit: '../bower_components/backbone.stickit/backbone.stickit'
   shim:
     backbone:
       deps: ['underscore', 'jquery']
@@ -14,5 +15,15 @@ require.config(
       deps: ['backbone']
 )
 
-define ['./core/catalog'], (Catalog) ->
-  Catalog
+require ['wakbone', './views/views'], (wakbone, {within}) ->
+    wakbone.load().done (catalog) ->
+      emp = new catalog.employee.Model id:1
+      emp.fetch().done ->
+        #$el.append $('<span>coucou</span>')
+        within('#wak-container')
+          .render(emp, 'firstName').withAn('input')
+          .render(emp, 'lastName').withAn('input')
+
+        emp.on 'change:firstName', ->
+          console.log 'changement'
+
