@@ -1,5 +1,3 @@
-'use strict'
-
 define ['./helpers', './check'], (helpers, check)->
 
   _protect = (str) -> '"' + str + '"'

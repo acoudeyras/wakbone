@@ -1,4 +1,3 @@
-'use strict'
 define ['core/orderby-parser', 'chai'], (parse, {expect}) ->
 
   describe 'with one string', ->

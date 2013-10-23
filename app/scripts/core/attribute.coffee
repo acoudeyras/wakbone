@@ -1,4 +1,3 @@
-'use strict'
 define ['./types', './wak-collection', './helpers'], (types, wakCollectionFactory, helpers) ->
 
   class Attribute

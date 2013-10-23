@@ -1,4 +1,3 @@
-'use strict'
 define ['./query-state', 'backbone'], (QueryState)->
 
   _createDef = (dataClass, model, catalog) ->

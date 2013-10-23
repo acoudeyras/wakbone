@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define(['underscore.string'], function(_str) {
     var _extensions;
     _.mixin(_.str.exports());

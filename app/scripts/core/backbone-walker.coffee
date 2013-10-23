@@ -1,4 +1,3 @@
-'use strict'
 define [], ->
 
   _isObject = (object) -> typeof object is 'object'

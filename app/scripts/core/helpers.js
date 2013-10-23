@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define(['./underscore-ext', 'moment'], function(_ext, moment) {
     moment.wakFormat = 'DD!MM!YYYY';
     Function.prototype.property = function(prop, desc) {

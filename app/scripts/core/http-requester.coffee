@@ -1,4 +1,3 @@
-'use strict'
 define ['./model-serializer', './helpers', 'backbone'], (ModelSerializer, helpers) ->
 
   _defaultAjaxOptions =

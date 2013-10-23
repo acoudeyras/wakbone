@@ -1,4 +1,3 @@
-'use strict'
 define ['core/catalog', 'chai'], (Catalog, {expect}) ->
   
   init: (context, done)->

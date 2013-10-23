@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define([], function() {
     var BackboneWalker, _findSeparators, _isCollection, _isModel, _isObject, _read, _walkToBracket, _walkToDot;
     _isObject = function(object) {

@@ -1,4 +1,3 @@
-'use strict'
 define ['./wak-model', './wak-collection', './attribute', './http-requester', './helpers', './check', 'backbone'], (wakModelFactory, wakCollectionFactory, Attribute, HttpRequester, helpers, check) ->
       
   class DataClass

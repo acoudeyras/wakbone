@@ -1,4 +1,3 @@
-'use strict'
 define ['./underscore-ext', 'moment'], (_ext, moment) ->
 
   moment.wakFormat = 'DD!MM!YYYY'

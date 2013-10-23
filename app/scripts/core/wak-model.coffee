@@ -1,4 +1,3 @@
-'use strict'
 define ['./wak-url-builder', './backbone-walker', './helpers', './model-serializer', 'backbone'], (UrlBuilder, BackboneWalker, helpers, ModelSerializer)->
   
   _fieldsToRemove = ['__entityModel', '__KEY', '__STAMP', 'id', 'ID', 'uri']

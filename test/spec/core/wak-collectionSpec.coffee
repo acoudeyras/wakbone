@@ -1,4 +1,3 @@
-'use strict'
 define ['core/wak-collection', 'chai', 'test-helpers'], (WakCollection, {expect}, helpers) ->
 
   before (done) -> helpers.init @, done

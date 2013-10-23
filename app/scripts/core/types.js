@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define(['./helpers'], function(helpers) {
     var _asItCome, _types;
     _asItCome = function(value) {

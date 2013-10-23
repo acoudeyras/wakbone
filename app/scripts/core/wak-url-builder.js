@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   var __slice = [].slice;
 
   define(['./helpers', './check'], function(helpers, check) {

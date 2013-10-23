@@ -1,4 +1,3 @@
-'use strict'
 define ['./helpers'], (helpers) ->
   _asItCome = (value) -> value
   _types =

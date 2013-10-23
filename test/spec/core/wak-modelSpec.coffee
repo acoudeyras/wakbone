@@ -1,4 +1,3 @@
-'use strict'
 define ['chai', 'test-helpers'], ({expect, assert}, helpers) ->
 
   before (done) -> helpers.init @, done

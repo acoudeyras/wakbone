@@ -1,4 +1,3 @@
-'use strict'
 define ['core/wak-url-builder', 'chai'], (UrlBuilder, {expect}) ->
 
   rootUrl = 'http://localhost:8080'

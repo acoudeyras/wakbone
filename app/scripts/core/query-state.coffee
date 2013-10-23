@@ -1,4 +1,3 @@
-'use strict'
 define ['./wak-url-builder', './orderby-parser'], (UrlBuilder, _parseOrderBy) ->
 
   _isSubProperty = (property) -> property.indexOf('.') != -1

@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define(['./wak-model', './wak-collection', './attribute', './http-requester', './helpers', './check', 'backbone'], function(wakModelFactory, wakCollectionFactory, Attribute, HttpRequester, helpers, check) {
     var Catalog, DataClass;
     DataClass = (function() {

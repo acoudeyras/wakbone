@@ -1,4 +1,3 @@
-'use strict'
 define ['backbone'], ->
 
   _fieldsToRemove = ['__entityModel', '__KEY', '__STAMP', 'id', 'ID', 'uri']

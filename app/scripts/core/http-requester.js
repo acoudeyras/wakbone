@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define(['./model-serializer', './helpers', 'backbone'], function(ModelSerializer, helpers) {
     var HttpRequester, _defaultAjaxOptions, _finalOptions;
     _defaultAjaxOptions = {

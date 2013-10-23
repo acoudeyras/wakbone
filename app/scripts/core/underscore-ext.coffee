@@ -1,4 +1,3 @@
-'use strict'
 define ['underscore.string'], (_str) ->
 
   _.mixin _.str.exports()

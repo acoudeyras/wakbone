@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   var __slice = [].slice;
 
   define(['./wak-url-builder', './orderby-parser'], function(UrlBuilder, _parseOrderBy) {

@@ -1,4 +1,3 @@
-'use strict'
 define ['core/filter-builder', 'chai', 'test-helpers'], (FilterBuilder, {expect}, helpers)->
 
   before (done) -> helpers.init @, done

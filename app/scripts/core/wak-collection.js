@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define(['./query-state', 'backbone'], function(QueryState) {
     var _createDef;
     _createDef = function(dataClass, model, catalog) {
