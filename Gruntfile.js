@@ -26,7 +26,7 @@ module.exports = function (grunt) {
     var _jsSrc = _toJs(_coffeeSrc);
     var _jsTest = _toJs(_coffeeTest);
     var _jsAll = _coffeeAll.map(_toJs);
-    var _jsPure = ['Gruntfile.js', 'test/test-main.js'];
+    var _jsPure = ['Gruntfile.js', 'test/test-main.js', 'karma-conf.js', 'karma-grunt.conf.js'];
 
     grunt.initConfig({
         // configurable paths
@@ -44,13 +44,13 @@ module.exports = function (grunt) {
         },
         karma: {
             unit: {
-                configFile: 'karma.conf.js',
+                configFile: 'karma-grunt.conf.js',
                 background: true,
                 reporters: ['progress', 'osx'],
                 singleRun: false
             },
             once: {
-                configFile: 'karma.conf.js',
+                configFile: 'karma-grunt.conf.js',
                 reporters: ['progress', 'coverage', 'osx'],
                 singleRun: true
             }

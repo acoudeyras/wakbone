@@ -1,13 +1,14 @@
+'use strict';
 var tests = [];
 /*jshint camelcase:false */
-for (var file in window.__karma__.files) {
+Object.keys(window.__karma__.files).forEach(function(file) {
   if (window.__karma__.files.hasOwnProperty(file)) {
     if (/Spec\.js$/.test(file)) {
       console.log('Loading test file: ' + file);
       tests.push(file);
     }
   }
-}
+});
 
 requirejs.config({
   // Karma serves files from '/base'

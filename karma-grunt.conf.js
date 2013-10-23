@@ -1,3 +1,4 @@
+'use strict';
 // Karma configuration
 // http://karma-runner.github.io/0.10/config/configuration-file.html
 
@@ -18,22 +19,22 @@ module.exports = function(config) {
    ],
 
     // testing framework to use (jasmine/mocha/qunit/...)
-    frameworks: ['requirejs', 'mocha', 'chai', 'chai-as-promised'],   
+    frameworks: ['requirejs', 'mocha', 'chai', 'chai-as-promised'],
 
     // list of files / patterns to load in the browser
     files: [
-      {pattern: 'app/scripts/**/*.coffee', included: false},
+      {pattern: 'app/scripts/**/*.js', included: false},
       {pattern: 'app/bower_components/**/*.js', included: false},
-      {pattern:'test/spec/**/*.coffee', included: false},
-      {pattern:'test/spec/*helpers.coffee', included:false},
+      {pattern:'test/spec/**/*.js', included: false},
+      {pattern:'test/spec/*helpers.js', included:false},
       'test/mock/**/*.js',
       'test/test-main.js'
     ],
 
-    reporters: ['progress', 'osx'],
+    reporters: ['progress', 'coverage', 'osx'],
 
     preprocessors: {
-      '**/*.coffee': ['coffee']
+        'app/scripts/**/*.js': ['coverage']
     },
 
     coverageReporter: {

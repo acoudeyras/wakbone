@@ -13,6 +13,7 @@
     "coverage",
     "docs",
     "Gruntfile.js",
+    "karma-grunt.conf.js",
     "karma.conf.js",
     "node_modules",
     "package.json",
