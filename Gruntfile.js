@@ -28,7 +28,7 @@ module.exports = function (grunt) {
                 background: true,
                 reporters: ['progress', 'osx'],
             },
-            continuous: {
+            once: {
                 configFile: 'karma.conf.js',
                 reporters: ['progress', 'coverage', 'osx'],
                 singleRun: true
@@ -180,14 +180,6 @@ module.exports = function (grunt) {
                 '!<%= yeoman.app %>/scripts/vendor/*',
                 'test/spec/{,*/}*.js'
             ]
-        },
-        mocha: {
-            all: {
-                options: {
-                    run: true,
-                    urls: ['http://<%= connect.test.options.hostname %>:<%= connect.test.options.port %>/index.html']
-                }
-            }
         },
         autoprefixer: {
             options: {
@@ -385,7 +377,7 @@ module.exports = function (grunt) {
         'concurrent:test',
         'autoprefixer',
         'connect:test',
-        'karma:continuous'
+        'karma:once'
     ]);
 
     grunt.registerTask('build', [
@@ -406,7 +398,6 @@ module.exports = function (grunt) {
     grunt.registerTask('default', [
         'coffeelint',
         'coffee',
-        //'jshint',
         'test',
         'build'
     ]);
