@@ -205,7 +205,7 @@ module.exports = function (grunt) {
                         moment: 'empty:'
                     },
                     mainConfigFile: '<%= yeoman.app %>/scripts/wakbone.js',
-                    out: 'dist/scripts/wakbone.js'
+                    out: 'dist/wakbone.js'
                     //uglify2: {} // https://github.com/mishoo/UglifyJS2
                 }
             }
@@ -295,7 +295,7 @@ module.exports = function (grunt) {
         uglify: {
             wakbone: {
               files: {
-                '<%= yeoman.dist %>/scripts/wakbone.min.js': ['<%= yeoman.dist %>/scripts/wakbone.js']
+                '<%= yeoman.dist %>/wakbone.min.js': ['<%= yeoman.dist %>/wakbone.js']
               }
             }
         },
@@ -390,8 +390,8 @@ module.exports = function (grunt) {
         'autoprefixer',
         'requirejs',
         'cssmin',
+        'uglify:wakbone',
         'docco',
-        'uglify',
         'modernizr',
         'copy:dist',
         'rev',
