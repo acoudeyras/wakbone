@@ -1,14 +1,14 @@
 {
   "name": "wakbone",
   "author": {
-    "name"  : "Alexis Coudeyras",
-    "email" : "acoudeyras@gmail.com"
+    "name": "Alexis Coudeyras",
+    "email": "acoudeyras@gmail.com"
   },
-  "keywords" : [
+  "keywords": [
     "backbone",
     "framework",
     "wakanda"
-  ],  
+  ],
   "ignore": [
     "coverage",
     "docs",
@@ -32,7 +32,7 @@
     "underscore.string": "~2.3.3",
     "moment": "~2.3.1",
     "bootstrap": "~3.0.0",
-    "backbone.stickit": "~0.6.3"
+    "backbone.epoxy": "~1.0.2"
   },
   "devDependencies": {}
 }

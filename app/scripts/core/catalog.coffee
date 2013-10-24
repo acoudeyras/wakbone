@@ -24,6 +24,10 @@ define ['./wak-model', './wak-collection', './attribute', './http-requester', '.
     $entryFromCollectionName: (collectionName) ->
       entryName = @_colsByEntryName[collectionName]
       @[entryName]
+    $attr: (path) ->
+      parts = path.split('.')
+      dataClass = @[parts[0]]
+      dataClass.attr parts[1]
     _addEntry: (entryName, rawDataClass) ->
       dataClass = new DataClass rawDataClass, @
       Model = wakModelFactory.create dataClass, @, @$dataLoader

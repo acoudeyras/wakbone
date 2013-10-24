@@ -52,6 +52,13 @@
         return this[entryName];
       };
 
+      Catalog.prototype.$attr = function(path) {
+        var dataClass, parts;
+        parts = path.split('.');
+        dataClass = this[parts[0]];
+        return dataClass.attr(parts[1]);
+      };
+
       Catalog.prototype._addEntry = function(entryName, rawDataClass) {
         var Collection, Model, dataClass;
         dataClass = new DataClass(rawDataClass, this);
