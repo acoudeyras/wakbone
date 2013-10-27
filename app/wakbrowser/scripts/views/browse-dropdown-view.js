@@ -10,7 +10,9 @@
         "click li": "select"
       },
       _renderItem: function(dataClass) {
-        return $("<li><a href=\"#\">" + dataClass.className + "</a></li>");
+        var name;
+        name = dataClass.className;
+        return $("<li><a href=\"#cols/" + name + "\">" + name + "</a></li>");
       },
       highlight: function() {
         return this.$el.parent().addClass('animated shake');

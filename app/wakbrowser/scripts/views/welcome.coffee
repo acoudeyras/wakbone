@@ -5,7 +5,9 @@ define ['marionette'], ->
       Backbone.View::initialize.apply @, arguments  
     events:
         'click li': 'select'
-    _renderItem: (dataClass) -> $("""<li><a href="#">#{dataClass.className}</a></li>""")
+    _renderItem: (dataClass) ->
+      name = dataClass.className
+      $("""<li><a href="#cols/#{name}">#{name}</a></li>""")
     render: ->
       @$el.empty()
       for className in @catalog.$classNames

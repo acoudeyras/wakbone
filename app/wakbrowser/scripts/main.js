@@ -25,13 +25,16 @@
       'underscore.string': {
         deps: ['underscore']
       },
+      backgrid: {
+        deps: ['backbone']
+      },
       marionette: {
         deps: ['backbone']
       }
     }
   });
 
-  require(['../../scripts/wakbone', './app-controller', './router', './views/welcome', './views/browse-dropdown-view', 'bootstrap'], function(wakbone, AppController, Router, Welcome, BrowseDropDownView) {
+  require(['../../scripts/wakbone', './app-controller', './router', './views/welcome', './views/browse-dropdown-view', './views/collection-grid', 'bootstrap'], function(wakbone, AppController, Router, Welcome, BrowseDropDownView, CollectionGrid) {
     return wakbone.load().done(function(_arg) {
       var browse, catalog, controller, router, views, welcome, _moveToCollection;
       catalog = _arg.catalog, views = _arg.views;

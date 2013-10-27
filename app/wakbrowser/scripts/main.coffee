@@ -19,11 +19,13 @@ require.config(
       deps: ['underscore', 'jquery']
     'underscore.string':
       deps: ['underscore']
+    backgrid:
+      deps: ['backbone']
     marionette:
       deps: ['backbone']
 )
 
-require ['../../scripts/wakbone', './app-controller', './router', './views/welcome', './views/browse-dropdown-view', 'bootstrap'], (wakbone, AppController, Router, Welcome, BrowseDropDownView) ->
+require ['../../scripts/wakbone', './app-controller', './router', './views/welcome', './views/browse-dropdown-view', './views/collection-grid', 'bootstrap'], (wakbone, AppController, Router, Welcome, BrowseDropDownView, CollectionGrid) ->
 
   wakbone.load().done ({catalog, views}) ->
 
@@ -43,7 +45,7 @@ require ['../../scripts/wakbone', './app-controller', './router', './views/welco
     setTimeout welcome.showWithStyle.bind(welcome), 200
 
     welcome.on('change', _moveToCollection)
-    
+
     browse = new BrowseDropDownView(
       el: '#browseDropDown'
       catalog: catalog
