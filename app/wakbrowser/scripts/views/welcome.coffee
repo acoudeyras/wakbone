@@ -1,12 +1,15 @@
-define [], ->
+define ['marionette'], ->
+
   Welcome = Backbone.View.extend
+    initialize: ({@catalog}) ->
+      Backbone.View::initialize.apply @, arguments  
     events:
         'click li': 'select'
-    _renderItem: (col) -> $("""<li><a href="#">#{col.$name}</a></li>""")
+    _renderItem: (dataClass) -> $("""<li><a href="#">#{dataClass.className}</a></li>""")
     render: ->
       @$el.empty()
-      _.each @collection, (col) =>
-        @_renderItem(col).appendTo(@el)
+      for className in @catalog.$classNames
+        @_renderItem(@catalog[className]).appendTo(@el)
       @$el.dropdown()
       @
     showWithStyle: ->
@@ -24,6 +27,6 @@ define [], ->
 
     select: (event)->
       selected = $(event.currentTarget).find('a').text()
-      @trigger('change', @collection[selected])
+      @trigger('change', @catalog[selected])
       @
   

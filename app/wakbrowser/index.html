@@ -22,6 +22,39 @@
         <!-- endbuild -->
     </head>
     <body>
+        <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav">
+            <div class="container">
+                <div class="navbar-header">
+                  <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a href="http://www.wakanda.org" class="navbar-brand">Wakanda</a>
+                </div>
+                <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                  <ul class="nav navbar-nav">
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Browse your data: <b class="caret"></b></a>
+                    <ul class="dropdown-menu" id="browseDropDown">
+                    </ul>
+                  </li>
+                  </ul>
+                </nav>
+              </div>
+        </header>
+        <div class="content wak-content">
+            <div class="row">
+                <section class="jumbotron" style="display:none">
+                    <h1>Welcome on Wakipedia</h1>
+                    <h3>Browse your data:</h3>
+                    <ul id="entitylist"></ul>
+                </section>
+                <div id="grid"></div>
+                <div id="item-detail"></div>
+            </div>
+        </div>        
         <!--[if lt IE 10]>
         <![endif]-->
 

@@ -1,19 +1,25 @@
 (function() {
-  define([], function() {
+  define(['marionette'], function() {
     var Welcome;
     return Welcome = Backbone.View.extend({
+      initialize: function(_arg) {
+        this.catalog = _arg.catalog;
+        return Backbone.View.prototype.initialize.apply(this, arguments);
+      },
       events: {
         'click li': 'select'
       },
-      _renderItem: function(col) {
-        return $("<li><a href=\"#\">" + col.$name + "</a></li>");
+      _renderItem: function(dataClass) {
+        return $("<li><a href=\"#\">" + dataClass.className + "</a></li>");
       },
       render: function() {
-        var _this = this;
+        var className, _i, _len, _ref;
         this.$el.empty();
-        _.each(this.collection, function(col) {
-          return _this._renderItem(col).appendTo(_this.el);
-        });
+        _ref = this.catalog.$classNames;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          className = _ref[_i];
+          this._renderItem(this.catalog[className]).appendTo(this.el);
+        }
         this.$el.dropdown();
         return this;
       },
@@ -39,7 +45,7 @@
       select: function(event) {
         var selected;
         selected = $(event.currentTarget).find('a').text();
-        this.trigger('change', this.collection[selected]);
+        this.trigger('change', this.catalog[selected]);
         return this;
       }
     });

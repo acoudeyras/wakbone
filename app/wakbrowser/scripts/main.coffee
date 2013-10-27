@@ -23,16 +23,34 @@ require.config(
       deps: ['backbone']
 )
 
-require ['../../scripts/wakbone', './app-controller', './router', './views/welcome'], (wakbone, AppController, Router, Welcome) ->
+require ['../../scripts/wakbone', './app-controller', './router', './views/welcome', './views/browse-dropdown-view', 'bootstrap'], (wakbone, AppController, Router, Welcome, BrowseDropDownView) ->
 
   wakbone.load().done ({catalog, views}) ->
 
+    _moveToCollection = (selected) ->
+      router.navigate('cols/' + selected.$name,
+        trigger: true
+        replace: true
+      )
+
+    $('.jumbotron').hide()
+
     welcome = new Welcome(
       el: '#entitylist'
-      collection: catalog.cols
+      catalog: catalog
     ).render()
 
-    controller = new AppController(catalog, colGrid, welcome, browse, itemDetail)
+    setTimeout welcome.showWithStyle.bind(welcome), 200
+
+    welcome.on('change', _moveToCollection)
+    
+    browse = new BrowseDropDownView(
+      el: '#browseDropDown'
+      catalog: catalog
+    )
+    .render()
+
+    controller = new AppController(catalog, null, welcome, browse, null)
     router = new Router(controller: controller)
     Backbone.history.start()
 ###

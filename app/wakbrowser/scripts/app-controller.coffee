@@ -1,4 +1,4 @@
-define ['../wakbone/helpers'], (helpers) ->
+define ['../../../../wakbone/scripts/core/helpers'], (helpers) ->
 
   class AppController
     constructor: (@catalog, @colGrid, @welcome, @browse, @detail) ->

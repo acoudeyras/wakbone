@@ -31,15 +31,28 @@
     }
   });
 
-  require(['../../scripts/wakbone', './app-controller', './router', './views/welcome'], function(wakbone, AppController, Router, Welcome) {
+  require(['../../scripts/wakbone', './app-controller', './router', './views/welcome', './views/browse-dropdown-view', 'bootstrap'], function(wakbone, AppController, Router, Welcome, BrowseDropDownView) {
     return wakbone.load().done(function(_arg) {
-      var catalog, controller, router, views, welcome;
+      var browse, catalog, controller, router, views, welcome, _moveToCollection;
       catalog = _arg.catalog, views = _arg.views;
+      _moveToCollection = function(selected) {
+        return router.navigate('cols/' + selected.$name, {
+          trigger: true,
+          replace: true
+        });
+      };
+      $('.jumbotron').hide();
       welcome = new Welcome({
         el: '#entitylist',
-        collection: catalog.cols
+        catalog: catalog
       }).render();
-      controller = new AppController(catalog, colGrid, welcome, browse, itemDetail);
+      setTimeout(welcome.showWithStyle.bind(welcome), 200);
+      welcome.on('change', _moveToCollection);
+      browse = new BrowseDropDownView({
+        el: '#browseDropDown',
+        catalog: catalog
+      }).render();
+      controller = new AppController(catalog, null, welcome, browse, null);
       router = new Router({
         controller: controller
       });

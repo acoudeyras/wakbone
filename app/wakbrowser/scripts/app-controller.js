@@ -1,5 +1,5 @@
 (function() {
-  define(['../wakbone/helpers'], function(helpers) {
+  define(['../../../../wakbone/scripts/core/helpers'], function(helpers) {
     var AppController;
     return AppController = (function() {
       function AppController(catalog, colGrid, welcome, browse, detail) {
