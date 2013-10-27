@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define(['chai', 'test-helpers'], function(_arg, helpers) {
     var assert, expect, shouldBeAValidModel;
     expect = _arg.expect, assert = _arg.assert;

@@ -4,6 +4,9 @@ define ['../core/helpers', './html-generator'], (helpers, HtmlGenerator)->
 
   class ViewResult
     constructor: (@html, @binding, @attr) ->
+      console.log binding
+      console.log attr
+      console.log '------'
     @lazyval '$el', -> $(@html)
 
   class WakViewGenerator
@@ -22,6 +25,17 @@ define ['../core/helpers', './html-generator'], (helpers, HtmlGenerator)->
         label + input,
           name: "input.#{className}"
           value: "value:#{attr.name},events:['keyup']",
+        attr
+      )
+    create: (html, binding) ->
+      for selector, dataBinding of binding
+        parts = dataBinding.split('.')
+        attr = @_ensureAttr parts[0]
+        dataBinding = parts[1]
+        binding[selector] = dataBinding
+      new ViewResult(
+        html,
+        binding
         attr
       )
     text: (title, attr) ->

@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define(['core/catalog', 'chai'], function(Catalog, _arg) {
     var expect;
     expect = _arg.expect;

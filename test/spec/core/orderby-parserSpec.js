@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define(['core/orderby-parser', 'chai'], function(parse, _arg) {
     var expect;
     expect = _arg.expect;

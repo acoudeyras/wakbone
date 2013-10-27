@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define(['core/filter-builder', 'chai', 'test-helpers'], function(FilterBuilder, _arg, helpers) {
     var expect;
     expect = _arg.expect;

@@ -9,6 +9,9 @@
         this.html = html;
         this.binding = binding;
         this.attr = attr;
+        console.log(binding);
+        console.log(attr);
+        console.log('------');
       }
 
       ViewResult.lazyval('$el', function() {
@@ -41,6 +44,18 @@
           name: "input." + className,
           value: "value:" + attr.name + ",events:['keyup']"
         }, attr);
+      };
+
+      WakViewGenerator.prototype.create = function(html, binding) {
+        var attr, dataBinding, parts, selector;
+        for (selector in binding) {
+          dataBinding = binding[selector];
+          parts = dataBinding.split('.');
+          attr = this._ensureAttr(parts[0]);
+          dataBinding = parts[1];
+          binding[selector] = dataBinding;
+        }
+        return new ViewResult(html, binding, attr);
       };
 
       WakViewGenerator.prototype.text = function(title, attr) {

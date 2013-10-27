@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
   define(['core/wak-collection', 'chai', 'test-helpers'], function(WakCollection, _arg, helpers) {
     var expect;
     expect = _arg.expect;

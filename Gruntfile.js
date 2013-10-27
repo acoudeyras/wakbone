@@ -20,9 +20,10 @@ module.exports = function (grunt) {
         return fileName.replace(/\.coffee$/, '.js');
     }
 
+    var _wakbrowserCoffeeSrc = 'app/wakbrowser/**/*.coffee';
     var _coffeeSrc = 'app/scripts/**/*.coffee';
     var _coffeeTest = 'test/spec/**/*.coffee';
-    var _coffeeAll = [_coffeeSrc, _coffeeTest];
+    var _coffeeAll = [_coffeeSrc, _coffeeTest, _wakbrowserCoffeeSrc];
     var _jsSrc = _toJs(_coffeeSrc);
     var _jsTest = _toJs(_coffeeTest);
     var _jsAll = _coffeeAll.map(_toJs);
@@ -57,7 +58,7 @@ module.exports = function (grunt) {
         },
         coffee: {
             compile: {
-                files: grunt.file.expandMapping([_coffeeSrc],'./', {
+                files: grunt.file.expandMapping([_coffeeAll],'./', {
                     rename: function(destBase,destPath) {
                         return _toJs(destBase + destPath);
                     }
