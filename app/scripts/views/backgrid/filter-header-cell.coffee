@@ -18,9 +18,9 @@ define ['backgrid'], ->
 
       _applyExistingQuery = =>
         newVal = ''
-        if @collection.hasQuery fieldName
-          clause = @collection.getQuery fieldName
-          newVal = clause.val
+        #if @collection.hasQuery fieldName
+        #  clause = @collection.getQuery fieldName
+        #  newVal = clause.val
         $input.val newVal
       
       $input = $('<input type="text" class="search-input" />')

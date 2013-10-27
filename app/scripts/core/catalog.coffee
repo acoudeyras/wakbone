@@ -1,7 +1,7 @@
 define ['./wak-model', './wak-collection', './attribute', './http-requester', './helpers', './check', 'backbone'], (wakModelFactory, wakCollectionFactory, Attribute, HttpRequester, helpers, check) ->
       
   class DataClass
-    constructor: ({@className, @collectionName, @dataURI, attributes}, @catalog) ->
+    constructor: ({@className, @collectionName, @dataURI, attributes}, @name, @catalog) ->
       @_attributes = attributes.map (attr) => new Attribute(attr, @)
       @_attributesByName = _.indexBy @_attributes, 'name'
     finalize: (@Collection, @Model) ->
@@ -29,7 +29,7 @@ define ['./wak-model', './wak-collection', './attribute', './http-requester', '.
       dataClass = @[parts[0]]
       dataClass.attr parts[1]
     _addEntry: (entryName, rawDataClass) ->
-      dataClass = new DataClass rawDataClass, @
+      dataClass = new DataClass rawDataClass, entryName, @
       Model = wakModelFactory.create dataClass, @, @$dataLoader
       Collection = wakCollectionFactory.create dataClass, Model, @
       dataClass.finalize Collection, Model

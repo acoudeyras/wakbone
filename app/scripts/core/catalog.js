@@ -2,10 +2,11 @@
   define(['./wak-model', './wak-collection', './attribute', './http-requester', './helpers', './check', 'backbone'], function(wakModelFactory, wakCollectionFactory, Attribute, HttpRequester, helpers, check) {
     var Catalog, DataClass;
     DataClass = (function() {
-      function DataClass(_arg, catalog) {
+      function DataClass(_arg, name, catalog) {
         var attributes,
           _this = this;
         this.className = _arg.className, this.collectionName = _arg.collectionName, this.dataURI = _arg.dataURI, attributes = _arg.attributes;
+        this.name = name;
         this.catalog = catalog;
         this._attributes = attributes.map(function(attr) {
           return new Attribute(attr, _this);
@@ -61,7 +62,7 @@
 
       Catalog.prototype._addEntry = function(entryName, rawDataClass) {
         var Collection, Model, dataClass;
-        dataClass = new DataClass(rawDataClass, this);
+        dataClass = new DataClass(rawDataClass, entryName, this);
         Model = wakModelFactory.create(dataClass, this, this.$dataLoader);
         Collection = wakCollectionFactory.create(dataClass, Model, this);
         dataClass.finalize(Collection, Model);

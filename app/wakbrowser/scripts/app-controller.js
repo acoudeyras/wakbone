@@ -14,24 +14,18 @@
         this.welcome.hideWithStyle();
         switch (show) {
           case 'detail':
-            this.colGrid.$el.hide();
-            return this.detail.$el.show();
+            return this.colGrid.$el.hide();
           case 'col':
-            this.detail.$el.hide();
             return this.colGrid.$el.show();
         }
       };
 
-      AppController.prototype.navToCollection = function(colName, filterField, filterValue) {
-        var selectedCol;
+      AppController.prototype.navToCollection = function(dataClassName, filterField, filterValue) {
+        var dataClass;
         this._hideAllExcept('col');
-        selectedCol = this.catalog.cols[colName];
-        this.colGrid.setCol(selectedCol);
-        selectedCol.clearQuery();
-        if (filterField) {
-          selectedCol.query(filterField, filterValue);
-        }
-        selectedCol.fetch({
+        dataClass = this.catalog[dataClassName];
+        this.colGrid.setDataClass(dataClass);
+        dataClass.entities.fetch({
           reset: true
         });
         return this;

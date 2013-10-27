@@ -11,7 +11,7 @@
       },
       _renderItem: function(dataClass) {
         var name;
-        name = dataClass.className;
+        name = dataClass.name;
         return $("<li><a href=\"#cols/" + name + "\">" + name + "</a></li>");
       },
       render: function() {

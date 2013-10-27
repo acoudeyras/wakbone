@@ -37,6 +37,9 @@ require ['../../scripts/wakbone', './app-controller', './router', './views/welco
 
     $('.jumbotron').hide()
 
+    colGrid = new CollectionGrid(el: "#grid")
+    colGrid.render()
+
     welcome = new Welcome(
       el: '#entitylist'
       catalog: catalog
@@ -52,7 +55,7 @@ require ['../../scripts/wakbone', './app-controller', './router', './views/welco
     )
     .render()
 
-    controller = new AppController(catalog, null, welcome, browse, null)
+    controller = new AppController(catalog, colGrid, welcome, browse, null)
     router = new Router(controller: controller)
     Backbone.history.start()
 ###

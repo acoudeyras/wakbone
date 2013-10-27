@@ -27,12 +27,8 @@
           });
         };
         _applyExistingQuery = function() {
-          var clause, newVal;
+          var newVal;
           newVal = '';
-          if (_this.collection.hasQuery(fieldName)) {
-            clause = _this.collection.getQuery(fieldName);
-            newVal = clause.val;
-          }
           return $input.val(newVal);
         };
         $input = $('<input type="text" class="search-input" />');

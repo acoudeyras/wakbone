@@ -6,7 +6,7 @@ define ['marionette'], ->
     events:
         "click li": "select"
     _renderItem: (dataClass) ->
-      name = dataClass.className
+      name = dataClass.name
       $("""<li><a href="#cols/#{name}">#{name}</a></li>""")
     highlight: ->
       @$el.parent().addClass 'animated shake'

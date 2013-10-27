@@ -8,20 +8,20 @@ define ['../../../../wakbone/scripts/core/helpers'], (helpers) ->
       switch show
         when 'detail'
           @colGrid.$el.hide()
-          @detail.$el.show()
+          #@detail.$el.show()
         when 'col'
-          @detail.$el.hide()
+          #@detail.$el.hide()
           @colGrid.$el.show()
       
 
-    navToCollection: (colName, filterField, filterValue) ->
+    navToCollection: (dataClassName, filterField, filterValue) ->
       @_hideAllExcept('col')
-      selectedCol = @catalog.cols[colName]
-      @colGrid.setCol selectedCol
-      selectedCol.clearQuery()
-      if (filterField)
-        selectedCol.query filterField, filterValue
-      selectedCol.fetch(reset: true)
+      dataClass = @catalog[dataClassName]
+      @colGrid.setDataClass dataClass
+      #dataClass.entities.clearQuery()
+      #if (filterField)
+      #  selectedCol.query filterField, filterValue
+      dataClass.entities.fetch(reset: true)
       @
 
     _ensureModel: (colName, id) ->

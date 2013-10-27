@@ -36,7 +36,7 @@
 
   require(['../../scripts/wakbone', './app-controller', './router', './views/welcome', './views/browse-dropdown-view', './views/collection-grid', 'bootstrap'], function(wakbone, AppController, Router, Welcome, BrowseDropDownView, CollectionGrid) {
     return wakbone.load().done(function(_arg) {
-      var browse, catalog, controller, router, views, welcome, _moveToCollection;
+      var browse, catalog, colGrid, controller, router, views, welcome, _moveToCollection;
       catalog = _arg.catalog, views = _arg.views;
       _moveToCollection = function(selected) {
         return router.navigate('cols/' + selected.$name, {
@@ -45,6 +45,10 @@
         });
       };
       $('.jumbotron').hide();
+      colGrid = new CollectionGrid({
+        el: "#grid"
+      });
+      colGrid.render();
       welcome = new Welcome({
         el: '#entitylist',
         catalog: catalog
@@ -55,7 +59,7 @@
         el: '#browseDropDown',
         catalog: catalog
       }).render();
-      controller = new AppController(catalog, null, welcome, browse, null);
+      controller = new AppController(catalog, colGrid, welcome, browse, null);
       router = new Router({
         controller: controller
       });
