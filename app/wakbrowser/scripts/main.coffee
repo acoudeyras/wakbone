@@ -9,6 +9,7 @@ require.config(
     epoxy: '../../bower_components/backbone.epoxy/backbone.epoxy'
     backgrid: '../../bower_components/backgrid/lib/backgrid'
     marionette: '../../bower_components/marionette/lib/backbone.marionette'
+    uritemplate: '../bower_components/uritemplate/bin/uritemplate'
   shim:
     bootstrap:
       deps: ['jquery']

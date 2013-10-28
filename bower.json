@@ -35,7 +35,8 @@
     "backbone.epoxy": "~1.0.2",
     "backgrid": "~0.2.6",
     "animate.css": "~2.1.0",
-    "marionette": "~1.2.0"
+    "marionette": "~1.2.0",
+    "uritemplate": "*"
   },
   "devDependencies": {}
 }

@@ -1,4 +1,13 @@
-define ['../../core/helpers', 'backgrid'], (helpers) ->
+define ['../../core/helpers', 'uritemplate', 'backgrid'], (helpers, uriTemplate) ->
+  
+  
+  class UriTemplateCell extends BackGridCell
+    initialize: ({pattern, @text}) ->
+      @template = uriTemplate.parse pattern
+    _render: ->
+      uri = @template.expand @model.toJSON()
+      @$el.append("""<a href="#{uri}">#{@text}</a>""")
+
 
   cells =
     identity:
