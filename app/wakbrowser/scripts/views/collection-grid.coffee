@@ -1,4 +1,4 @@
-define ['../../../../wakbone/scripts/views/backgrid/backgrid-adapter', 'marionette'], (BackgridAdapter) ->
+define ['../../../../wakbone/scripts/views/backgrid/backgrid-adapter', '../../../../wakbone/scripts/views/backgrid/cells', 'marionette'], (BackgridAdapter, cells) ->
 
   CollectionGrid = Backbone.View.extend(
     initialize: (options) ->
@@ -11,6 +11,9 @@ define ['../../../../wakbone/scripts/views/backgrid/backgrid-adapter', 'marionet
         columns.push
           attr: attr
           title: attr.name
+          cell: 'uri'
+          cellOptions :
+            tpl: '#/item/{id}'
       columns
     render: ->
       @$el.empty()

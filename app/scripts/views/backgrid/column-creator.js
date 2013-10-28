@@ -4,7 +4,7 @@
     return ColumnCreator = (function() {
       function ColumnCreator(catalog, _arg) {
         this.catalog = catalog;
-        this.attr = _arg.attr, this.title = _arg.title;
+        this.attr = _arg.attr, this.title = _arg.title, this.cell = _arg.cell;
       }
 
       ColumnCreator.property('rawType', {
@@ -25,18 +25,6 @@
         }
       });
 
-      ColumnCreator.property('cell', {
-        get: function() {
-          var custom, kind;
-          kind = this.attr.identifying ? 'identity' : this.attr.kind;
-          custom = cells[kind];
-          if (custom != null) {
-            return kind;
-          }
-          return this.type;
-        }
-      });
-
       ColumnCreator.property('type', {
         get: function() {
           var _ref;
@@ -50,12 +38,25 @@
         }
       });
 
+      ColumnCreator.prototype.getCell = function() {
+        var custom, kind;
+        if (this.cell != null) {
+          return this.cell;
+        }
+        kind = this.attr.identifying ? 'identity' : this.attr.kind;
+        custom = cells[kind];
+        if (custom != null) {
+          return kind;
+        }
+        return this.type;
+      };
+
       ColumnCreator.prototype.toColumn = function() {
         return {
           name: this.attr.name,
           label: this.attr.name,
           editable: !this.attr.readOnly,
-          cell: this.cell,
+          cell: this.getCell(),
           headerCell: FilterHeaderCell,
           options: {
             attr: this.attr

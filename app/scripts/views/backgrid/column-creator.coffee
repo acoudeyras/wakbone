@@ -1,7 +1,7 @@
 define ['../../core/helpers', './cells', './filter-header-cell'], (helpers, cells, FilterHeaderCell)->
 
   class ColumnCreator
-    constructor: (@catalog, {@attr, @title}) ->
+    constructor: (@catalog, {@attr, @title, @cell}) ->
     @property 'rawType',
       get: ->
         found = ColumnCreator.rawTypes[@attr.type]
@@ -11,23 +11,23 @@ define ['../../core/helpers', './cells', './filter-header-cell'], (helpers, cell
         found
     @property 'formatter',
       get: -> formatters[@attr.kind]
-    @property 'cell',
-      get: ->
-        kind = if @attr.identifying then 'identity' else @attr.kind
-        custom = cells[kind]
-        return kind if custom?
-        @type
     @property 'type',
       get: ->
         return @rawType if @attr.isRaw
         return 'uri' if @attr.kind in ['relatedEntities', 'relatedEntity']
         throw "kind #{kind} not supported"
+    getCell: ->
+        return @cell if @cell?
+        kind = if @attr.identifying then 'identity' else @attr.kind
+        custom = cells[kind]
+        return kind if custom?
+        @type
     toColumn: ->
+      #formatter: @formatter      
       name: @attr.name
       label: @attr.name
       editable: !@attr.readOnly
-      cell: @cell
-      #formatter: @formatter
+      cell: @getCell()
       headerCell: FilterHeaderCell
       options:
         attr: @attr

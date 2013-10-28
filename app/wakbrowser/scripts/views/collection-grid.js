@@ -1,5 +1,5 @@
 (function() {
-  define(['../../../../wakbone/scripts/views/backgrid/backgrid-adapter', 'marionette'], function(BackgridAdapter) {
+  define(['../../../../wakbone/scripts/views/backgrid/backgrid-adapter', '../../../../wakbone/scripts/views/backgrid/cells', 'marionette'], function(BackgridAdapter, cells) {
     var CollectionGrid;
     return CollectionGrid = Backbone.View.extend({
       initialize: function(options) {
@@ -17,7 +17,11 @@
           attr = _ref[_i];
           columns.push({
             attr: attr,
-            title: attr.name
+            title: attr.name,
+            cell: 'uri',
+            cellOptions: {
+              tpl: '#/item/{id}'
+            }
           });
         }
         return columns;
