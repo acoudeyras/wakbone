@@ -9,6 +9,28 @@ define ['../../core/helpers', 'uritemplate', 'backgrid'], (helpers, uriTemplate)
       @$el.append("""<a href="#{uri}">#{@text}</a>""")
 
 
+  class WakCell extends Backgrid.Cell
+    initialize: ({model}) ->
+    propName: -> @column.get 'name'
+    attr: -> @model.attr @propName()
+    rawVal: -> @model.get @propName()
+    defUri: -> @rawVal()?.__deferred.uri
+    render: ->
+      @$el.empty()
+      @_render?()
+      @delegateEvents()
+      @
+
+  class UriCell extends WakCell
+    className: "uri-cell"
+
+  class ImageCell extends WakCell
+     className: "img-cell"
+   
+  Backgrid['UriCell'] = UriCell
+  Backgrid['ImageCell'] = ImageCell
+
+
   cells =
     identity:
       className: "uri-cell"
@@ -58,4 +80,8 @@ define ['../../core/helpers', 'uritemplate', 'backgrid'], (helpers, uriTemplate)
       cells[name] = _buildCell name, cells[name]
     cells
 
-  build(cells)
+  #build(cells)
+
+  WakCell: WakCell
+  UriCell: UriCell
+  ImageCell: ImageCell
