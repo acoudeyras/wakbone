@@ -35,7 +35,7 @@ define [], ->
     subProp = model.get val
     if not _isModel subProp or not _isCollection subProp #only models ?
       throw new Error('Property ' + val + ' is not a model or a collection or is not fetched')
-    subProp.walk(remaining)
+    new BackboneWalker(subProp).walk remaining
 
   _walkToBracket = (model, expression) ->
     {val, remaining} = _read expression, '['
@@ -50,7 +50,7 @@ define [], ->
       remaining = _.splice remaining, 0, 1
 
     subModel = subProp.at +val
-    subModel.walk(remaining)
+    new BackboneWalker(subModel).walk remaining
 
   #BackboneWalker
   #===============
