@@ -40,7 +40,7 @@
       if (!_isModel(subProp || !_isCollection(subProp))) {
         throw new Error('Property ' + val + ' is not a model or a collection or is not fetched');
       }
-      return subProp.walk(remaining);
+      return new BackboneWalker(subProp).walk(remaining);
     };
     _walkToBracket = function(model, expression) {
       var remaining, subModel, subProp, val, _ref, _ref1;
@@ -57,7 +57,7 @@
         remaining = _.splice(remaining, 0, 1);
       }
       subModel = subProp.at(+val);
-      return subModel.walk(remaining);
+      return new BackboneWalker(subModel).walk(remaining);
     };
     return BackboneWalker = (function() {
       function BackboneWalker(model) {

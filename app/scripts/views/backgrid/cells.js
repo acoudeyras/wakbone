@@ -2,14 +2,37 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['../../core/helpers', 'backgrid'], function(helpers) {
-    var ImageCell, UriCell, WakCell, build, cells, _ref, _ref1, _ref2;
+  define(['../../core/helpers', 'uritemplate', 'backgrid'], function(helpers, uriTemplate) {
+    var ImageCell, UriCell, UriTemplateCell, WakCell, build, cells, _ref, _ref1, _ref2, _ref3;
+    UriTemplateCell = (function(_super) {
+      __extends(UriTemplateCell, _super);
+
+      function UriTemplateCell() {
+        _ref = UriTemplateCell.__super__.constructor.apply(this, arguments);
+        return _ref;
+      }
+
+      UriTemplateCell.prototype.initialize = function(_arg) {
+        var pattern;
+        pattern = _arg.pattern, this.text = _arg.text;
+        return this.template = uriTemplate.parse(pattern);
+      };
+
+      UriTemplateCell.prototype._render = function() {
+        var uri;
+        uri = this.template.expand(this.model.toJSON());
+        return this.$el.append("<a href=\"" + uri + "\">" + this.text + "</a>");
+      };
+
+      return UriTemplateCell;
+
+    })(BackGridCell);
     WakCell = (function(_super) {
       __extends(WakCell, _super);
 
       function WakCell() {
-        _ref = WakCell.__super__.constructor.apply(this, arguments);
-        return _ref;
+        _ref1 = WakCell.__super__.constructor.apply(this, arguments);
+        return _ref1;
       }
 
       WakCell.prototype.initialize = function(_arg) {
@@ -30,8 +53,8 @@
       };
 
       WakCell.prototype.defUri = function() {
-        var _ref1;
-        return (_ref1 = this.rawVal()) != null ? _ref1.__deferred.uri : void 0;
+        var _ref2;
+        return (_ref2 = this.rawVal()) != null ? _ref2.__deferred.uri : void 0;
       };
 
       WakCell.prototype.render = function() {
@@ -50,8 +73,8 @@
       __extends(UriCell, _super);
 
       function UriCell() {
-        _ref1 = UriCell.__super__.constructor.apply(this, arguments);
-        return _ref1;
+        _ref2 = UriCell.__super__.constructor.apply(this, arguments);
+        return _ref2;
       }
 
       UriCell.prototype.className = "uri-cell";
@@ -63,8 +86,8 @@
       __extends(ImageCell, _super);
 
       function ImageCell() {
-        _ref2 = ImageCell.__super__.constructor.apply(this, arguments);
-        return _ref2;
+        _ref3 = ImageCell.__super__.constructor.apply(this, arguments);
+        return _ref3;
       }
 
       ImageCell.prototype.className = "img-cell";
@@ -125,8 +148,8 @@
         return this.model.get(this.propName());
       },
       defUri: function() {
-        var _ref3;
-        return (_ref3 = this.rawVal()) != null ? _ref3.__deferred.uri : void 0;
+        var _ref4;
+        return (_ref4 = this.rawVal()) != null ? _ref4.__deferred.uri : void 0;
       },
       render: function() {
         this.$el.empty();

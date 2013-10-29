@@ -8,7 +8,8 @@
       'underscore.string': '../bower_components/underscore.string/dist/underscore.string.min',
       moment: '../bower_components/moment/min/moment-with-langs',
       epoxy: '../bower_components/backbone.epoxy/backbone.epoxy',
-      backgrid: '../bower_components/backgrid/lib/backgrid'
+      backgrid: '../bower_components/backgrid/lib/backgrid',
+      uritemplate: '../bower_components/uritemplate/bin/uritemplate'
     },
     shim: {
       bootstrap: deps(['jquery']),
