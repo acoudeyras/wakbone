@@ -77,6 +77,7 @@
               continue;
             }
             if (value instanceof Backbone.Collection) {
+              result[key] = value.toJSON();
               continue;
             }
             if (value instanceof Backbone.Model) {

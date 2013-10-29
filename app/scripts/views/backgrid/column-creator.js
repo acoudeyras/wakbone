@@ -4,7 +4,7 @@
     return ColumnCreator = (function() {
       function ColumnCreator(catalog, _arg) {
         this.catalog = catalog;
-        this.attr = _arg.attr, this.title = _arg.title, this.cell = _arg.cell;
+        this.attr = _arg.attr, this.title = _arg.title, this.cell = _arg.cell, this.editable = _arg.editable;
       }
 
       ColumnCreator.property('rawType', {
@@ -55,7 +55,7 @@
         return {
           name: this.attr.name,
           label: this.attr.name,
-          editable: !this.attr.readOnly,
+          editable: this.editable != null ? this.editable : !this.attr.readOnly,
           cell: this.getCell(),
           headerCell: FilterHeaderCell,
           options: {

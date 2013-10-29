@@ -1,16 +1,7 @@
 define ['../../core/helpers', 'uritemplate', 'backgrid'], (helpers, uriTemplate) ->
   
-  
-  class UriTemplateCell extends BackGridCell
-    initialize: ({pattern, @text}) ->
-      @template = uriTemplate.parse pattern
-    _render: ->
-      uri = @template.expand @model.toJSON()
-      @$el.append("""<a href="#{uri}">#{@text}</a>""")
-
-
   class WakCell extends Backgrid.Cell
-    initialize: ({model}) ->
+    initialize: ({@column, @model}) ->
     propName: -> @column.get 'name'
     attr: -> @model.attr @propName()
     rawVal: -> @model.get @propName()
@@ -21,67 +12,37 @@ define ['../../core/helpers', 'uritemplate', 'backgrid'], (helpers, uriTemplate)
       @delegateEvents()
       @
 
-  class UriCell extends WakCell
-    className: "uri-cell"
+  class UriTemplateCell extends WakCell
+    initialize: ->
+      @uriTemplate = uriTemplate.parse @uriPattern
+      @textTemplate = _.template @textTemplate
+      WakCell::initialize.apply @, arguments
+    _render: ->
+      modelAsJson = @model.toJSON()
+      uri = @uriTemplate.expand modelAsJson
+      text = @textTemplate modelAsJson
+      @$el.append("""<a href="#{uri}">#{text}</a>""")
+
+  class TemplateCell extends WakCell
+    initialize: ->
+      @htmlTemplate = _.template @template
+    _render: ->
+      modelAsJson = @model.toJSON()
+      html = @htmlTemplate modelAsJson
+      @$el.append(html)
 
   class ImageCell extends WakCell
-     className: "img-cell"
-   
-  Backgrid['UriCell'] = UriCell
+    initialize: ->
+    _render: ->
+      src = @rawVal()?.__deferred.uri
+      return null if not src?
+      @$el.append("""<a class="fancybox" rel="group" data-lightbox="img" href="#{src}" target="_blank"><img class="img-thumbnail" src="#{src}" alt="" /></a>""")
+      
+  Backgrid['UriTemplateCell'] = UriTemplateCell
+  Backgrid['TemplateCell'] = TemplateCell
   Backgrid['ImageCell'] = ImageCell
 
-
-  cells =
-    identity:
-      className: "uri-cell"
-      _render: ->
-        val = @rawVal()
-        url = '#entities/' + @model.$def.collectionName + '/' + val
-        @$el.append($('<a>',
-          tabIndex: -1
-          href: url
-          title: 'Show entity'
-        ).text(val))
-
-    relatedEntity:
-      className: "uri-cell"
-      _render: -> @$el.append @renderer().relatedEntity()
-
-    relatedEntities:
-      className: "uri-cell"
-      _render: ->
-        @$el.append @renderer().relatedEntities()
-
-    image:
-      className: "img-cell"
-      _render: -> @$el.append @renderer().image()
-
-  WakCell = Backgrid.Cell.extend(
-    constructor: (options) ->
-      @_renderer = renderer options.model.$catalog
-      Backgrid.Cell.prototype.constructor.apply @, arguments
-    renderer: -> @_renderer.with @model, @rawVal(), @attr()
-    propName: -> @column.get 'name'
-    attr: -> @model.attr @propName()
-    rawVal: -> @model.get @propName()
-    defUri: -> @rawVal()?.__deferred.uri
-    render: ->
-      @$el.empty()
-      @_render?()
-      @delegateEvents()
-      @     
-  )
-
-  build = ->
-    _buildCell = (name, options) ->
-      cleanName = _.capitalize(name) + 'Cell'
-      Backgrid[cleanName] = WakCell.extend(options)
-    Object.keys(cells).forEach (name) ->
-      cells[name] = _buildCell name, cells[name]
-    cells
-
-  #build(cells)
-
   WakCell: WakCell
-  UriCell: UriCell
   ImageCell: ImageCell
+  UriTemplateCell: UriTemplateCell
+  TemplateCell: TemplateCell

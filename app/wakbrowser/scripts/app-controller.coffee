@@ -18,7 +18,7 @@ define ['../../../../wakbone/scripts/core/helpers'], (helpers) ->
       @_hideAllExcept('col')
       dataClass = @catalog[dataClassName]
       @colGrid.setDataClass dataClass
-      #dataClass.entities.clearQuery()
+      #dataClass.entities.clearQuery() TODO
       #if (filterField)
       #  selectedCol.query filterField, filterValue
       dataClass.entities.fetch(reset: true)

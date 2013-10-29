@@ -50,6 +50,7 @@ define ['./wak-url-builder', './backbone-walker', './helpers', './model-serializ
           result[key] = null
           continue
         if value instanceof Backbone.Collection
+          result[key] = value.toJSON()
           continue
         if value instanceof Backbone.Model
           if value.isNew()

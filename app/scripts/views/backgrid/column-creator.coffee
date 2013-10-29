@@ -1,7 +1,7 @@
 define ['../../core/helpers', './cells', './filter-header-cell'], (helpers, cells, FilterHeaderCell)->
 
   class ColumnCreator
-    constructor: (@catalog, {@attr, @title, @cell}) ->
+    constructor: (@catalog, {@attr, @title, @cell, @editable}) ->
     @property 'rawType',
       get: ->
         found = ColumnCreator.rawTypes[@attr.type]
@@ -23,10 +23,11 @@ define ['../../core/helpers', './cells', './filter-header-cell'], (helpers, cell
         return kind if custom?
         @type
     toColumn: ->
+
       #formatter: @formatter      
       name: @attr.name
       label: @attr.name
-      editable: !@attr.readOnly
+      editable: if @editable? then @editable else !@attr.readOnly
       cell: @getCell()
       headerCell: FilterHeaderCell
       options:
