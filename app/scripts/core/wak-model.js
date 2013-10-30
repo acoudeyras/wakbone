@@ -69,9 +69,6 @@
               continue;
             }
             attr = dataClass.attr(key);
-            if (attr.readOnly) {
-              continue;
-            }
             if (value == null) {
               result[key] = null;
               continue;

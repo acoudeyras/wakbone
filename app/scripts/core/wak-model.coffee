@@ -44,8 +44,8 @@ define ['./wak-url-builder', './backbone-walker', './helpers', './model-serializ
         if key not in attrNames
           continue
         attr = dataClass.attr key
-        if attr.readOnly
-          continue
+        #if attr.readOnly
+        #  continue
         if not value?
           result[key] = null
           continue

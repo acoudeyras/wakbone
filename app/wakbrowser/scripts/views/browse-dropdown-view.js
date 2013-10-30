@@ -6,13 +6,10 @@
         this.catalog = _arg.catalog;
         return Backbone.View.prototype.initialize.apply(this, arguments);
       },
-      events: {
-        "click li": "select"
-      },
       _renderItem: function(dataClass) {
         var name;
         name = dataClass.name;
-        return $("<li><a href=\"#cols/" + name + "\">" + name + "</a></li>");
+        return $("<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" href=\"http://www.google.fr\">" + name + "</a></li>");
       },
       highlight: function() {
         return this.$el.parent().addClass('animated shake');
@@ -24,12 +21,6 @@
           return _this._renderItem(_this.catalog[className]).appendTo(_this.el);
         });
         this.$el.dropdown();
-        return this;
-      },
-      select: function(event) {
-        var selected;
-        selected = $(event.currentTarget).find('a').text();
-        this.trigger('change', this.catalog[selected]);
         return this;
       }
     });

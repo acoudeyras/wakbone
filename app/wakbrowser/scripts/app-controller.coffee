@@ -1,16 +1,16 @@
 define ['../../../../wakbone/scripts/core/helpers'], (helpers) ->
 
   class AppController
-    constructor: (@catalog, @colGrid, @welcome, @browse, @ModelDetail, @$detail) ->
+    constructor: (@catalog, @colGrid, @welcome, @browse, @modelDetail) ->
 
     _hideAllExcept: (show)->
       @welcome.hideWithStyle()
       switch show
         when 'detail'
           @colGrid.$el.hide()
-          @$detail.show()
+          @modelDetail.$el.show()
         when 'col'
-          @$detail.hide()
+          @modelDetail.$el.hide()
           @colGrid.$el.show()
 
     navToCollection: (dataClassName, filterField, filterValue) ->
@@ -36,8 +36,6 @@ define ['../../../../wakbone/scripts/core/helpers'], (helpers) ->
       @_hideAllExcept('detail')
       @_ensureModel(colName, id).done( (model) =>
         throw 'Model #' + id + ' of collection ' + colName + ' not found ' if not model?
-        new @ModelDetail(
-          el: @$detail
-          model: model
-        )
+        @modelDetail.model = model
+        @modelDetail.render()
       )

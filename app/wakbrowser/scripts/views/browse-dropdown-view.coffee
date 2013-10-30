@@ -3,11 +3,9 @@ define ['marionette'], ->
   BrowseDropDownView = Backbone.View.extend
     initialize: ({@catalog}) ->
       Backbone.View::initialize.apply @, arguments
-    events:
-        "click li": "select"
     _renderItem: (dataClass) ->
       name = dataClass.name
-      $("""<li><a href="#cols/#{name}">#{name}</a></li>""")
+      $("""<li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.google.fr">#{name}</a></li>""")
     highlight: ->
       @$el.parent().addClass 'animated shake'
     render: ->
@@ -15,8 +13,4 @@ define ['marionette'], ->
       _.each @catalog.$classNames, (className) =>
         @_renderItem(@catalog[className]).appendTo(@el)
       @$el.dropdown()
-      @
-    select: (event)->
-      selected = $(event.currentTarget).find('a').text()
-      @trigger('change', @catalog[selected])
       @

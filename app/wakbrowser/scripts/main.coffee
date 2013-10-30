@@ -59,22 +59,12 @@ require ['../../scripts/wakbone', './app-controller', './router', './views/welco
     )
     .render()
 
-
-    html = """
-    <label>First:</label>
-    <input type="text" class="first-name">
-
-    <label>Last:</label>
-    <input type="text" class="last-name">
-  
-    <b>Full Name:</b>
-    <span class="first-name"></span>
-    <span class="last-name"></span>
-    """
-    $('#item-detail').html html
+    modelDetail = new ModelDetail(
+      el: '#model-detail'
+    )
 
 
-    controller = new AppController(catalog, colGrid, welcome, browse, ModelDetail, $('#item-detail'))
+    controller = new AppController(catalog, colGrid, welcome, browse, modelDetail)
     router = new Router(controller: controller)
     Backbone.history.start()
 ###

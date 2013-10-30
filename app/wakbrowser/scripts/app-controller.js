@@ -2,13 +2,12 @@
   define(['../../../../wakbone/scripts/core/helpers'], function(helpers) {
     var AppController;
     return AppController = (function() {
-      function AppController(catalog, colGrid, welcome, browse, ModelDetail, $detail) {
+      function AppController(catalog, colGrid, welcome, browse, modelDetail) {
         this.catalog = catalog;
         this.colGrid = colGrid;
         this.welcome = welcome;
         this.browse = browse;
-        this.ModelDetail = ModelDetail;
-        this.$detail = $detail;
+        this.modelDetail = modelDetail;
       }
 
       AppController.prototype._hideAllExcept = function(show) {
@@ -16,9 +15,9 @@
         switch (show) {
           case 'detail':
             this.colGrid.$el.hide();
-            return this.$detail.show();
+            return this.modelDetail.$el.show();
           case 'col':
-            this.$detail.hide();
+            this.modelDetail.$el.hide();
             return this.colGrid.$el.show();
         }
       };
@@ -64,10 +63,8 @@
           if (model == null) {
             throw 'Model #' + id + ' of collection ' + colName + ' not found ';
           }
-          return new _this.ModelDetail({
-            el: _this.$detail,
-            model: model
-          });
+          _this.modelDetail.model = model;
+          return _this.modelDetail.render();
         });
       };
 

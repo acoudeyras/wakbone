@@ -41,7 +41,7 @@
 
   require(['../../scripts/wakbone', './app-controller', './router', './views/welcome', './views/browse-dropdown-view', './views/collection-grid', './views/model-detail', 'bootstrap'], function(wakbone, AppController, Router, Welcome, BrowseDropDownView, CollectionGrid, ModelDetail) {
     return wakbone.load().done(function(_arg) {
-      var browse, catalog, colGrid, controller, html, router, views, welcome, _moveToCollection;
+      var browse, catalog, colGrid, controller, modelDetail, router, views, welcome, _moveToCollection;
       catalog = _arg.catalog, views = _arg.views;
       _moveToCollection = function(selected) {
         return router.navigate('cols/' + selected.$name, {
@@ -64,9 +64,10 @@
         el: '#browseDropDown',
         catalog: catalog
       }).render();
-      html = "  <label>First:</label>\n  <input type=\"text\" class=\"first-name\">\n\n  <label>Last:</label>\n  <input type=\"text\" class=\"last-name\">\n\n  <b>Full Name:</b>\n  <span class=\"first-name\"></span>\n  <span class=\"last-name\"></span>";
-      $('#item-detail').html(html);
-      controller = new AppController(catalog, colGrid, welcome, browse, ModelDetail, $('#item-detail'));
+      modelDetail = new ModelDetail({
+        el: '#model-detail'
+      });
+      controller = new AppController(catalog, colGrid, welcome, browse, modelDetail);
       router = new Router({
         controller: controller
       });

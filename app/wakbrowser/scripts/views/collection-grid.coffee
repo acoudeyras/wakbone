@@ -1,22 +1,37 @@
 define ['../../../../wakbone/scripts/views/backgrid/backgrid-adapter', '../../../../wakbone/scripts/views/backgrid/cells', 'marionette'], (BackgridAdapter, cells) ->
 
-  _getCell = (attr) ->
-    return null if attr.kind not in ['relatedEntities', 'relatedEntity']
-    attrName = if attr.name is 'ID' then '__KEY' else attr.name
+  _getRelatedCell = (attr) ->
+    textTemplate: """<% if (#{attr.name}!= null) { %>
+      <%= #{attr.name}.__KEY %>
+    <% } %>"""
+    uriPattern: '#models/' + attr.relatedDataClass.name + '/{__KEY}'
 
-    if attr.kind is 'relatedEntities'
-      text = 'See related'
-      uriPattern = '#cols/' + attr.relatedDataClass.name + '/' + attr.path + '.ID/{__KEY}'
-    else
-      text = """<% if (#{attr.name}!= null) { %>
-        <%= #{attr.name}.__KEY %>
-      <% } %>"""
-      uriPattern = '#models/' + attr.relatedDataClass.name + '/{__KEY}'
+  _getRelatedsCell = (attr) ->
+    textTemplate: 'See related'
+    uriPattern: '#cols/' + attr.relatedDataClass.name + '/' + attr.path + '.ID/{__KEY}'
 
+  _getIdCell = (attr) ->
+    textTemplate: """<%= __KEY %>"""
+    uriPattern: '#models/' + attr.dataClass.name + '/{__KEY}'
+
+  _createUriTemplateCell = ({uriPattern, textTemplate}) ->
     cells.UriTemplateCell.extend(
       uriPattern: uriPattern
-      textTemplate: text
+      textTemplate: textTemplate
     )
+
+  _getCell = (attr) ->
+    uriCellDef = null
+    if attr.kind is 'relatedEntities'
+      uriCellDef = _getRelatedsCell attr
+    else if attr.kind is 'relatedEntity'
+      uriCellDef = _getRelatedCell attr
+    else if attr.identifying
+      uriCellDef = _getIdCell attr
+    return _createUriTemplateCell uriCellDef if uriCellDef?
+    null
+
+    #attrName = if attr.name is 'ID' then '__KEY' else attr.name
 
 
   CollectionGrid = Backbone.View.extend(

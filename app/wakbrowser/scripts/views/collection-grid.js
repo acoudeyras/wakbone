@@ -1,23 +1,46 @@
 (function() {
   define(['../../../../wakbone/scripts/views/backgrid/backgrid-adapter', '../../../../wakbone/scripts/views/backgrid/cells', 'marionette'], function(BackgridAdapter, cells) {
-    var CollectionGrid, _getCell;
-    _getCell = function(attr) {
-      var attrName, text, uriPattern, _ref;
-      if ((_ref = attr.kind) !== 'relatedEntities' && _ref !== 'relatedEntity') {
-        return null;
-      }
-      attrName = attr.name === 'ID' ? '__KEY' : attr.name;
-      if (attr.kind === 'relatedEntities') {
-        text = 'See related';
-        uriPattern = '#cols/' + attr.relatedDataClass.name + '/' + attr.path + '.ID/{__KEY}';
-      } else {
-        text = "<% if (" + attr.name + "!= null) { %>\n  <%= " + attr.name + ".__KEY %>\n<% } %>";
-        uriPattern = '#models/' + attr.relatedDataClass.name + '/{__KEY}';
-      }
+    var CollectionGrid, _createUriTemplateCell, _getCell, _getIdCell, _getRelatedCell, _getRelatedsCell;
+    _getRelatedCell = function(attr) {
+      return {
+        textTemplate: "<% if (" + attr.name + "!= null) { %>\n  <%= " + attr.name + ".__KEY %>\n<% } %>",
+        uriPattern: '#models/' + attr.relatedDataClass.name + '/{__KEY}'
+      };
+    };
+    _getRelatedsCell = function(attr) {
+      return {
+        textTemplate: 'See related',
+        uriPattern: '#cols/' + attr.relatedDataClass.name + '/' + attr.path + '.ID/{__KEY}'
+      };
+    };
+    _getIdCell = function(attr) {
+      return {
+        textTemplate: "<%= __KEY %>",
+        uriPattern: '#models/' + attr.dataClass.name + '/{__KEY}'
+      };
+    };
+    _createUriTemplateCell = function(_arg) {
+      var textTemplate, uriPattern;
+      uriPattern = _arg.uriPattern, textTemplate = _arg.textTemplate;
       return cells.UriTemplateCell.extend({
         uriPattern: uriPattern,
-        textTemplate: text
+        textTemplate: textTemplate
       });
+    };
+    _getCell = function(attr) {
+      var uriCellDef;
+      uriCellDef = null;
+      if (attr.kind === 'relatedEntities') {
+        uriCellDef = _getRelatedsCell(attr);
+      } else if (attr.kind === 'relatedEntity') {
+        uriCellDef = _getRelatedCell(attr);
+      } else if (attr.identifying) {
+        uriCellDef = _getIdCell(attr);
+      }
+      if (uriCellDef != null) {
+        return _createUriTemplateCell(uriCellDef);
+      }
+      return null;
     };
     return CollectionGrid = Backbone.View.extend({
       initialize: function(options) {
