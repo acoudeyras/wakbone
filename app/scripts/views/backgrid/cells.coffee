@@ -1,8 +1,14 @@
-define ['../../core/helpers', 'uritemplate', 'backgrid'], (helpers, uriTemplate) ->
-  
+define ['../../core/helpers', 'uritemplate', 'backgrid', 'moment.cell'], (helpers, uriTemplate) ->
+
+
   class WakCell extends Backgrid.Cell
-    initialize: ({@column, @model}) ->
-    propName: -> @column.get 'name'
+    constructor: (args...) ->
+      [@column, @model] = args
+      super args...
+    propName: ->
+      if not @column?
+        debugger
+      @column.get 'name'
     attr: -> @model.attr @propName()
     rawVal: -> @model.get @propName()
     defUri: -> @rawVal()?.__deferred.uri
@@ -13,10 +19,10 @@ define ['../../core/helpers', 'uritemplate', 'backgrid'], (helpers, uriTemplate)
       @
 
   class UriTemplateCell extends WakCell
-    initialize: ->
+    constructor: (args...) -> 
       @uriTemplate = uriTemplate.parse @uriPattern
       @textTemplate = _.template @textTemplate
-      WakCell::initialize.apply @, arguments
+      super args...
     _render: ->
       modelAsJson = @model.toJSON()
       uri = @uriTemplate.expand modelAsJson
@@ -24,23 +30,24 @@ define ['../../core/helpers', 'uritemplate', 'backgrid'], (helpers, uriTemplate)
       @$el.append("""<a href="#{uri}">#{text}</a>""")
 
   class TemplateCell extends WakCell
-    initialize: ->
+    constructor: ->
       @htmlTemplate = _.template @template
+      super()
     _render: ->
       modelAsJson = @model.toJSON()
       html = @htmlTemplate modelAsJson
       @$el.append(html)
 
   class ImageCell extends WakCell
-    initialize: ->
+    constructor: (args...) -> super args...
     _render: ->
       src = @rawVal()?.__deferred.uri
       return null if not src?
       @$el.append("""<a class="fancybox" rel="group" data-lightbox="img" href="#{src}" target="_blank"><img class="img-thumbnail" src="#{src}" alt="" /></a>""")
       
-  Backgrid['UriTemplateCell'] = UriTemplateCell
-  Backgrid['TemplateCell'] = TemplateCell
-  Backgrid['ImageCell'] = ImageCell
+  Backgrid.Extension['UriTemplateCell'] = UriTemplateCell
+  Backgrid.Extension['TemplateCell'] = TemplateCell
+  Backgrid.Extension['ImageCell'] = ImageCell
 
   WakCell: WakCell
   ImageCell: ImageCell

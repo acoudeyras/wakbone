@@ -7,52 +7,49 @@
         this.attr = _arg.attr, this.title = _arg.title, this.cell = _arg.cell, this.editable = _arg.editable;
       }
 
-      ColumnCreator.property('rawType', {
-        get: function() {
-          var found;
-          found = ColumnCreator.rawTypes[this.attr.type];
-          if (!found) {
-            console.log("storage type " + this.attr.type + " not supported");
-            return 'string';
-          }
-          return found;
+      ColumnCreator.prototype.typeAlias = function() {
+        var found;
+        found = ColumnCreator.typesAlias[this.attr.type];
+        if (found == null) {
+          console.log("storage type " + this.attr.type + " not supported");
+          return ColumnCreator.typesAlias.string;
         }
-      });
-
-      ColumnCreator.property('formatter', {
-        get: function() {
-          return formatters[this.attr.kind];
-        }
-      });
+        return found;
+      };
 
       ColumnCreator.property('type', {
         get: function() {
-          var _ref;
           if (this.attr.isRaw) {
-            return this.rawType;
-          }
-          if ((_ref = this.attr.kind) === 'relatedEntities' || _ref === 'relatedEntity') {
-            return 'uri';
+            return this.typeAlias;
           }
           throw "kind " + kind + " not supported";
         }
       });
 
       ColumnCreator.prototype.getCell = function() {
-        var custom, kind;
+        var alias;
         if (this.cell != null) {
           return this.cell;
         }
-        kind = this.attr.identifying ? 'identity' : this.attr.kind;
-        custom = cells[kind];
-        if (custom != null) {
-          return kind;
+        alias = this.typeAlias();
+        if (typeof alias === 'string') {
+          return alias;
         }
-        return this.type;
+        return alias.cell;
+      };
+
+      ColumnCreator.prototype.getFormatter = function() {
+        var alias;
+        alias = this.typeAlias();
+        if (typeof alias === 'string') {
+          return null;
+        }
+        return alias.formatter;
       };
 
       ColumnCreator.prototype.toColumn = function() {
-        return {
+        var column, formatter;
+        column = {
           name: this.attr.name,
           label: this.attr.name,
           editable: this.editable != null ? this.editable : !this.attr.readOnly,
@@ -62,13 +59,25 @@
             attr: this.attr
           }
         };
+        formatter = this.getFormatter();
+        if (formatter != null) {
+          column.formatter = formatter;
+        }
+        return column;
       };
 
-      ColumnCreator.rawTypes = {
+      ColumnCreator.typesAlias = {
         string: 'string',
         long: 'integer',
         number: 'number',
-        date: 'date',
+        date: {
+          cell: Backgrid.Extension.MomentCell.extend({
+            modelFormat: "YYYY/M/D",
+            displayLang: "zh-tw",
+            displayFormat: "YYYY-MMM-DD"
+          }),
+          formatter: new Backgrid.Extension.MomentFormatter()
+        },
         image: 'image',
         bool: 'boolean'
       };

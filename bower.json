@@ -36,7 +36,8 @@
     "backgrid": "~0.2.6",
     "animate.css": "~2.1.0",
     "marionette": "~1.2.0",
-    "uritemplate": "*"
+    "uritemplate": "*",
+    "backgrid-moment-cell": "*"
   },
   "devDependencies": {}
 }

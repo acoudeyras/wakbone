@@ -10,6 +10,7 @@ require.config(
     backgrid: '../../bower_components/backgrid/lib/backgrid'
     marionette: '../../bower_components/marionette/lib/backbone.marionette'
     uritemplate: '../../bower_components/uritemplate/bin/uritemplate'
+    'moment.cell': '../../bower_components/backgrid-moment-cell/backgrid-moment-cell'
   shim:
     bootstrap:
       deps: ['jquery']
@@ -22,6 +23,8 @@ require.config(
       deps: ['underscore']
     backgrid:
       deps: ['backbone']
+    'moment.cell':
+      deps: ['backgrid', 'moment']
     marionette:
       deps: ['backbone']
 )

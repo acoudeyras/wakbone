@@ -3,7 +3,7 @@ define ['../../../../wakbone/scripts/views/backgrid/backgrid-adapter', '../../..
   _getCell = (attr) ->
     return null if attr.kind not in ['relatedEntities', 'relatedEntity']
     attrName = if attr.name is 'ID' then '__KEY' else attr.name
-
+    
     if attr.kind is 'relatedEntities'
       reverseDataClass = attr.catalog.$entryFromCollectionName(attr.type)
       attrName = 'See related'

@@ -2,41 +2,51 @@ define ['../../core/helpers', './cells', './filter-header-cell'], (helpers, cell
 
   class ColumnCreator
     constructor: (@catalog, {@attr, @title, @cell, @editable}) ->
-    @property 'rawType',
-      get: ->
-        found = ColumnCreator.rawTypes[@attr.type]
-        if not found
-          console.log "storage type #{@attr.type} not supported" 
-          return 'string'
-        found
-    @property 'formatter',
-      get: -> formatters[@attr.kind]
+    typeAlias: ->
+      found = ColumnCreator.typesAlias[@attr.type]
+      if not found?
+        console.log "storage type #{@attr.type} not supported"
+        return ColumnCreator.typesAlias.string
+      found
     @property 'type',
       get: ->
-        return @rawType if @attr.isRaw
-        return 'uri' if @attr.kind in ['relatedEntities', 'relatedEntity']
+        return @typeAlias if @attr.isRaw
+        #return 'uri' if @attr.kind in ['relatedEntities', 'relatedEntity']
         throw "kind #{kind} not supported"
     getCell: ->
         return @cell if @cell?
-        kind = if @attr.identifying then 'identity' else @attr.kind
-        custom = cells[kind]
-        return kind if custom?
-        @type
+        alias = @typeAlias()
+        return alias if typeof alias is 'string'
+        alias.cell
+        #kind = if @attr.identifying then 'identity' else @attr.kind
+        #custom = cells[@attr.kind]
+        #return kind if custom?
+    getFormatter: ->
+      alias = @typeAlias()
+      return null if typeof alias is 'string'
+      alias.formatter
     toColumn: ->
-
-      #formatter: @formatter      
-      name: @attr.name
-      label: @attr.name
-      editable: if @editable? then @editable else !@attr.readOnly
-      cell: @getCell()
-      headerCell: FilterHeaderCell
-      options:
-        attr: @attr
-      
-    @rawTypes = 
+      column =
+        name: @attr.name
+        label: @attr.name
+        editable: if @editable? then @editable else !@attr.readOnly
+        cell: @getCell()
+        headerCell: FilterHeaderCell
+        options:
+          attr: @attr
+      formatter = @getFormatter()
+      if formatter?
+        column.formatter = formatter
+      column
+    @typesAlias = 
       string: 'string'
       long: 'integer'
       number: 'number',
-      date: 'date',
+      date:
+        cell: Backgrid.Extension.MomentCell.extend
+          modelFormat: "YYYY/M/D"
+          displayLang: "zh-tw"
+          displayFormat: "YYYY-MMM-DD"
+        formatter: new Backgrid.Extension.MomentFormatter()
       image: 'image'
       bool: 'boolean'

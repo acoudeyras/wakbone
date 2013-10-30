@@ -1,22 +1,24 @@
 (function() {
   var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    __slice = [].slice;
 
-  define(['../../core/helpers', 'uritemplate', 'backgrid'], function(helpers, uriTemplate) {
-    var ImageCell, TemplateCell, UriTemplateCell, WakCell, _ref, _ref1, _ref2, _ref3;
+  define(['../../core/helpers', 'uritemplate', 'backgrid', 'moment.cell'], function(helpers, uriTemplate) {
+    var ImageCell, TemplateCell, UriTemplateCell, WakCell;
     WakCell = (function(_super) {
       __extends(WakCell, _super);
 
       function WakCell() {
-        _ref = WakCell.__super__.constructor.apply(this, arguments);
-        return _ref;
+        var args;
+        args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        this.column = args[0], this.model = args[1];
+        WakCell.__super__.constructor.apply(this, args);
       }
 
-      WakCell.prototype.initialize = function(_arg) {
-        this.column = _arg.column, this.model = _arg.model;
-      };
-
       WakCell.prototype.propName = function() {
+        if (this.column == null) {
+          debugger;
+        }
         return this.column.get('name');
       };
 
@@ -29,8 +31,8 @@
       };
 
       WakCell.prototype.defUri = function() {
-        var _ref1;
-        return (_ref1 = this.rawVal()) != null ? _ref1.__deferred.uri : void 0;
+        var _ref;
+        return (_ref = this.rawVal()) != null ? _ref.__deferred.uri : void 0;
       };
 
       WakCell.prototype.render = function() {
@@ -49,15 +51,12 @@
       __extends(UriTemplateCell, _super);
 
       function UriTemplateCell() {
-        _ref1 = UriTemplateCell.__super__.constructor.apply(this, arguments);
-        return _ref1;
-      }
-
-      UriTemplateCell.prototype.initialize = function() {
+        var args;
+        args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         this.uriTemplate = uriTemplate.parse(this.uriPattern);
         this.textTemplate = _.template(this.textTemplate);
-        return WakCell.prototype.initialize.apply(this, arguments);
-      };
+        UriTemplateCell.__super__.constructor.apply(this, args);
+      }
 
       UriTemplateCell.prototype._render = function() {
         var modelAsJson, text, uri;
@@ -74,13 +73,9 @@
       __extends(TemplateCell, _super);
 
       function TemplateCell() {
-        _ref2 = TemplateCell.__super__.constructor.apply(this, arguments);
-        return _ref2;
+        this.htmlTemplate = _.template(this.template);
+        TemplateCell.__super__.constructor.call(this);
       }
-
-      TemplateCell.prototype.initialize = function() {
-        return this.htmlTemplate = _.template(this.template);
-      };
 
       TemplateCell.prototype._render = function() {
         var html, modelAsJson;
@@ -96,15 +91,14 @@
       __extends(ImageCell, _super);
 
       function ImageCell() {
-        _ref3 = ImageCell.__super__.constructor.apply(this, arguments);
-        return _ref3;
+        var args;
+        args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        ImageCell.__super__.constructor.apply(this, args);
       }
 
-      ImageCell.prototype.initialize = function() {};
-
       ImageCell.prototype._render = function() {
-        var src, _ref4;
-        src = (_ref4 = this.rawVal()) != null ? _ref4.__deferred.uri : void 0;
+        var src, _ref;
+        src = (_ref = this.rawVal()) != null ? _ref.__deferred.uri : void 0;
         if (src == null) {
           return null;
         }
@@ -114,9 +108,9 @@
       return ImageCell;
 
     })(WakCell);
-    Backgrid['UriTemplateCell'] = UriTemplateCell;
-    Backgrid['TemplateCell'] = TemplateCell;
-    Backgrid['ImageCell'] = ImageCell;
+    Backgrid.Extension['UriTemplateCell'] = UriTemplateCell;
+    Backgrid.Extension['TemplateCell'] = TemplateCell;
+    Backgrid.Extension['ImageCell'] = ImageCell;
     return {
       WakCell: WakCell,
       ImageCell: ImageCell,
