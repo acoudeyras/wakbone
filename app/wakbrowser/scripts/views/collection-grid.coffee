@@ -31,9 +31,6 @@ define ['../../../../wakbone/scripts/views/backgrid/backgrid-adapter', '../../..
     return _createUriTemplateCell uriCellDef if uriCellDef?
     null
 
-    #attrName = if attr.name is 'ID' then '__KEY' else attr.name
-
-
   CollectionGrid = Backbone.View.extend(
     initialize: (options) ->
       Backbone.View::initialize.apply @, arguments
