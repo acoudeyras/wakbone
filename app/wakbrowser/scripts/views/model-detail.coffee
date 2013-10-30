@@ -3,34 +3,34 @@ define ['marionette', 'epoxy'], ->
   _isValid = (attr) ->
     true
 
-  _createHtmlText = (attr, bindingClass, bindingName) ->
-    html: """<span data-bind="text:bindingName" form-control"></span>"""
-    bindings:
-      'span.' + bindingClass: 'text:' + bindingName
+  _createHtmlText = (attr) ->
+    binding = _cleanName attr.name
+    """<span data-bind="text:#{binding}" class="form-control"></span>"""
 
-  _createHtmlLink = (attr, bindingClass, bindingName) ->
-    html: """<a class="#{bindingClass} form-control"></a>"""
-    bindings:
-      'a.' + bindingClass: 'text:' + bindingName
+#.relatedDataClass.name + '
+
+  _createHtmlLink = (attr) ->
+    if attr.kind is 'relatedEntity'
+      binding = attr.name + '.__KEY'
+    else
+      binding = attr.name + '.__KEY'
+
+    """<a data-bind="text:#{binding},href:#{binding}" class="form-control"></a>"""
 
   _creatHtmlValue = (attr) ->
-    binding = _cleanName attr.name
-    bindingAsCssClass = _.dasherize binding
     if attr.kind in ['relatedEntity', 'relatedEntities']
-      _createHtmlLink attr, bindingAsCssClass, binding
+      _createHtmlLink attr
     else
-      _createHtmlText attr, bindingAsCssClass, binding
+      _createHtmlText attr
 
   _createHtmlField = (attr)->
     title = attr.name
-    val = _creatHtmlValue attr
-    html: """<div class="form-group">
+    """<div class="form-group">
       <label class="control-label col-sm-2">#{title}</label>
       <div class="col-sm-10">
-        #{val.html}
+        #{_creatHtmlValue attr}
       </div>
     </div>"""
-    bindings: val.bindings
 
   _cleanName = (name) ->
     return '__KEY' if name is 'ID'
@@ -38,17 +38,9 @@ define ['marionette', 'epoxy'], ->
   
   _createHtml = (dataClass) ->
     html = """<form class="form-horizontal" role="form">"""
-    bindings = {}
     for attr in dataClass.attr() when _isValid attr
-      fld = _createHtmlField attr
-      html += fld.html
-      for key, val of fld.bindings
-        bindings[key] = val
+      html += _createHtmlField attr
     html += '</form>'
-
-    html: html
-    bindings: bindings
-
 
   _createBindings = (dataClass) ->
     bindings = {}
@@ -63,7 +55,7 @@ define ['marionette', 'epoxy'], ->
     $(el).html html
     Backbone.Epoxy.View.extend(
       el: el
-      bindings: _createBindings model.dataClass
+      bindings: 'data-bind'
     )
 
 

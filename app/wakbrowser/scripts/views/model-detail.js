@@ -7,40 +7,32 @@
     _isValid = function(attr) {
       return true;
     };
-    _createHtmlText = function(attr, bindingClass, bindingName) {
-      return {
-        html: "<span data-bind=\"text:bindingName\" form-control\"></span>",
-        bindings: 'span.' + {
-          bindingClass: 'text:' + bindingName
-        }
-      };
+    _createHtmlText = function(attr) {
+      var binding;
+      binding = _cleanName(attr.name);
+      return "<span data-bind=\"text:" + binding + "\" class=\"form-control\"></span>";
     };
-    _createHtmlLink = function(attr, bindingClass, bindingName) {
-      return {
-        html: "<a class=\"" + bindingClass + " form-control\"></a>",
-        bindings: 'a.' + {
-          bindingClass: 'text:' + bindingName
-        }
-      };
+    _createHtmlLink = function(attr) {
+      var binding;
+      if (attr.kind === 'relatedEntity') {
+        binding = attr.name + '.__KEY';
+      } else {
+        binding = attr.name + '.__KEY';
+      }
+      return "<a data-bind=\"text:" + binding + ",href:" + binding + "\" class=\"form-control\"></a>";
     };
     _creatHtmlValue = function(attr) {
-      var binding, bindingAsCssClass, _ref;
-      binding = _cleanName(attr.name);
-      bindingAsCssClass = _.dasherize(binding);
+      var _ref;
       if ((_ref = attr.kind) === 'relatedEntity' || _ref === 'relatedEntities') {
-        return _createHtmlLink(attr, bindingAsCssClass, binding);
+        return _createHtmlLink(attr);
       } else {
-        return _createHtmlText(attr, bindingAsCssClass, binding);
+        return _createHtmlText(attr);
       }
     };
     _createHtmlField = function(attr) {
-      var title, val;
+      var title;
       title = attr.name;
-      val = _creatHtmlValue(attr);
-      return {
-        html: "<div class=\"form-group\">\n  <label class=\"control-label col-sm-2\">" + title + "</label>\n  <div class=\"col-sm-10\">\n    " + val.html + "\n  </div>\n</div>",
-        bindings: val.bindings
-      };
+      return "<div class=\"form-group\">\n  <label class=\"control-label col-sm-2\">" + title + "</label>\n  <div class=\"col-sm-10\">\n    " + (_creatHtmlValue(attr)) + "\n  </div>\n</div>";
     };
     _cleanName = function(name) {
       if (name === 'ID') {
@@ -49,28 +41,16 @@
       return name;
     };
     _createHtml = function(dataClass) {
-      var attr, bindings, fld, html, key, val, _i, _len, _ref, _ref1;
+      var attr, html, _i, _len, _ref;
       html = "<form class=\"form-horizontal\" role=\"form\">";
-      bindings = {};
       _ref = dataClass.attr();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         attr = _ref[_i];
-        if (!(_isValid(attr))) {
-          continue;
-        }
-        fld = _createHtmlField(attr);
-        html += fld.html;
-        _ref1 = fld.bindings;
-        for (key in _ref1) {
-          val = _ref1[key];
-          bindings[key] = val;
+        if (_isValid(attr)) {
+          html += _createHtmlField(attr);
         }
       }
-      html += '</form>';
-      return {
-        html: html,
-        bindings: bindings
-      };
+      return html += '</form>';
     };
     _createBindings = function(dataClass) {
       var attr, bindingAsCssClass, bindings, name, _i, _len, _ref;
@@ -93,7 +73,7 @@
       $(el).html(html);
       return Backbone.Epoxy.View.extend({
         el: el,
-        bindings: _createBindings(model.dataClass)
+        bindings: 'data-bind'
       });
     };
     return ModelDetail = (function(_super) {
