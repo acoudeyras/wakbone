@@ -3,28 +3,21 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['marionette', 'epoxy'], function() {
-    var ModelDetail, _cleanName, _creatHtmlValue, _createBindings, _createEpoxyView, _createHtml, _createHtmlField, _createHtmlLink, _createHtmlText, _isValid, _ref;
-    _isValid = function(attr) {
-      return true;
-    };
+    var ModelDetail, _cleanName, _creatHtmlValue, _createEpoxyView, _createHtml, _createHtmlField, _createHtmlLink, _createHtmlText, _createViewModel, _ref;
     _createHtmlText = function(attr) {
       var binding;
       binding = _cleanName(attr.name);
       return "<span data-bind=\"text:" + binding + "\" class=\"form-control\"></span>";
     };
     _createHtmlLink = function(attr) {
-      var binding;
-      if (attr.kind === 'relatedEntity') {
-        binding = attr.name + '.__KEY';
-      } else {
-        binding = attr.name + '.__KEY';
-      }
-      return "<a data-bind=\"text:" + binding + ",href:" + binding + "\" class=\"form-control\"></a>";
+      return "<a data-bind=\"text:" + (attr.name + '__KEY') + ",attr:{href:" + (attr.name + '__URL') + "}\" class=\"form-control\"></a>";
     };
     _creatHtmlValue = function(attr) {
-      var _ref;
+      var a, _ref;
       if ((_ref = attr.kind) === 'relatedEntity' || _ref === 'relatedEntities') {
-        return _createHtmlLink(attr);
+        a = _createHtmlLink(attr);
+        console.log(a);
+        return a;
       } else {
         return _createHtmlText(attr);
       }
@@ -46,26 +39,39 @@
       _ref = dataClass.attr();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         attr = _ref[_i];
-        if (_isValid(attr)) {
-          html += _createHtmlField(attr);
-        }
+        html += _createHtmlField(attr);
       }
       return html += '</form>';
     };
-    _createBindings = function(dataClass) {
-      var attr, bindingAsCssClass, bindings, name, _i, _len, _ref;
-      bindings = {};
-      _ref = dataClass.attr();
+    _createViewModel = function(model) {
+      var attr, relatedValues, url, val, _i, _j, _len, _len1, _ref, _ref1;
+      relatedValues = {};
+      _ref = model.dataClass.attr();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         attr = _ref[_i];
-        if (!(_isValid(attr))) {
+        if (!(attr.kind === 'relatedEntity')) {
           continue;
         }
-        name = _cleanName(attr.name);
-        bindingAsCssClass = _.dasherize(name);
-        bindings['.' + bindingAsCssClass] = 'text:' + name;
+        val = model.get(attr.name);
+        url = null;
+        if (val != null) {
+          val = val.id;
+          url = '#models/' + attr.relatedDataClass.name + '/' + val;
+        }
+        relatedValues[attr.name + '__KEY'] = val;
+        relatedValues[attr.name + '__URL'] = url;
       }
-      return bindings;
+      _ref1 = model.dataClass.attr();
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        attr = _ref1[_j];
+        if (!(attr.kind === 'relatedEntities')) {
+          continue;
+        }
+        relatedValues[attr.name + '__KEY'] = 'See relateds';
+        url = '#cols/' + attr.relatedDataClass.name + '/' + attr.path + '.ID/' + model.id;
+        relatedValues[attr.name + '__URL'] = url;
+      }
+      return new Backbone.Model(relatedValues);
     };
     _createEpoxyView = function(model, el) {
       var html;
@@ -73,7 +79,8 @@
       $(el).html(html);
       return Backbone.Epoxy.View.extend({
         el: el,
-        bindings: 'data-bind'
+        bindings: 'data-bind',
+        viewModel: _createViewModel(model)
       });
     };
     return ModelDetail = (function(_super) {

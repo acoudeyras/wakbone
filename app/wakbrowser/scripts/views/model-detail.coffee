@@ -1,25 +1,17 @@
 define ['marionette', 'epoxy'], ->
 
-  _isValid = (attr) ->
-    true
-
   _createHtmlText = (attr) ->
     binding = _cleanName attr.name
     """<span data-bind="text:#{binding}" class="form-control"></span>"""
 
-#.relatedDataClass.name + '
-
   _createHtmlLink = (attr) ->
-    if attr.kind is 'relatedEntity'
-      binding = attr.name + '.__KEY'
-    else
-      binding = attr.name + '.__KEY'
-
-    """<a data-bind="text:#{binding},href:#{binding}" class="form-control"></a>"""
+    """<a data-bind="text:#{attr.name + '__KEY'},attr:{href:#{attr.name + '__URL'}}" class="form-control"></a>"""
 
   _creatHtmlValue = (attr) ->
     if attr.kind in ['relatedEntity', 'relatedEntities']
-      _createHtmlLink attr
+      a = _createHtmlLink attr
+      console.log a
+      a
     else
       _createHtmlText attr
 
@@ -38,24 +30,39 @@ define ['marionette', 'epoxy'], ->
   
   _createHtml = (dataClass) ->
     html = """<form class="form-horizontal" role="form">"""
-    for attr in dataClass.attr() when _isValid attr
+    for attr in dataClass.attr()
       html += _createHtmlField attr
     html += '</form>'
 
-  _createBindings = (dataClass) ->
-    bindings = {}
-    for attr in dataClass.attr() when _isValid attr
-      name = _cleanName attr.name
-      bindingAsCssClass = _.dasherize name
-      bindings['.' + bindingAsCssClass] = 'text:' + name
-    bindings
+  #Dirty hack because Epoxy doesn't handle deep model, i have to create a view model
+  #That add all deep properties at the root
+  _createViewModel = (model) ->
+    relatedValues = {}
+
+    for attr in model.dataClass.attr() when attr.kind is 'relatedEntity'
+      val = model.get attr.name
+      url = null
+      if val?
+        val = val.id
+        url = '#models/' + attr.relatedDataClass.name + '/' + val
+      relatedValues[attr.name + '__KEY'] = val
+      relatedValues[attr.name + '__URL'] = url
+
+    for attr in model.dataClass.attr() when attr.kind is 'relatedEntities'
+      relatedValues[attr.name + '__KEY'] = 'See relateds'
+      url = '#cols/' + attr.relatedDataClass.name + '/' + attr.path + '.ID/' + model.id
+      relatedValues[attr.name + '__URL'] = url
+
+    new Backbone.Model(relatedValues)
 
   _createEpoxyView = (model, el) ->
     html = _createHtml(model.dataClass)
     $(el).html html
+
     Backbone.Epoxy.View.extend(
       el: el
       bindings: 'data-bind'
+      viewModel: _createViewModel model
     )
 
 
