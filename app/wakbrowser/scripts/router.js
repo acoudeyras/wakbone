@@ -5,7 +5,7 @@
       appRoutes: {
         'cols/:colName': 'navToCollection',
         'cols/:colName/:filterField/:fieldValue': 'navToCollection',
-        'entities/:entityType/:entityId': 'navToEntity'
+        'models/:entityType/:entityId': 'navToModel'
       }
     });
   });

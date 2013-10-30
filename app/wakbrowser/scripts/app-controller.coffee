@@ -1,42 +1,43 @@
 define ['../../../../wakbone/scripts/core/helpers'], (helpers) ->
 
   class AppController
-    constructor: (@catalog, @colGrid, @welcome, @browse, @detail) ->
+    constructor: (@catalog, @colGrid, @welcome, @browse, @ModelDetail, @$detail) ->
 
     _hideAllExcept: (show)->
       @welcome.hideWithStyle()
       switch show
         when 'detail'
           @colGrid.$el.hide()
-          #@detail.$el.show()
+          @$detail.show()
         when 'col'
-          #@detail.$el.hide()
+          @$detail.hide()
           @colGrid.$el.show()
-      
 
     navToCollection: (dataClassName, filterField, filterValue) ->
       @_hideAllExcept('col')
       dataClass = @catalog[dataClassName]
       @colGrid.setDataClass dataClass
-      #dataClass.entities.clearQuery() TODO
-      #if (filterField)
-      #  selectedCol.query filterField, filterValue
+      dataClass.entities.query.clear()
+      if filterField?
+        dataClass.entities.query.where filterField + '=' + filterValue
       dataClass.entities.fetch(reset: true)
       @
 
     _ensureModel: (colName, id) ->
-      col = @catalog.cols[colName]
+      col = @catalog[colName].entities
       throw 'Collection ' + colName + ' not found ' if not col?
       model = col.get id
       if model?
-        helpers.promise.val model
+        helpers.resolvedPromise model
       else
         model = new col.model(id:id)
         model.fetch().then(-> model)
-    navToEntity: (colName, id) ->
+    navToModel: (colName, id) ->
       @_hideAllExcept('detail')
       @_ensureModel(colName, id).done( (model) =>
         throw 'Model #' + id + ' of collection ' + colName + ' not found ' if not model?
-        @detail.model = model
-        @detail.render()
+        new @ModelDetail(
+          el: @$detail
+          model: model
+        )
       )

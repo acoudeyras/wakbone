@@ -3,18 +3,19 @@ define ['../../../../wakbone/scripts/views/backgrid/backgrid-adapter', '../../..
   _getCell = (attr) ->
     return null if attr.kind not in ['relatedEntities', 'relatedEntity']
     attrName = if attr.name is 'ID' then '__KEY' else attr.name
-    
+
     if attr.kind is 'relatedEntities'
-      reverseDataClass = attr.catalog.$entryFromCollectionName(attr.type)
-      attrName = 'See related'
-      uriPattern = '#cols/' + reverseDataClass.name + '/' + attr.path + '/{__KEY}'
+      text = 'See related'
+      uriPattern = '#cols/' + attr.relatedDataClass.name + '/' + attr.path + '.ID/{__KEY}'
     else
-      attrName = '<%= __KEY %>'
-      uriPattern = '/{__KEY}'
+      text = """<% if (#{attr.name}!= null) { %>
+        <%= #{attr.name}.__KEY %>
+      <% } %>"""
+      uriPattern = '#models/' + attr.relatedDataClass.name + '/{__KEY}'
 
     cells.UriTemplateCell.extend(
       uriPattern: uriPattern
-      textTemplate: attrName
+      textTemplate: text
     )
 
 

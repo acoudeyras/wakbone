@@ -22,22 +22,32 @@
         }
       }
 
+      Attribute.lazyval('relatedDataClass', function() {
+        var dataClass, name, _ref;
+        if ((_ref = this.kind) !== 'relatedEntity' && _ref !== 'relatedEntities') {
+          return null;
+        }
+        if (this.kind === 'relatedEntity') {
+          name = this.catalog.constructor.classNameInCatalog(this.type);
+          dataClass = this.catalog[name];
+        } else {
+          dataClass = this.catalog.$entryFromCollectionName(this.type);
+        }
+        return dataClass;
+      });
+
       Attribute.lazyval('RelatedModel', function() {
-        var name;
         if (this.kind !== 'relatedEntity') {
           return null;
         }
-        name = this.catalog.constructor.classNameInCatalog(this.type);
-        return this.catalog[name].Model;
+        return this.relatedDataClass.Model;
       });
 
       Attribute.lazyval('RelatedCollection', function() {
-        var dataClass;
         if (this.kind !== 'relatedEntities') {
           return null;
         }
-        dataClass = this.catalog.$entryFromCollectionName(this.type);
-        return dataClass.Collection;
+        return this.relatedDataClass.Collection;
       });
 
       Attribute.prototype._convertToRelatedModel = function(value) {

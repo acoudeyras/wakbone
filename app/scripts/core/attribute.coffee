@@ -14,14 +14,20 @@ define ['./types', './wak-collection', './helpers'], (types, wakCollectionFactor
     #need to be lazy, because when we load the attributes, the catalog may not have yet loaded
     #the relatedModel. We could have added a "build" method that would have done that and be called
     #by the catalog after all model are loaded, but i thought it was overdesign yet
+    @lazyval 'relatedDataClass', ->
+      return null if @kind not in ['relatedEntity', 'relatedEntities']
+      if @kind is 'relatedEntity'
+        name = @catalog.constructor.classNameInCatalog @type
+        dataClass = @catalog[name]
+      else
+        dataClass = @catalog.$entryFromCollectionName @type
+      dataClass
     @lazyval 'RelatedModel', ->
       return null if @kind isnt 'relatedEntity'
-      name = @catalog.constructor.classNameInCatalog @type
-      @catalog[name].Model
+      @relatedDataClass.Model
     @lazyval 'RelatedCollection', ->
       return null if @kind isnt 'relatedEntities'
-      dataClass = @catalog.$entryFromCollectionName @type
-      dataClass.Collection
+      @relatedDataClass.Collection
     _convertToRelatedModel: (value) ->
       return null if value is null
       if value.__deferred?

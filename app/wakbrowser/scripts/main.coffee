@@ -29,7 +29,7 @@ require.config(
       deps: ['backbone']
 )
 
-require ['../../scripts/wakbone', './app-controller', './router', './views/welcome', './views/browse-dropdown-view', './views/collection-grid', 'bootstrap'], (wakbone, AppController, Router, Welcome, BrowseDropDownView, CollectionGrid) ->
+require ['../../scripts/wakbone', './app-controller', './router', './views/welcome', './views/browse-dropdown-view', './views/collection-grid', './views/model-detail', 'bootstrap'], (wakbone, AppController, Router, Welcome, BrowseDropDownView, CollectionGrid, ModelDetail) ->
 
   wakbone.load().done ({catalog, views}) ->
 
@@ -59,7 +59,22 @@ require ['../../scripts/wakbone', './app-controller', './router', './views/welco
     )
     .render()
 
-    controller = new AppController(catalog, colGrid, welcome, browse, null)
+
+    html = """
+    <label>First:</label>
+    <input type="text" class="first-name">
+
+    <label>Last:</label>
+    <input type="text" class="last-name">
+  
+    <b>Full Name:</b>
+    <span class="first-name"></span>
+    <span class="last-name"></span>
+    """
+    $('#item-detail').html html
+
+
+    controller = new AppController(catalog, colGrid, welcome, browse, ModelDetail, $('#item-detail'))
     router = new Router(controller: controller)
     Backbone.history.start()
 ###

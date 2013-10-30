@@ -2,22 +2,21 @@
   define(['../../../../wakbone/scripts/views/backgrid/backgrid-adapter', '../../../../wakbone/scripts/views/backgrid/cells', 'marionette'], function(BackgridAdapter, cells) {
     var CollectionGrid, _getCell;
     _getCell = function(attr) {
-      var attrName, reverseDataClass, uriPattern, _ref;
+      var attrName, text, uriPattern, _ref;
       if ((_ref = attr.kind) !== 'relatedEntities' && _ref !== 'relatedEntity') {
         return null;
       }
       attrName = attr.name === 'ID' ? '__KEY' : attr.name;
       if (attr.kind === 'relatedEntities') {
-        reverseDataClass = attr.catalog.$entryFromCollectionName(attr.type);
-        attrName = 'See related';
-        uriPattern = '#cols/' + reverseDataClass.name + '/' + attr.path + '/{__KEY}';
+        text = 'See related';
+        uriPattern = '#cols/' + attr.relatedDataClass.name + '/' + attr.path + '.ID/{__KEY}';
       } else {
-        attrName = '<%= __KEY %>';
-        uriPattern = '/{__KEY}';
+        text = "<% if (" + attr.name + "!= null) { %>\n  <%= " + attr.name + ".__KEY %>\n<% } %>";
+        uriPattern = '#models/' + attr.relatedDataClass.name + '/{__KEY}';
       }
       return cells.UriTemplateCell.extend({
         uriPattern: uriPattern,
-        textTemplate: attrName
+        textTemplate: text
       });
     };
     return CollectionGrid = Backbone.View.extend({
